@@ -5,10 +5,11 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useState } from 'react';
 
 import TemplateCard from '@components/admin/feature/TemplateCard';
+import { TemplatesData } from '@type/templates';
 import { storage } from '@lib/firebase';
 
 export default function AdminTemplatesPage() {
-  const [templates, setTemplates] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<TemplatesData[]>([]);
   const fetchTemplates = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'template'));
@@ -17,7 +18,7 @@ export default function AdminTemplatesPage() {
         ...doc.data(),
       }));
 
-      setTemplates(data);
+      setTemplates(data as TemplatesData[]);
     } catch (error) {
       console.error('Error fetching templates:', error);
     }
@@ -59,7 +60,7 @@ export default function AdminTemplatesPage() {
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       AdminTemplatesPage
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {templates?.map((item: any, index: number) => (
+        {templates?.map((item: TemplatesData, index: number) => (
           <TemplateCard key={index} data={item} onClick={() => {}} />
         ))}
       </div>

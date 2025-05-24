@@ -1,9 +1,6 @@
 import { IoIosCall } from 'react-icons/io';
+import { TemplatesData } from '@type/templates';
 import styled from '@emotion/styled';
-type ContactProps = {
-  type?: string;
-  data: any;
-};
 
 const CallButton = styled.a`
   width: 28px;
@@ -15,15 +12,18 @@ const CallButton = styled.a`
   background-color: #f0dfd8;
 `;
 
-const Contact = ({ type, data }: ContactProps) => {
-  const { bride_first_name, bride_last_name, groom_first__name, groom_last__name } = data;
+type ContactInfoProps = {
+  data: TemplatesData;
+};
+
+const ContactInfo = ({ data }: ContactInfoProps) => {
   // groom_dad;
   // bride_dad;
   // groom_phone;
   // bride_first_name;
   // bride_last_name;
   // groom_first__name;
-  // groom_last__name;
+  // groom_last_name;
   // bride_mom;
   // bride_dad;
   // bride_phone;
@@ -53,4 +53,4 @@ const Contact = ({ type, data }: ContactProps) => {
   );
 };
 
-export default Contact;
+export default ContactInfo;

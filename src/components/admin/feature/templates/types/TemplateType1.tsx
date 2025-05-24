@@ -1,16 +1,21 @@
 'use';
 
+import AccountInfo from '../custom/AccountInfo';
 import { Button } from '@components/ui/button';
-import Contact from '../custom/Contact';
+import ContactInfo from '../custom/ContactInfo';
+import CopyAndShare from '../custom/CopyAndShare';
 import Image from 'next/image';
 import KakaoMap from '../../KakaoMap';
 import MainTextRenderer from '../custom/MainTextRenderer';
 import { Map } from 'react-kakao-maps-sdk';
 import React from 'react';
+import { TemplatesData } from '@type/templates';
+import WeddingCalendar from '../custom/WeddingCalendar';
+import WeddingLocation from '../custom/WeddingLocation';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 type TemplateTypeProps = {
-  data: any;
+  data: TemplatesData;
 };
 
 const MainImage = styled.div`
@@ -22,9 +27,9 @@ const MainImage = styled.div`
   overflow: hidden;
 `;
 
-const TemplateType1 = ({ data }: TemplateTypeProps) => {
+const TemplateType1 = ({ data }: any) => {
   const router = useRouter();
-  console.log('data', data);
+
   return (
     <div className="w-full min-h-screen bg-light-beige-100">
       <div className="max-w-[393px] mx-auto py-[42px]">
@@ -37,10 +42,16 @@ const TemplateType1 = ({ data }: TemplateTypeProps) => {
           <div className="mt-10">
             <MainTextRenderer type={data?.main?.main_text_type} data={data} />
           </div>
-          <Contact data={data} />
-          <KakaoMap address={data?.address || '서울특별시 강남구 영동대로 707'} />
-          {/* <KakaoMap /> */}
-          <Map center={{ lat: 33.450701, lng: 126.570667 }} style={{ width: '1000px', height: '600px' }} level={3} />
+          <div className="flex flex-col gap-5 w-full">
+            <ContactInfo data={data} />
+            <WeddingCalendar weddingDate="2025-10-12" />
+            <AccountInfo data={data} />
+            <WeddingLocation data={data} />
+            <CopyAndShare data={data} />
+          </div>
+          <div className="border-t border-gray-300 w-full">
+            <Image src="/assets/img/logo-invi.svg" alt="logo" width={132} height={40} className="mt-4 mx-auto" />
+          </div>
         </div>
       </div>
     </div>

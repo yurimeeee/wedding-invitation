@@ -4,10 +4,11 @@ import { Button } from '@components/ui/button';
 import Image from 'next/image';
 import MainTextRenderer from '../custom/MainTextRenderer';
 import React from 'react';
+import { TemplatesData } from '@type/templates';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 type TemplateTypeProps = {
-  data: any;
+  data: TemplatesData;
 };
 
 const TemplateType2 = ({ data }: TemplateTypeProps) => {

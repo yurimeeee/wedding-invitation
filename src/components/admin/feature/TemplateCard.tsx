@@ -4,9 +4,10 @@ import { Button } from '@components/ui/button';
 import Image from 'next/image';
 import React from 'react';
 import Skeleton from '../layout/Skeleton';
+import { TemplatesData } from '@type/templates';
 import { useRouter } from 'next/navigation';
 type TemplateCardProps = {
-  data: any;
+  data: TemplatesData;
   onClick: () => void;
 };
 

@@ -1,24 +1,16 @@
+import { TemplatesData } from '@type/templates';
 import styled from '@emotion/styled';
 
 type MainTextRendererProps = {
   type: string;
-  data: any;
+  data: TemplatesData;
 };
 type GroomAndBrideProps = {
   bride?: string;
   groom?: string;
   name?: string;
-  data?: any;
+  data?: TemplatesData;
 };
-
-const MainImage = styled.div`
-  width: 100%;
-  max-width: 250px;
-  height: 362px;
-  border-radius: 50%;
-  object-fit: contain;
-  overflow: hidden;
-`;
 
 const GroomAndBride = ({ bride, groom, name, data }: GroomAndBrideProps) => {
   return (
@@ -54,7 +46,7 @@ const GroomAndBrideVertical = ({ bride, groom, name, data }: GroomAndBrideProps)
 };
 
 const MainTextRenderer = ({ type, data }: MainTextRendererProps) => {
-  const { bride_first_name, bride_last_name, groom_first__name, groom_last__name } = data;
+  const { bride_first_name, bride_last_name, groom_first_name, groom_last_name } = data;
   //type_1 : "groomAndBride"
   //type_2 : "groomDotBride"
   //type_3 : "groomAndBrideVertival"

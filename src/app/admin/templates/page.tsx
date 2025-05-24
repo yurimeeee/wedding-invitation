@@ -18,13 +18,11 @@ export default function AdminTemplatesPage() {
       }));
 
       setTemplates(data);
-      console.log(data);
     } catch (error) {
       console.error('Error fetching templates:', error);
     }
   };
   useEffect(() => {
-    console.log('dfdsf');
     fetchTemplates();
   }, []);
 

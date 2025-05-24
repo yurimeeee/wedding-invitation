@@ -65,6 +65,9 @@ const config: Config = {
           900: '#291778',
         },
       },
+      fontFamily: {
+        suit: ['var(--font-suit)', 'sans-serif'],
+      },
     },
   },
   plugins: [],

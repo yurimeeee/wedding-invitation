@@ -4,7 +4,7 @@ import React from 'react';
 
 const Sidebar = () => {
   return (
-    <aside className="fixed inset-y-0 left-0 z-10 hidden w-28 p-2 flex-col border-r bg-background sm:flex">
+    <aside className="fixed inset-y-0 left-0 z-10 hidden w-[96px] p-2 flex-col border-r bg-background sm:flex">
       <Link href="/admin">
         <Image src="/assets/img/logo-sm.svg" alt="logo" width={100} height={50} />
       </Link>

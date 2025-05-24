@@ -5,7 +5,19 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { EmotionRegistry } from '@lib/EmotionRegistry';
 import type { Metadata } from 'next';
 import ThemeProviders from '@lib/ThemeProviders';
+import localFont from 'next/font/local';
 
+// export const suitFont = localFont({
+//   src: [
+//     {
+//       path: '../public/fonts/SUIT-Variable.woff2',
+//       // path: './src/fonts/SUIT-Variable.woff2',
+//       style: 'normal',
+//     },
+//   ],
+//   variable: '--font-suit',
+//   display: 'swap',
+// });
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -27,11 +39,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="ko">
+      <body
+        // className={suitFont.variable}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        {/* <body className={`${geistSans.variable} ${geistMono.variable} ${suitFont.variable} antialiased`}> */}
         <EmotionRegistry>
           <ThemeProviders>{children}</ThemeProviders>
         </EmotionRegistry>
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=%NEXT_PUBLIC_KAKAOMAP_KEY%&libraries=services,clusterer"></script>
       </body>
     </html>
   );

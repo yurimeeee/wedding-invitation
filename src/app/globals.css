@@ -143,6 +143,62 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+@font-face {
+  font-family: 'SUIT Variable';
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SUIT-Variable.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'SUITE Variable';
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/SUITE-Variable.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Chosunilbo_myungjo';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+.font-suit {
+  font-family: 'SUIT Variable';
+  font-weight: 400;
+}
+.font-suit-medium {
+  font-family: 'SUIT Variable';
+  font-weight: 500;
+}
+.font-suit-bold {
+  font-family: 'SUIT Variable';
+  font-weight: 700;
+}
+.font-suite {
+  font-family: 'SUITE Variable';
+  font-weight: 400;
+}
+.font-suite-medium {
+  font-family: 'SUITE Variable';
+  font-weight: 500;
+}
+.font-suite-bold {
+  font-family: 'SUITE Variable';
+  font-weight: 700;
+}
+.font-chosun {
+  font-family: 'Chosunilbo_myungjo';
+  font-weight: 400;
+}
+.font-chosun-medium {
+  font-family: 'Chosunilbo_myungjo';
+  font-weight: 500;
+}
+.font-chosun-bold {
+  font-family: 'Chosunilbo_myungjo';
+  font-weight: 700;
+}
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

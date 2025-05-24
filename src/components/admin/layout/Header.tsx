@@ -6,15 +6,18 @@ import { GRAY_400, GRAY_50, GRAY_500, GRAY_600, MINT_100 } from '@styles/colors'
 import { FaRegUser } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi';
 import React from 'react';
+import { auth } from '@lib/firebase';
+import { signOut } from 'firebase/auth';
 import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
 import { useUserStore } from '@stores/useUserStore';
 
 const HeaderComp = styled.header`
   position: sticky;
   top: 0;
   right: 0;
-  left: 130px;
-  width: calc(100vw - 130px);
+  left: 96px;
+  width: calc(100vw - 96px);
   z-index: 5;
   background-color: #ffffff;
   padding: 24px;
@@ -39,6 +42,23 @@ const IconButton = styled(DropdownMenuTrigger)`
 
 const Header = () => {
   const { user } = useUserStore();
+  const router = useRouter();
+  const logout = () => {
+    // signOut 함수를 호출하여 로그아웃합니다.
+    signOut(auth)
+      .then(() => {
+        // 로그아웃 성공!
+        console.log('사용자가 성공적으로 로그아웃되었습니다.');
+        router.push('/admin/login');
+        useUserStore.getState().logout();
+      })
+      .catch((error) => {
+        // 로그아웃 중 오류가 발생했습니다.
+        console.error('로그아웃 중 오류 발생:', error);
+        // 오류 처리를 여기에 작성하세요.
+      });
+  };
+
   return (
     <>
       <HeaderComp>
@@ -52,7 +72,7 @@ const Header = () => {
             <DropdownMenuItem>마이페이지</DropdownMenuItem>
             {/* <DropdownMenuItem>Billing</DropdownMenuItem>
             <DropdownMenuItem>Team</DropdownMenuItem> */}
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>
               로그아웃 <FiLogOut />
             </DropdownMenuItem>
           </DropdownMenuContent>

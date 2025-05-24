@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@stores/useUserStore';
 
@@ -8,11 +9,17 @@ export default function Auth({ children }: { children: React.ReactNode }) {
   const { user } = useUserStore();
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    if (!user) {
-      router.push('/admin/login'); // 로그인 안 되어 있으면 로그인 페이지로
+    // zustand 상태 초기화 이후 체크
+    setIsLoading(false);
+    if (!user && !isLoading) {
+      router.push('/admin/login');
     }
-  }, [user, router]);
+  }, [user, isLoading, router]);
+
+  if (isLoading) return null; // 또는 로딩 스피너
 
   return <>{children}</>;
 }

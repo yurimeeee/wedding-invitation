@@ -2,42 +2,68 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+
   content: [
-    "./src/app/**/*.{ts,tsx}",
-    "./src/components/**/*.{ts,tsx}",
+    './src/**/*.{js,jsx,ts,tsx}'
   ],
   theme: {
     extend: {
       colors: {
-        textDark: "var(--text-dark)",
-        textDefault: "var(--text-default)",
-        lightBeige100: "var(--light-beige-100)",
-        lightBeige200: "var(--light-beige-200)",
-        lightBeige300: "var(--light-beige-300)",
-        lightGrey100: "var(--light-grey-100)",
-        lightGrey200: "var(--light-grey-200)",
-        lightGrey300: "var(--light-grey-300)",
-        beige100: "var(--beige-100)",
-        beige200: "var(--beige-200)",
-        brown100: "var(--brown-100)",
-        mint100: "var(--mint-100)",
-        pink100: "var(--pink-100)",
-        pink200: "var(--pink-200)",
-        pink300: "var(--pink-300)",
-        darkPink100: "var(--dark-pink-100)",
-        red: "var(--red)",
-        gray50: "var(--gray-50)",
-        gray100: "var(--gray-100)",
-        gray200: "var(--gray-200)",
-        gray300: "var(--gray-300)",
-        gray400: "var(--gray-400)",
-        gray500: "var(--gray-500)",
-        gray600: "var(--gray-600)",
-        gray700: "var(--gray-700)",
-        gray800: "var(--gray-800)",
-        gray900: "var(--gray-900)",
-        black: "var(--black)",
-        white: "var(--white)",
+        textDark: '#261C1D',
+        textDefault: '#2D2D2D',
+
+        // 라이트 베이지 계열
+        lightBeige100: '#FCFDF8',
+        lightBeige200: '#FCF9F0',
+        lightBeige300: '#F8F4EB',
+
+        // 라이트 그레이 계열
+        lightGrey100: '#F3F2EE',
+        lightGrey200: '#EDEDED',
+        lightGrey300: '#E3E2E0',
+
+        // 베이지 계열
+        beige100: '#E1DBD5',
+        beige200: '#DDD2C8',
+
+        // 기타 단일 색상
+        brown100: '#837E80',
+        mint100: '#DFE9E1',
+
+        // 핑크 계열
+        pink100: '#F7ECE8',
+        pink200: '#F7ECE8',
+        pink300: '#F0DFD8',
+        darkPink100: '#CC9399',
+
+        // 레드
+        red: '#9C0000',
+
+        gray50: '#FAFAFA',
+        gray100: '#F5F5F5',
+        gray200: '#EEEEEE',
+        gray300: '#E0E0E0',
+        gray400: '#BDBDBD',
+        gray500: '#9E9E9E',
+        gray600: '#757575',
+        gray700: '#616161',
+        gray800: '#424242',
+        gray900: '#212121',
+
+        // 기본 블랙 & 화이트
+        black: '#000000',
+        white: '#FFFFFF',
+
+        // PRIMARY 계열 (스케일로 정의)
+        primary: {
+          400: '#7F7CFF',
+          450: '#6C62DF',
+          500: '#6558FF',
+          600: '#532CFF',
+          700: '#3F1DD1',
+          800: '#341AA6',
+          900: '#291778',
+        },
       },
     },
   },

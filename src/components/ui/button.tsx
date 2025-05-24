@@ -3,12 +3,23 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
+type ButtonProps = React.ComponentProps<'button'> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+    text?: string;
+    width?: string;
+    size?: string;
+    leftIcon?: React.ReactNode;
+    rightIcon?: React.ReactNode;
+    children?: React.ReactNode;
+  };
+
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+  '!font-bold inline-flex items-center justify-center gap-2 whitespace-nowrap rounded font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-white hover:bg-primary/90',
+        default: 'bg-text-default text-white hover:bg-primary/90',
         destructive: 'bg-red-600 text-white hover:bg-red-700',
         outline: 'border border-input text-foreground hover:bg-accent',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
@@ -29,21 +40,14 @@ const buttonVariants = cva(
   }
 );
 
-type ButtonProps = React.ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-    text?: string;
-    leftIcon?: React.ReactNode;
-    rightIcon?: React.ReactNode;
-  };
-
-function Button({ className, variant = 'default', size = 'md', asChild = false, text, leftIcon, rightIcon, ...props }: ButtonProps) {
+function Button({ className, variant = 'default', width = '', size = 'md', asChild = false, text, leftIcon, rightIcon, children, ...props }: ButtonProps) {
   const Comp = asChild ? Slot : 'button';
 
   return (
-    <Comp className={cn(buttonVariants({ variant, size }), className)} {...props}>
+    <Comp className={cn(buttonVariants({ variant, size }), width, className)} {...props}>
       {leftIcon && <span className="shrink-0">{leftIcon}</span>}
       {text && <span>{text}</span>}
+      {children && children}
       {rightIcon && <span className="shrink-0">{rightIcon}</span>}
     </Comp>
   );

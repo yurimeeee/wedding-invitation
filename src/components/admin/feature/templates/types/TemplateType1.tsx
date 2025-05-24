@@ -38,8 +38,8 @@ const TemplateType1 = ({ data }: TemplateTypeProps) => {
             <MainTextRenderer type={data?.main?.main_text_type} data={data} />
           </div>
           <Contact data={data} />
-          {/* <KakaoMap address="서울특별시 중구 세종대로 110" /> */}
-          <KakaoMap />
+          <KakaoMap address={data?.address || '서울특별시 강남구 영동대로 707'} />
+          {/* <KakaoMap /> */}
           <Map center={{ lat: 33.450701, lng: 126.570667 }} style={{ width: '1000px', height: '600px' }} level={3} />
         </div>
       </div>

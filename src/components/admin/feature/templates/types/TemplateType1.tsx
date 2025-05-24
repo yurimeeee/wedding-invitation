@@ -4,6 +4,7 @@ import AccountInfo from '../custom/AccountInfo';
 import { Button } from '@components/ui/button';
 import ContactInfo from '../custom/ContactInfo';
 import CopyAndShare from '../custom/CopyAndShare';
+import Gallery from '../custom/Gallery';
 import Image from 'next/image';
 import KakaoMap from '../../KakaoMap';
 import MainTextRenderer from '../custom/MainTextRenderer';
@@ -44,6 +45,7 @@ const TemplateType1 = ({ data }: any) => {
           </div>
           <div className="flex flex-col gap-5 w-full">
             <ContactInfo data={data} />
+            <Gallery />
             <WeddingCalendar weddingDate="2025-10-12" />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />

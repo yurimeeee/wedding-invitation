@@ -28,7 +28,7 @@ const ContactInfo = ({ data }: ContactInfoProps) => {
   // bride_dad;
   // bride_phone;
   return (
-    <div className="flex flex-col items-center font-chosun my-6">
+    <div className="flex flex-col items-center font-chosun my-6 border-t border-gray-300 pt-6">
       <div className="flex gap-2 items-center">
         <p className="text-[18px]">
           {data?.groom_dad || '김길동'} · {data?.groom_mom || '이영숙'} 의 {data?.isFirstSon ? '장남' : '차남'}

@@ -12,6 +12,7 @@ export type TemplatesData = {
     address: string;
     intro_content: string;
     main_img_tip: string;
+    dot_divider: boolean;
   };
   directions_desc: {
     type: '지하철' | '버스' | '주차' | string;

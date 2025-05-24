@@ -64,7 +64,51 @@ const MainTextRenderer = ({ type, data }: MainTextRendererProps) => {
     }
   };
 
-  return renderComponentByType();
+  //   {
+  //     "main_title_align": "center",
+  //     "main_text_type": "groomAndBride",
+  //     "address": "",
+  //     "main_img": "",
+  //     "date": "",
+  //     "intro_content_size": 16,
+  //     "main_title_size": 20,
+  //     "intro_content_align": "left",
+  //     "main_img_tip": "w:250px이상, h: 362px이상",
+  //     "main_title": "결혼합니다",
+  //     "main_groom_and_bride_name": "철수와 영희",
+  //     "intro_content": "평생을 같이하고 싶은 사람을 만났습니다.\n서로 아껴주고 이해하며\n사랑 베풀며 살고 싶습니다.\n저희 약속위에 따듯한 격려로 축복해주셔서\n힘찬 출발의 디딤이 되어 주십시오."
+  // }
+
+  const renderIntro = () => {
+    return (
+      <div className="font-chosun mt-10 mb-8">
+        {data?.main?.main_title && <p className={`text-xl text-${data?.main?.intro_content_align} leading-8 tracking-wider mb-4`}>{data?.main?.main_title}</p>}
+
+        <div className={`text-[${data?.main?.intro_content_size}] text-${data?.main?.intro_content_align} leading-[24px] tracking-wide `}>
+          {data?.main?.intro_content?.split('\n').map((line: string, index: number) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {renderComponentByType()}
+      {data?.main?.dot_divider && (
+        <div className="text-center mt-3 text-gray-400">
+          <p className="text-base ">·</p>
+          <p className="text-base ">·</p>
+          <p className="text-base ">·</p>
+        </div>
+      )}
+      {renderIntro()}
+    </>
+  );
 };
 
 export default MainTextRenderer;

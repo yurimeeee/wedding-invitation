@@ -24,6 +24,7 @@ const KakaoMap = ({ address }: KakaoMapProps) => {
         // 지도 생성
         // @ts-ignore
         const map = new kakao.maps.Map(container, {
+          //@ts-ignore
           center: new kakao.maps.LatLng(33.450701, 126.570667),
           level: 3,
         });
@@ -31,12 +32,14 @@ const KakaoMap = ({ address }: KakaoMapProps) => {
         // 주소 검색
         // @ts-ignore
         const geocoder = new kakao.maps.services.Geocoder();
+        //@ts-ignore
         geocoder.addressSearch(address, (result, status) => {
           // @ts-ignore
           if (status === kakao.maps.services.Status.OK) {
             // @ts-ignore
             const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
             map.setCenter(coords);
+            // @ts-ignore
             new kakao.maps.Marker({
               map,
               position: coords,

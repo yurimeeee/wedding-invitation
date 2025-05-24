@@ -1,17 +1,17 @@
 'use client';
 
 import { User, signInWithEmailAndPassword } from 'firebase/auth';
-import { useEffect, useState } from 'react';
 
 import { Button } from '@components/ui/button';
 import Image from 'next/image';
 import { Input } from '@components/ui/input';
 import { auth } from '@lib/firebase';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useUserStore } from '@stores/useUserStore';
 
 export default function AdminLoginPage() {
-  const { user } = useUserStore();
+  // const { user } = useUserStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();

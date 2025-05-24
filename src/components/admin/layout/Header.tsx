@@ -1,33 +1,45 @@
 'use client';
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@components/ui/dropdown-menu';
-import { GRAY_400, GRAY_50, GRAY_500, GRAY_600, MINT_100 } from '@styles/colors';
+import { GRAY_400, GRAY_50, GRAY_600 } from '@styles/colors';
+import React, { useEffect, useState } from 'react';
 
 import { FaRegUser } from 'react-icons/fa';
+import { FiChevronLeft } from 'react-icons/fi';
 import { FiLogOut } from 'react-icons/fi';
-import React from 'react';
 import { auth } from '@lib/firebase';
 import { signOut } from 'firebase/auth';
 import styled from '@emotion/styled';
+import theme from '@styles/theme';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@stores/useUserStore';
 
-const HeaderComp = styled.header`
+const HeaderComp = styled.header<{ isScrolled: boolean }>`
   position: sticky;
   top: 0;
   right: 0;
-  left: 96px;
-  width: calc(100vw - 96px);
+  left: 0;
+  width: 100vw;
   z-index: 5;
   background-color: #ffffff;
-  padding: 24px;
+  padding: ${({ isScrolled }) => (isScrolled ? '8px 20px' : '12px 24px')};
   box-sizing: border-box;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(101, 101, 101, 0.1);
+  transition: all.3s;
+
+  @media (min-width: 640px) {
+    left: 96px;
+    width: calc(100vw - 96px);
+  }
 `;
-const IconButton = styled(DropdownMenuTrigger)`
-  width: 42px;
-  height: 42px;
+const IconButton = styled(DropdownMenuTrigger)<{ isScrolled: boolean }>`
+  /* width: 42px;
+  height: 42px; */
+  width: ${({ isScrolled }) => (isScrolled ? '36px' : '42px')};
+  height: ${({ isScrolled }) => (isScrolled ? '36px' : '42px')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,6 +55,22 @@ const IconButton = styled(DropdownMenuTrigger)`
 const Header = () => {
   const { user } = useUserStore();
   const router = useRouter();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    // 초기 상태 세팅
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const logout = () => {
     // signOut 함수를 호출하여 로그아웃합니다.
     signOut(auth)
@@ -61,10 +89,20 @@ const Header = () => {
 
   return (
     <>
-      <HeaderComp>
+      <HeaderComp isScrolled={isScrolled}>
+        <div className="sm:hidden flex w-full">
+          <FiChevronLeft
+            onClick={() => {
+              router.back();
+            }}
+            color={theme.color.gray_500}
+            size={32}
+            className="cursor-poiner"
+          />
+        </div>
         <DropdownMenu>
-          <IconButton>
-            <FaRegUser color={GRAY_600} size={18} />
+          <IconButton isScrolled={isScrolled}>
+            <FaRegUser color={GRAY_600} size={isScrolled ? 14 : 18} />
           </IconButton>
           <DropdownMenuContent>
             <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>

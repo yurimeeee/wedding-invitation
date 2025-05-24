@@ -5,19 +5,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { EmotionRegistry } from '@lib/EmotionRegistry';
 import type { Metadata } from 'next';
 import ThemeProviders from '@lib/ThemeProviders';
-import localFont from 'next/font/local';
 
-// export const suitFont = localFont({
-//   src: [
-//     {
-//       path: '../public/fonts/SUIT-Variable.woff2',
-//       // path: './src/fonts/SUIT-Variable.woff2',
-//       style: 'normal',
-//     },
-//   ],
-//   variable: '--font-suit',
-//   display: 'swap',
-// });
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],

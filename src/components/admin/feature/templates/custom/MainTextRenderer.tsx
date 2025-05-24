@@ -1,5 +1,4 @@
 import { TemplatesData } from '@type/templates';
-import styled from '@emotion/styled';
 
 type MainTextRendererProps = {
   type: string;
@@ -12,7 +11,7 @@ type GroomAndBrideProps = {
   data?: TemplatesData;
 };
 
-const GroomAndBride = ({ bride, groom, name, data }: GroomAndBrideProps) => {
+const GroomAndBride = ({ name, data }: GroomAndBrideProps) => {
   return (
     <div className="flex flex-col items-center font-chosun">
       <p className="text-sm mb-1">{data?.main?.date || '2025년 6월 24일 토요일 오후 2시'}</p>
@@ -23,7 +22,7 @@ const GroomAndBride = ({ bride, groom, name, data }: GroomAndBrideProps) => {
     </div>
   );
 };
-const GroomDotBride = ({ bride, groom, data }: GroomAndBrideProps) => {
+const GroomDotBride = ({ data }: GroomAndBrideProps) => {
   return (
     <div className="flex flex-col items-center font-chosun">
       <p className="text-2xl leading-8 tracking-widest mb-6">
@@ -35,7 +34,7 @@ const GroomDotBride = ({ bride, groom, data }: GroomAndBrideProps) => {
     </div>
   );
 };
-const GroomAndBrideVertical = ({ bride, groom, name, data }: GroomAndBrideProps) => {
+const GroomAndBrideVertical = ({ data }: GroomAndBrideProps) => {
   return (
     <div className="flex flex-col items-center font-chosun">
       <p className="text-xl leading-8 tracking-wider">{data?.groom_last_name || '철수'}</p>
@@ -46,7 +45,6 @@ const GroomAndBrideVertical = ({ bride, groom, name, data }: GroomAndBrideProps)
 };
 
 const MainTextRenderer = ({ type, data }: MainTextRendererProps) => {
-  const { bride_first_name, bride_last_name, groom_first_name, groom_last_name } = data;
   //type_1 : "groomAndBride"
   //type_2 : "groomDotBride"
   //type_3 : "groomAndBrideVertival"
@@ -63,21 +61,6 @@ const MainTextRenderer = ({ type, data }: MainTextRendererProps) => {
         return null;
     }
   };
-
-  //   {
-  //     "main_title_align": "center",
-  //     "main_text_type": "groomAndBride",
-  //     "address": "",
-  //     "main_img": "",
-  //     "date": "",
-  //     "intro_content_size": 16,
-  //     "main_title_size": 20,
-  //     "intro_content_align": "left",
-  //     "main_img_tip": "w:250px이상, h: 362px이상",
-  //     "main_title": "결혼합니다",
-  //     "main_groom_and_bride_name": "철수와 영희",
-  //     "intro_content": "평생을 같이하고 싶은 사람을 만났습니다.\n서로 아껴주고 이해하며\n사랑 베풀며 살고 싶습니다.\n저희 약속위에 따듯한 격려로 축복해주셔서\n힘찬 출발의 디딤이 되어 주십시오."
-  // }
 
   const renderIntro = () => {
     return (

@@ -1,23 +1,15 @@
 'use';
 
 import AccountInfo from '../custom/AccountInfo';
-import { Button } from '@components/ui/button';
 import ContactInfo from '../custom/ContactInfo';
 import CopyAndShare from '../custom/CopyAndShare';
 import Gallery from '../custom/Gallery';
 import Image from 'next/image';
-import KakaoMap from '../../KakaoMap';
 import MainTextRenderer from '../custom/MainTextRenderer';
-import { Map } from 'react-kakao-maps-sdk';
 import React from 'react';
-import { TemplatesData } from '@type/templates';
 import WeddingCalendar from '../custom/WeddingCalendar';
 import WeddingLocation from '../custom/WeddingLocation';
 import styled from '@emotion/styled';
-import { useRouter } from 'next/navigation';
-type TemplateTypeProps = {
-  data: TemplatesData;
-};
 
 const MainImage = styled.div`
   width: 100%;
@@ -29,7 +21,7 @@ const MainImage = styled.div`
 `;
 
 const TemplateType1 = ({ data }: any) => {
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <div className="w-full min-h-screen bg-light-beige-100">

@@ -10,11 +10,13 @@ export const handleCopy = async (text: string) => {
     document.body.appendChild(textarea);
     textarea.focus();
     textarea.select();
+    console.log(err)
     try {
       document.execCommand('copy');
       alert('복사되었습니다');
     } catch (err) {
       alert('복사 실패');
+      console.log(err)
     }
     document.body.removeChild(textarea);
   }

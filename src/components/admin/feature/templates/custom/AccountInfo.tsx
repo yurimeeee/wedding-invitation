@@ -15,8 +15,8 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
         <p className="text-base mb-2">신랑측</p>
         {data?.groom_account[0].account ? (
           data?.groom_account?.map((item, idx) => (
-            <div className="flex items-center gap-2">
-              <p key={idx} className="text-sm" onClick={() => handleCopy(item?.account)}>
+            <div key={idx} className="flex items-center gap-2">
+              <p className="text-sm" onClick={() => handleCopy(item?.account)}>
                 {item?.account} ({item?.name})
               </p>
               <MdOutlineContentCopy onClick={() => handleCopy(item?.account)} color={theme.color.gray_500} />
@@ -36,8 +36,8 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
         <p className="text-base mb-2">신부측</p>
         {data?.groom_account[0].account ? (
           data?.groom_account?.map((item, idx) => (
-            <div className="flex items-center gap-2">
-              <p key={idx} className="text-sm" onClick={() => handleCopy(item?.account)}>
+            <div key={idx} className="flex items-center gap-2">
+              <p className="text-sm" onClick={() => handleCopy(item?.account)}>
                 {item?.account} ({item?.name})
               </p>
               <MdOutlineContentCopy onClick={() => handleCopy(item?.account)} color={theme.color.gray_500} />

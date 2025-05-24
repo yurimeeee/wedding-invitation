@@ -1,12 +1,10 @@
 'use';
 
-import { Button } from '@components/ui/button';
 import Image from 'next/image';
 import MainTextRenderer from '../custom/MainTextRenderer';
 import React from 'react';
 import { TemplatesData } from '@type/templates';
 import styled from '@emotion/styled';
-import { useRouter } from 'next/navigation';
 type TemplateTypeProps = {
   data: TemplatesData;
 };
@@ -20,20 +18,8 @@ const MainImage = styled.div`
   z-index: 2;
 `;
 
-const Date = styled.div`
-  position: absolute;
-  color: WHITE;
-  bottom: -0;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 64px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  opacity: 0.8;
-`;
 const TemplateType4 = ({ data }: TemplateTypeProps) => {
-  const router = useRouter();
-  console.log('data', data);
+  // const router = useRouter();
   return (
     <div className="w-full min-h-screen bg-light-beige-300">
       <div className="max-w-[393px] mx-auto py-[42px]">

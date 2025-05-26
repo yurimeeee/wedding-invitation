@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { FaRegUser } from 'react-icons/fa';
 import { FiChevronLeft } from 'react-icons/fi';
 import { FiLogOut } from 'react-icons/fi';
+import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { auth } from '@lib/firebase';
 import { signOut } from 'firebase/auth';
 import styled from '@emotion/styled';
@@ -37,8 +38,8 @@ const HeaderComp = styled.header<{ isScrolled: boolean }>`
 `;
 // const IconButton = styled(DropdownMenuTrigger)<{ isScrolled: boolean }>`
 const IconButton = styled(DropdownMenuTrigger)`
-  width: 42px;
-  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,7 +52,7 @@ const IconButton = styled(DropdownMenuTrigger)`
   }
 `;
 
-const Header = () => {
+const Header = ({ onMenuClick }: any) => {
   const { user } = useUserStore();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -90,15 +91,17 @@ const Header = () => {
     <>
       <HeaderComp isScrolled={isScrolled}>
         <div className="sm:hidden flex w-full">
-          <FiChevronLeft
+          <HiOutlineMenuAlt2 onClick={onMenuClick} color={theme.color.gray_500} size={28} className="sm:hidden text-2xl text-gray-600 focus:outline-none cursor-poiner" />
+          {/* <FiChevronLeft
             onClick={() => {
               router.back();
             }}
             color={theme.color.gray_500}
             size={32}
             className="cursor-poiner"
-          />
+          /> */}
         </div>
+
         <DropdownMenu>
           <IconButton>
             <FaRegUser color={GRAY_600} size={isScrolled ? 14 : 18} />

@@ -1,13 +1,16 @@
 'use client';
 
+import { AnimatePresence, motion } from 'framer-motion';
 import { DocumentData, doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
+import BeatLoader from 'react-spinners/BeatLoader';
 import TemplateType1 from '@components/admin/feature/templates/types/TemplateType1';
 import TemplateType2 from '@components/admin/feature/templates/types/TemplateType2';
 import TemplateType3 from '@components/admin/feature/templates/types/TemplateType3';
 import TemplateType4 from '@components/admin/feature/templates/types/TemplateType4';
 import { db } from '@lib/firebase';
+import theme from '@styles/theme';
 import { useParams } from 'next/navigation';
 
 export default function TemplateDetailPage() {
@@ -26,10 +29,7 @@ export default function TemplateDetailPage() {
         setData(docSnap.data());
         // setErrorMessage(null);
 
-        // --- 여기에 스위치 문을 사용하여 컴포넌트 설정 ---
-        switch (
-          String(id) // Firestore 문서에 'type' 필드가 있다고 가정
-        ) {
+        switch (String(id)) {
           case 'type1':
             setRenderedComponent(() => TemplateType1);
             break;
@@ -42,9 +42,8 @@ export default function TemplateDetailPage() {
           case 'type4':
             setRenderedComponent(() => TemplateType4);
             break;
-          // 필요한 만큼 case를 추가할 수 있습니다.
           default:
-            setRenderedComponent(() => null); // 기본 컴포넌트
+            setRenderedComponent(() => null);
             break;
         }
       } else {
@@ -64,7 +63,14 @@ export default function TemplateDetailPage() {
   return (
     <div className="">
       {loading}
-      {data && RenderedComponent && <RenderedComponent data={data} />}
+      {!data ? (
+        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="h-screen w-full flex justify-center items-center">
+          <BeatLoader color={theme.color.pink300} loading={!data} />
+        </motion.div>
+      ) : (
+        data && RenderedComponent && <RenderedComponent data={data} />
+      )}
+      {/* {data && RenderedComponent && <RenderedComponent data={data} />} */}
     </div>
   );
 }

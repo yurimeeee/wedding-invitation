@@ -35,6 +35,7 @@ export type TemplatesData = {
   groom_account: {
     name: string;
     account: string;
+    bank: string;
   }[];
   address_detail: string;
   address: string;

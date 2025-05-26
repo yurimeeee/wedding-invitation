@@ -35,11 +35,10 @@ const HeaderComp = styled.header<{ isScrolled: boolean }>`
     width: calc(100vw - 96px);
   }
 `;
-const IconButton = styled(DropdownMenuTrigger)<{ isScrolled: boolean }>`
-  /* width: 42px;
-  height: 42px; */
-  width: ${({ isScrolled }) => (isScrolled ? '36px' : '42px')};
-  height: ${({ isScrolled }) => (isScrolled ? '36px' : '42px')};
+// const IconButton = styled(DropdownMenuTrigger)<{ isScrolled: boolean }>`
+const IconButton = styled(DropdownMenuTrigger)`
+  width: 42px;
+  height: 42px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -101,7 +100,7 @@ const Header = () => {
           />
         </div>
         <DropdownMenu>
-          <IconButton isScrolled={isScrolled}>
+          <IconButton>
             <FaRegUser color={GRAY_600} size={isScrolled ? 14 : 18} />
           </IconButton>
           <DropdownMenuContent>

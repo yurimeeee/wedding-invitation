@@ -30,14 +30,15 @@ const TemplateType1 = ({ data }: any) => {
           <Image src="/assets/img/templates/type_1/save_the_date.svg" alt="save_the_date" width={106} height={40} className="mb-6" />
           <Image src="/assets/img/templates/type_1/wedding_day.svg" alt="wedding_day" width={230} height={40} className="mb-10" />
           <MainImage>
-            <Image src="/assets/img/templates/type_1/main_img.png" alt="main_img" width={250} height={40} className="mb-10" />
+            <Image src={data?.main?.main_img || '/assets/img/templates/type_1/main_img.png'} alt="main_img" width={250} height={40} className="mb-10" />
+            {/* <Image src="/assets/img/templates/type_1/main_img.png" alt="main_img" width={250} height={40} className="mb-10" /> */}
           </MainImage>
           <div className="mt-10">
             <MainTextRenderer type={data?.main?.main_text_type} data={data} />
           </div>
           <div className="flex flex-col gap-5 w-full">
             <ContactInfo data={data} />
-            <Gallery />
+            <Gallery gallery={data?.gallery} />
             <WeddingCalendar weddingDate="2025-10-12" />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />

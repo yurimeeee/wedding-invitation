@@ -24,14 +24,15 @@ const TemplateType2 = ({ data }: TemplateTypeProps) => {
           <Image src="/assets/img/templates/type_2/wedding_day.svg" alt="wedding_day" width={230} height={40} className="absolute mb-10" />
 
           <div className="w-full h-auto">
-            <Image src="/assets/img/templates/type_2/main_img.png" alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto mt-12" />
+            {/* <Image src="/assets/img/templates/type_2/main_img.png" alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto mt-12" /> */}
+            <Image src={data?.main?.main_img || '/assets/img/templates/type_2/main_img.png'} alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto mt-12" />
           </div>
           <div className="mt-10">
             <MainTextRenderer type={data?.main?.main_text_type} data={data} />
           </div>
           <div className="flex flex-col gap-5 w-full">
             <ContactInfo data={data} />
-            <Gallery />
+            <Gallery gallery={data?.gallery} />
             <WeddingCalendar weddingDate={data?.main?.date} />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />

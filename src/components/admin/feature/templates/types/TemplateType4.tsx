@@ -41,14 +41,15 @@ const TemplateType4 = ({ data }: TemplateTypeProps) => {
     className="object-cover absolute left-0 right-0 mx-auto w-full h-auto" */}
 
           <MainImage>
-            <Image src="/assets/img/templates/type_4/main_img.png" alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" />
+            <Image src={data?.main?.main_img || '/assets/img/templates/type_4/main_img.png'} alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" />
+            {/* <Image src="/assets/img/templates/type_4/main_img.png" alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" /> */}
           </MainImage>
           <div className="mt-14 z-2">
             <MainTextRenderer type={data?.main?.main_text_type} data={data} />
           </div>
           <div className="flex flex-col gap-5 w-full">
             <ContactInfo data={data} />
-            <Gallery />
+            <Gallery gallery={data?.gallery} />
             <WeddingCalendar weddingDate="2025-10-12" />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />

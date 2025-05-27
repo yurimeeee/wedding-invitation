@@ -19,8 +19,6 @@ export default function InvitaionsDetailPage() {
   const [data, setData] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
-  console.log('data', data);
-  console.log('RenderedComponent', RenderedComponent);
   const getTemplateType1Document = async () => {
     try {
       const docRef = doc(db, 'invitation', String(id));

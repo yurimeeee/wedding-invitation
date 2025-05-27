@@ -1,13 +1,13 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 import { FiChevronLeft } from 'react-icons/fi';
 import { FiChevronRight } from 'react-icons/fi';
 import Image from 'next/image';
 import { IoClose } from 'react-icons/io5';
 import styled from '@emotion/styled';
-import { useState } from 'react';
 
 const GalleryImage = styled(Image)`
   width: 100%;
@@ -22,16 +22,23 @@ const Thumbnail = styled(Image)`
   cursor: pointer;
 `;
 
-const images = [
+const sampleImages = [
   '/assets/img/gallery/gallery_sample_1.png',
   '/assets/img/gallery/gallery_sample_2.png',
   '/assets/img/gallery/gallery_sample_3.png',
   '/assets/img/gallery/gallery_sample_4.png',
 ];
 
-const Gallery = () => {
+const Gallery = ({ gallery }: { gallery?: string[] }) => {
+  const [images, setImages] = useState<any>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
+  useEffect(() => {
+    if (gallery && gallery.length > 0) {
+      setImages(gallery);
+    } else {
+      setImages(sampleImages);
+    }
+  }, [gallery]);
   const closeModal = () => setSelectedIndex(null);
   const showPrev = () => setSelectedIndex((prev) => (prev !== null ? (prev - 1 + images.length) % images.length : null));
   const showNext = () => setSelectedIndex((prev) => (prev !== null ? (prev + 1) % images.length : null));
@@ -40,7 +47,7 @@ const Gallery = () => {
       <Image src={'/assets/img/gallery/moment_of_love.svg'} alt="moment_of_love" width={126} height={20} className="mx-auto" />
 
       <div className="grid grid-cols-2 gap-1">
-        {images.map((src, idx) => (
+        {images?.map((src: string, idx: number) => (
           <GalleryImage key={src} src={src} alt={`gallery_img_${idx}`} width={0} height={220} sizes="100%" onClick={() => setSelectedIndex(idx)} />
         ))}
       </div>
@@ -57,7 +64,7 @@ const Gallery = () => {
             <motion.div className="relative max-w-3xl w-full p-4" onClick={(e) => e.stopPropagation()} initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}>
               <Image src={images[selectedIndex]} alt="expanded" width={1000} height={600} className="w-full h-auto object-contain max-h-[80vh]" />
               <div className="flex flex-wrap justify-center gap-2 mt-2 w-full">
-                {images.map((src, idx) => (
+                {images.map((src: string, idx: number) => (
                   <Thumbnail
                     key={src}
                     src={src}

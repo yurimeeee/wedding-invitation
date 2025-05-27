@@ -26,33 +26,7 @@ const CircleButton = styled.div`
 
 const CopyAndShare = ({ data }: CopyAndShareProps) => {
   const apiKey = process.env.NEXT_PUBLIC_KAKAOMAP_KEY;
-  // useEffect(() => {
-  //   // @ts-ignore
-  //   if (window.Kakao && !window.Kakao.isInitialized()) {
-  //     // @ts-ignore
-  //     window.Kakao.init(apiKey); // 카카오 JavaScript 키로 초기화
-  //   }
-  // }, []);
 
-  // useEffect(() => {
-  //   const scriptId = 'kakao-sdk';
-
-  //   // 이미 스크립트가 있으면 중복 삽입 방지
-  //   if (document.getElementById(scriptId)) return;
-
-  //   const script = document.createElement('script');
-  //   script.id = scriptId;
-  //   script.src = 'https://developers.kakao.com/sdk/js/kakao.js';
-  //   script.async = true;
-  //   script.onload = () => {
-  //     if (window.Kakao && !window.Kakao.isInitialized()) {
-  //       window.Kakao.init('YOUR_APP_KEY'); // ✅ 카카오 JavaScript 키로 초기화
-  //       console.log('Kakao SDK Initialized');
-  //     }
-  //   };
-
-  //   document.head.appendChild(script);
-  // }, []);
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://developers.kakao.com/sdk/js/kakao.js';
@@ -62,7 +36,6 @@ const CopyAndShare = ({ data }: CopyAndShareProps) => {
       if (window.Kakao && !window.Kakao.isInitialized()) {
         // @ts-ignore
         window.Kakao.init(apiKey); // 여기 실제 키 입력
-        console.log('Kakao SDK Initialized');
       }
     };
     document.head.appendChild(script);
@@ -94,34 +67,6 @@ const CopyAndShare = ({ data }: CopyAndShareProps) => {
       ],
     });
   };
-
-  // const handleShareKakao = () => {
-  //   // @ts-ignore
-  //   if (!window.Kakao) return alert('카카오 SDK 로딩 실패');
-  //   const url = window.location.href;
-  //   // @ts-ignore
-  //   window.Kakao.Share.sendDefault({
-  //     objectType: 'feed',
-  //     content: {
-  //       title: '청첩장 링크 공유',
-  //       description: '우리의 소중한 날에 초대합니다 💌',
-  //       imageUrl: 'https://yourdomain.com/default-thumbnail.png', // 대표 이미지
-  //       link: {
-  //         mobileWebUrl: url,
-  //         webUrl: url,
-  //       },
-  //     },
-  //     buttons: [
-  //       {
-  //         title: '청첩장 보기',
-  //         link: {
-  //           mobileWebUrl: url,
-  //           webUrl: url,
-  //         },
-  //       },
-  //     ],
-  //   });
-  // };
 
   return (
     <div className="my-6">

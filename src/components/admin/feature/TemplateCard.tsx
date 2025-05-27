@@ -14,7 +14,6 @@ type TemplateCardProps = {
 
 const TemplateCard = ({ data, onClick }: TemplateCardProps) => {
   const router = useRouter();
-  console.log('data', data);
   return (
     <div className="w-full flex flex-col gap-3">
       {!data ? (

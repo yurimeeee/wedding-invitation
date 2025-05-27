@@ -24,7 +24,6 @@ export default function AdminInvitationListPage() {
       }));
 
       setInvitations(data as TemplatesData[]);
-      console.log(data);
     } catch (error) {
       console.error('Error fetching templates:', error);
     }

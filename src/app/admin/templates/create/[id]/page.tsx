@@ -61,7 +61,6 @@ export default function AdminTemplatesCreatePage() {
   const [gallery, setGallery] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const invitationId = uuidv4();
-  console.log('formData', formData);
 
   const handleChange = (path: string, value: string) => {
     const keys = path.split('.');
@@ -84,8 +83,6 @@ export default function AdminTemplatesCreatePage() {
 
     const updatedDirections = [...formData.directions_desc];
     const updatedDesc = [...updatedDirections[keyIndex].desc];
-    console.log('updatedDirections', updatedDirections);
-    console.log('updatedDesc', updatedDesc);
     updatedDesc[index] = value;
     updatedDirections[keyIndex] = {
       ...updatedDirections[keyIndex],
@@ -130,7 +127,6 @@ export default function AdminTemplatesCreatePage() {
       [key]: [...formData[key], { name: '', account: '' }],
     });
   };
-  console.log(formData);
   const removeAccount = (key: string, index: number) => {
     const updatedArr = formData[key].filter((_: any, idx: number) => idx !== index);
     setFormData({ ...formData, [key]: updatedArr });
@@ -170,12 +166,9 @@ export default function AdminTemplatesCreatePage() {
     const mainStorageRef = ref(storage, mainStoragePath);
 
     try {
-      console.log('Start image upload...');
-
       // 1. 메인 이미지 업로드
       const mainUploadResult = await uploadBytes(mainStorageRef, mainImage);
       const mainImageURL = await getDownloadURL(mainStorageRef);
-      console.log('Main image uploaded:', mainUploadResult);
 
       // 2. 갤러리 이미지들 업로드
       const galleryUploadPromises = gallery.map((file: any, index: number) => {
@@ -185,7 +178,6 @@ export default function AdminTemplatesCreatePage() {
       });
 
       const galleryImageURLs = await Promise.all(galleryUploadPromises);
-      console.log('Gallery images uploaded:', galleryImageURLs);
 
       // 3. Firestore에 저장할 데이터 구성
       const dataToSave = {
@@ -202,7 +194,6 @@ export default function AdminTemplatesCreatePage() {
       const docRef = doc(firestore, 'invitation', invitationId);
       await setDoc(docRef, dataToSave, { merge: true });
       alert('청접장이 등록되었습니다.');
-      console.log(`Firestore Document Invitation/${invitationId} updated successfully.`);
     } catch (error) {
       console.error('Error during upload or Firestore saving:', error);
       throw error;

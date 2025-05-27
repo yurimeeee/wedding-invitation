@@ -47,7 +47,8 @@ const TemplateType3 = ({ data }: TemplateTypeProps) => {
           <Image src="/assets/img/templates/type_3/the_wedding_of.svg" alt="the_wedding_of" width={138} height={40} className="mb-10" />
 
           <MainImage>
-            <Image src="/assets/img/templates/type_3/main_img.png" alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" />
+            {/* <Image src="/assets/img/templates/type_3/main_img.png" alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" /> */}
+            <Image src={data?.main?.main_img || '/assets/img/templates/type_3/main_img.png'} alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" />
             <Date>12.24</Date>
           </MainImage>
           <div className="mt-14">
@@ -55,7 +56,7 @@ const TemplateType3 = ({ data }: TemplateTypeProps) => {
           </div>
           <div className="flex flex-col gap-5 w-full">
             <ContactInfo data={data} />
-            <Gallery />
+            <Gallery gallery={data?.gallery} />
             <WeddingCalendar weddingDate="2025-10-12" />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />

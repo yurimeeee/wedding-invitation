@@ -14,7 +14,6 @@ type InvitationItemProps = {
 
 const InvitationItem = ({ data, onClick }: InvitationItemProps) => {
   const router = useRouter();
-  console.log('data', data);
   function formatUnixTimestamp(seconds: number, nanoSeconds: number): string {
     // 밀리초 단위로 변환
     const timestampMs = seconds * 1000 + Math.floor(nanoSeconds / 1_000_000);

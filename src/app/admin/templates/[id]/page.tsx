@@ -19,7 +19,6 @@ export default function TemplateDetailPage() {
   const [data, setData] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
-  console.log('data', data);
   const getTemplateType1Document = async () => {
     try {
       const docRef = doc(db, 'template', String(id));

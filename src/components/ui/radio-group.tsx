@@ -52,7 +52,7 @@ export function CustomRadioGroup({ label, value, onChange, options, className = 
       <RadioGroup value={value} onValueChange={onChange} className="flex items-center gap-4">
         {options.map((option, idx) => (
           <div key={idx} className="flex items-center space-x-2">
-            <RadioGroupItem value={option.value} id={`${label}-${option.label}-${option.value}`} />
+            <RadioGroupItem value={String(option.value)} id={`${label}-${option.label}-${option.value}`} />
             <Label htmlFor={`${option.label}-${option.value}`} size={size}>
               {option.label}
             </Label>

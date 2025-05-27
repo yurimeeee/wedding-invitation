@@ -17,7 +17,6 @@ const eslintConfig = [
       '@typescript-eslint/no-explicit-any': 'off',
       'react-hooks/exhaustive-deps': 'off',
       '@ts-expect-error': 'off',
-      'ts-ignore': false,
       'ts-expect-error': 'allow-with-description',
     },
   },

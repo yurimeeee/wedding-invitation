@@ -422,11 +422,11 @@ export default function AdminTemplatesCreatePage() {
           <Input type="text" placeholder="신랑 연락처" value={formData?.groom_phone || ''} onChange={(e) => handleChange('groom_phone', e.target.value)} />
           <CustomRadioGroup
             label="장남 여부"
-            value={formData?.isFirstSon}
+            value={String(formData?.isFirstSon)}
             onChange={(val) => setFormData({ ...formData, isFirstSon: val })}
             options={[
-              { label: '예', value: true },
-              { label: '아니요', value: false },
+              { label: '예', value: 'true' },
+              { label: '아니요', value: 'false' },
             ]}
             className="w-[240px] flex items-center gap-3"
           />
@@ -462,11 +462,11 @@ export default function AdminTemplatesCreatePage() {
           <Input type="text" placeholder="신부 연락처" value={formData?.bride_phone || ''} onChange={(e) => handleChange('bride_phone', e.target.value)} />
           <CustomRadioGroup
             label="장녀 여부"
-            value={formData?.isFirstDaughter}
+            value={String(formData?.isFirstDaughter)}
             onChange={(val) => setFormData({ ...formData, isFirstDaughter: val })}
             options={[
-              { label: '예', value: true },
-              { label: '아니요', value: false },
+              { label: '예', value: 'true' },
+              { label: '아니요', value: 'false' },
             ]}
             className="w-[240px] flex items-center gap-3"
           />

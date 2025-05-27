@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 
 import TemplateCard from '@components/admin/feature/TemplateCard';
 import { TemplatesData } from '@type/templates';
+import { db } from '@lib/firebase';
 
 // import { storage } from '@lib/firebase';
 
@@ -27,8 +28,6 @@ export default function AdminTemplatesPage() {
   useEffect(() => {
     fetchTemplates();
   }, []);
-
-  const db = getFirestore();
 
   // async function uploadImageAndSaveToDoc(file: File, docId: string) {
   //   try {

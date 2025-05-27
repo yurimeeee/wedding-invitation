@@ -75,9 +75,9 @@ const CopyAndShare = ({ data }: CopyAndShareProps) => {
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: '청첩장 제목',
-        description: '결혼식에 초대합니다',
-        imageUrl: 'https://yourdomain.com/assets/thumbnail.png',
+        title: data?.main?.main_title,
+        description: `${data?.groom_last_name} ${data?.bride_last_name}의 결혼식에 초대합니다`,
+        imageUrl: data?.main?.main_img,
         link: {
           mobileWebUrl: window.location.href,
           webUrl: window.location.href,
@@ -85,7 +85,7 @@ const CopyAndShare = ({ data }: CopyAndShareProps) => {
       },
       buttons: [
         {
-          title: '청첩장 보기',
+          title: '모바일 청첩장 보기',
           link: {
             mobileWebUrl: window.location.href,
             webUrl: window.location.href,

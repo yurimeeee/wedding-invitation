@@ -380,15 +380,15 @@ export default function AdminTemplatesCreatePage() {
             onChange={(val) => handleChange('main.main_text_type', val)}
             options={[
               { label: '철수와 영희', value: 'groomAndBride' },
-              { label: '철수 그리고 영희', value: 'groomAndBrideVertival' },
+              { label: '철수 그리고 영희', value: 'groomAndBrideVertical' },
               { label: '김철수 · 이영희', value: 'groomDotBride' },
             ]}
-            className="w-[240px] flex items-center gap-3 mb-3"
+            className="w-[240px] flex items-center gap-3 mb-3 flex-wrap sm:flex-nowrap"
           />
         </div>
         <p className="text-[14px] font-suite-medium text-text-default mb-2">제목</p>
-        <div className="flex gap-3">
-          <Input type="text" placeholder="제목" value={formData?.main.main_title || ''} onChange={(e) => handleChange('main.main_title', e.target.value)} className="mb-3" />
+        <div className="flex flex-wrap gap-3 mb-3">
+          <Input type="text" placeholder="제목" value={formData?.main.main_title || ''} onChange={(e) => handleChange('main.main_title', e.target.value)} />
           <CustomRadioGroup
             label="제목 정렬"
             value={formData?.main?.main_title_align || ''}
@@ -410,7 +410,7 @@ export default function AdminTemplatesCreatePage() {
             { label: '왼쪽 정렬', value: 'left' },
             { label: '가운데 정렬', value: 'center' },
           ]}
-          className="w-[240px] flex items-center gap-3 mb-3"
+          className="w-[240px] flex items-center gap-3"
         />
 
         <InfoTitle className="mt-10">신랑 측 정보</InfoTitle>
@@ -565,8 +565,9 @@ export default function AdminTemplatesCreatePage() {
             ))}
         </div>
         {/* <Textarea placeholder="소개 문구" value={formData.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} /> */}
-        <Button onClick={handleSave}>저장하기</Button>
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        <div className="mt-6 flex justify-end">
+          <Button onClick={handleSave}>저장하기</Button>
+        </div>
       </Wrap>
     </div>
   );

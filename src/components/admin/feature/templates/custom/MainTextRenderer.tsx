@@ -45,9 +45,10 @@ const GroomAndBrideVertical = ({ data }: GroomAndBrideProps) => {
 };
 
 const MainTextRenderer = ({ type, data }: MainTextRendererProps) => {
+  console.log('type', type);
   //type_1 : "groomAndBride"
   //type_2 : "groomDotBride"
-  //type_3 : "groomAndBrideVertival"
+  //type_3 : "groomAndBrideVertical"
   //type_4 : "groomDotBride"
   const renderComponentByType = () => {
     switch (type) {

@@ -8,7 +8,7 @@ export type TemplatesData = {
     main_title_align: 'left' | 'center' | 'right';
     date: string;
     intro_content_size: number;
-    main_text_type: 'groomAndBride' | 'groomDotBride' | 'groomAndBrideVertival';
+    main_text_type: 'groomAndBride' | 'groomDotBride' | 'groomAndBrideVertical';
     address: string;
     intro_content: string;
     main_img_tip: string;

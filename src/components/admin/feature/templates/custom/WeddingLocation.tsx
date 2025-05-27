@@ -19,10 +19,10 @@ const WeddingLocation = ({ data }: WeddingLocationProps) => {
         </p>
       </div>
       <KakaoMap address={data?.address || '서울특별시 강남구 영동대로 707'} />
-      <div className="font-chosun text-left text-base mt-4 flex flex-col px-4">
+      <div className="font-chosun text-left text-base mt-4 flex flex-col gap-2 px-4">
         {data?.directions_desc?.map((item: any, index: number) => (
           <div key={index}>
-            <p>{item?.type}</p>
+            <p className="mb-1 font-chosun-medium">{item?.type}</p>
             {item?.desc?.map((descItem: any, idx: number) => (
               <div key={idx}>
                 <p>{descItem}</p>

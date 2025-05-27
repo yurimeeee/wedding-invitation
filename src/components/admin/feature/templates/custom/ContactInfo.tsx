@@ -41,9 +41,9 @@ const ContactInfo = ({ data }: ContactInfoProps) => {
       </div>
       <div className="flex gap-2 items-center">
         <p className="text-[18px]">
-          {data?.groom_dad || '이도령'} · {data?.groom_mom || '박춘향'} 의 {data?.isFirstDaughter ? '장녀' : '차녀'}
+          {data?.bride_dad || '이도령'} · {data?.bride_mom || '박춘향'} 의 {data?.isFirstDaughter ? '장녀' : '차녀'}
         </p>
-        <p className="text-xl leading-8 tracking-wider font-chosun-medium">{data?.groom_last_name || '영희'}</p>
+        <p className="text-xl leading-8 tracking-wider font-chosun-medium">{data?.bride_last_name || '영희'}</p>
         <p className="text-xl leading-8 tracking-wider font-chosun-medium">···</p>
         <CallButton href={`tel:${data?.bride_phone}`}>
           <IoIosCall color="#fff" />

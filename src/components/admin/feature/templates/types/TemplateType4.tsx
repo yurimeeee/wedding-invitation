@@ -1,9 +1,15 @@
 'use';
 
+import AccountInfo from '../custom/AccountInfo';
+import ContactInfo from '../custom/ContactInfo';
+import CopyAndShare from '../custom/CopyAndShare';
+import Gallery from '../custom/Gallery';
 import Image from 'next/image';
 import MainTextRenderer from '../custom/MainTextRenderer';
 import React from 'react';
 import { TemplatesData } from '@type/templates';
+import WeddingCalendar from '../custom/WeddingCalendar';
+import WeddingLocation from '../custom/WeddingLocation';
 import styled from '@emotion/styled';
 type TemplateTypeProps = {
   data: TemplatesData;
@@ -39,6 +45,17 @@ const TemplateType4 = ({ data }: TemplateTypeProps) => {
           </MainImage>
           <div className="mt-14 z-2">
             <MainTextRenderer type={data?.main?.main_text_type} data={data} />
+          </div>
+          <div className="flex flex-col gap-5 w-full">
+            <ContactInfo data={data} />
+            <Gallery />
+            <WeddingCalendar weddingDate="2025-10-12" />
+            <AccountInfo data={data} />
+            <WeddingLocation data={data} />
+            <CopyAndShare data={data} />
+          </div>
+          <div className="border-t border-gray-300 w-full">
+            <Image src="/assets/img/logo-invi.svg" alt="logo" width={132} height={40} className="mt-4 mx-auto" />
           </div>
         </div>
       </div>

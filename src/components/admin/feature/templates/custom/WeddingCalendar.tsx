@@ -41,6 +41,9 @@ const StyledCalendar = styled(Calendar)`
       background-color: none;
     }
   }
+  .react-calendar__tile--now {
+    background: none;
+  }
   .react-calendar__month-view__weekdays__weekday {
     color: ${theme.color.gray_600};
     abbr {

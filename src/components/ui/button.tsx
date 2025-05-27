@@ -15,7 +15,7 @@ type ButtonProps = React.ComponentProps<'button'> &
   };
 
 const buttonVariants = cva(
-  '!font-bold inline-flex items-center justify-center gap-2 whitespace-nowrap rounded font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+  '!font-bold inline-flex items-center justify-center gap-2 whitespace-nowrap rounded font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 pointer-cursor',
   {
     variants: {
       variant: {

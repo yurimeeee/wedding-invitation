@@ -49,7 +49,7 @@ export function CustomRadioGroup({ label, value, onChange, options, className = 
   return (
     <div className={className}>
       {label && <p className="text-sm text-text-default font-suite-medium whitespace-nowrap">{label}</p>}
-      <RadioGroup value={value} onValueChange={onChange} className="flex items-center gap-4">
+      <RadioGroup value={value} onValueChange={onChange} className={`flex items-center gap-4 ${className}`}>
         {options.map((option, idx) => (
           <div key={idx} className="flex items-center space-x-2">
             <RadioGroupItem value={String(option.value)} id={`${label}-${option.label}-${option.value}`} />

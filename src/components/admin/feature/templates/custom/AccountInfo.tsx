@@ -34,8 +34,8 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
 
       <div className="w-full p-5 rounded-md border border-solid border-pink-300">
         <p className="text-base mb-2">신부측</p>
-        {data?.groom_account[0].account ? (
-          data?.groom_account?.map((item, idx) => (
+        {data?.bride_account[0].account ? (
+          data?.bride_account?.map((item, idx) => (
             <div key={idx} className="flex items-center gap-2">
               <p className="text-sm" onClick={() => handleCopy(item?.account)}>
                 {item?.account} ({item?.name})

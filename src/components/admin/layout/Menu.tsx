@@ -62,7 +62,7 @@ export default function Menu({ onClose, isOpen = false }: MenuProps) {
                 </Link>
               </li>
               <li>
-                <Link href="/admin/edit" onClick={onClose}>
+                <Link href="/admin/invitaions" onClick={onClose}>
                   제작 목록
                 </Link>
               </li>

@@ -2,7 +2,9 @@
 
 import { CiSquarePlus, CiSquareRemove } from 'react-icons/ci';
 import { CustomRadioGroup, RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
-import { DocumentData, collection, doc, getDoc, getDocs, getFirestore } from 'firebase/firestore';
+import { DocumentData, collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
+import { auth, db } from '@lib/firebase';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 // import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useRef, useState } from 'react';
 
@@ -15,10 +17,10 @@ import { Label } from '@components/ui/label';
 import TemplateCard from '@components/admin/feature/TemplateCard';
 import { TemplatesData } from '@type/templates';
 import { Textarea } from '@components/ui/textarea';
-import { db } from '@lib/firebase';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 import { useParams } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 // import { storage } from '@lib/firebase';
 const InfoTitle = styled.div`
@@ -53,13 +55,12 @@ const PreviewImage = styled.div`
 export default function AdminTemplatesCreatePage() {
   const params = useParams();
   const id = params.id;
-  const [data, setData] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [RenderedComponent, setRenderedComponent] = useState<any>(null);
   const [formData, setFormData] = useState<any>(null);
   const [mainImage, setMainImage] = useState<any>(null);
+  const [gallery, setGallery] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  // console.log('data', data);
+  const invitationId = uuidv4();
   console.log('formData', formData);
 
   const handleChange = (path: string, value: string) => {
@@ -76,6 +77,48 @@ export default function AdminTemplatesCreatePage() {
     setFormData(updated);
   };
 
+  const handleObjectValueChange = (key: string, index: number, value: string) => {
+    const keyIndex = formData?.directions_desc?.findIndex((item: any) => item.type === key);
+
+    if (keyIndex === -1) return;
+
+    const updatedDirections = [...formData.directions_desc];
+    const updatedDesc = [...updatedDirections[keyIndex].desc];
+    console.log('updatedDirections', updatedDirections);
+    console.log('updatedDesc', updatedDesc);
+    updatedDesc[index] = value;
+    updatedDirections[keyIndex] = {
+      ...updatedDirections[keyIndex],
+      desc: updatedDesc,
+    };
+
+    setFormData({ ...formData, directions_desc: updatedDirections });
+  };
+
+  const addDirections = (key: string) => {
+    const keyIndex = formData?.directions_desc?.findIndex((item: any) => item.type === key);
+
+    const updatedDirections = [...formData.directions_desc];
+    const updatedDesc = [...updatedDirections[keyIndex].desc, ''];
+    updatedDirections[keyIndex] = {
+      ...updatedDirections[keyIndex],
+      desc: updatedDesc,
+    };
+    setFormData({ ...formData, directions_desc: updatedDirections });
+  };
+
+  const removeDirections = (key: string, index: number) => {
+    const keyIndex = formData?.directions_desc?.findIndex((item: any) => item.type === key);
+
+    const updatedDirections = [...formData.directions_desc];
+    const updatedDesc = updatedDirections[keyIndex].desc.filter((_: any, idx: number) => idx !== index);
+    updatedDirections[keyIndex] = {
+      ...updatedDirections[keyIndex],
+      desc: updatedDesc,
+    };
+    setFormData({ ...formData, directions_desc: updatedDirections });
+  };
+
   const handleAccountChange = (key: string, index: number, field: 'name' | 'account' | 'bank', value: string) => {
     const updatedArr = [...formData[key]];
     updatedArr[index][field] = value;
@@ -87,16 +130,84 @@ export default function AdminTemplatesCreatePage() {
       [key]: [...formData[key], { name: '', account: '' }],
     });
   };
-
+  console.log(formData);
   const removeAccount = (key: string, index: number) => {
     const updatedArr = formData[key].filter((_: any, idx: number) => idx !== index);
     setFormData({ ...formData, [key]: updatedArr });
   };
 
-  const handleSave = () => {
-    // formData를 Firebase 등으로 저장
-    console.log('저장할 데이터', formData);
-  };
+  // 파일 업로드 및 Firestore 저장 함수
+  async function handleSave(): Promise<void> {
+    const storage = getStorage();
+    const firestore = getFirestore();
+
+    const validateForm = (): string | null => {
+      if (!mainImage) return '메인 이미지를 업로드해주세요.';
+      if (!gallery || !gallery.length || gallery.some((img: any) => !img)) return '갤러리 이미지를 하나 이상 등록해주세요.';
+      if (!formData.main.main_title?.trim()) return '메인 타이틀을 입력해주세요.';
+      if (!formData.main.main_groom_and_bride_name?.trim()) return '신랑과 신부 이름을 입력해주세요.';
+      if (!formData.main.intro_content?.trim()) return '소개 문구를 입력해주세요.';
+      if (!formData.groom_first_name?.trim() || !formData.groom_last_name?.trim()) return '신랑의 성함을 입력해주세요.';
+      if (!formData.groom_phone?.trim()) return '신랑의 연락처를 입력해주세요.';
+      if (!formData.groom_mom?.trim() || !formData.groom_dad?.trim()) return '신랑 측 부모님 정보를 입력해주세요.';
+      if (!formData.bride_first_name?.trim() || !formData.bride_last_name?.trim()) return '신부의 성함을 입력해주세요.';
+      if (!formData.bride_phone?.trim()) return '신부의 연락처를 입력해주세요.';
+      if (!formData.bride_mom?.trim() || !formData.bride_dad?.trim()) return '신부 측 부모님 정보를 입력해주세요.';
+      if (!formData.main.date?.trim()) return '날짜를 입력해주세요.';
+      if (!formData.address?.trim()) return '식장 주소를 입력해주세요.';
+      if (!formData.hall_phone?.trim()) return '식장 연락처를 입력해주세요.';
+      return null;
+    };
+
+    const errorMessage = validateForm();
+    if (errorMessage) {
+      alert(errorMessage);
+      return;
+    }
+
+    // 메인 이미지 경로 및 참조 생성
+    const mainStoragePath = `invitation/${invitationId}/main/main_img`;
+    const mainStorageRef = ref(storage, mainStoragePath);
+
+    try {
+      console.log('Start image upload...');
+
+      // 1. 메인 이미지 업로드
+      const mainUploadResult = await uploadBytes(mainStorageRef, mainImage);
+      const mainImageURL = await getDownloadURL(mainStorageRef);
+      console.log('Main image uploaded:', mainUploadResult);
+
+      // 2. 갤러리 이미지들 업로드
+      const galleryUploadPromises = gallery.map((file: any, index: number) => {
+        const galleryPath = `invitation/${invitationId}/gallery/gallery_${index}`;
+        const galleryRef = ref(storage, galleryPath);
+        return uploadBytes(galleryRef, file).then(() => getDownloadURL(galleryRef));
+      });
+
+      const galleryImageURLs = await Promise.all(galleryUploadPromises);
+      console.log('Gallery images uploaded:', galleryImageURLs);
+
+      // 3. Firestore에 저장할 데이터 구성
+      const dataToSave = {
+        ...formData,
+        main: {
+          ...formData.main,
+          main_img: mainImageURL,
+        },
+        gallery: galleryImageURLs,
+        uploadedAt: new Date(),
+      };
+
+      // 4. Firestore에 데이터 저장
+      const docRef = doc(firestore, 'invitation', invitationId);
+      await setDoc(docRef, dataToSave, { merge: true });
+      alert('청접장이 등록되었습니다.');
+      console.log(`Firestore Document Invitation/${invitationId} updated successfully.`);
+    } catch (error) {
+      console.error('Error during upload or Firestore saving:', error);
+      throw error;
+    }
+  }
 
   const getTemplateType1Document = async () => {
     try {
@@ -104,7 +215,6 @@ export default function AdminTemplatesCreatePage() {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        setData(docSnap.data());
         setFormData(docSnap.data());
         // setErrorMessage(null);
 
@@ -138,172 +248,11 @@ export default function AdminTemplatesCreatePage() {
   useEffect(() => {
     getTemplateType1Document();
   }, []);
-  //   {
-  //     "bride_first_name": "",
-  //     "groom_last_name": "",
-  //     "bride_phone": "",
-  //     "thumbnail": "https://firebasestorage.googleapis.com/v0/b/my-wedding-76cc0.firebasestorage.app/o/template%2Fthumbnail%2Ftype_1.png?alt=media&token=a42cad7c-8e00-443c-a525-ba702b08c951",
-  //     "bride_account": [
-  //         {
-  //             "name": "",
-  //             "account": ""
-  //         }
-  //     ],
-  //     "hall_phone": "",
-  //     "main": {
-  //         "main_title_size": 20,
-  //         "main_text_type": "groomAndBride",
-  //         "address": "",
-  //         "intro_content": "평생을 같이하고 싶은 사람을 만났습니다.\n서로 아껴주고 이해하며\n사랑 베풀며 살고 싶습니다.\n저희 약속위에 따듯한 격려로 축복해주셔서\n힘찬 출발의 디딤이 되어 주십시오.",
-  //         "main_img": "",
-  //         "intro_content_align": "left",
-  //         "dot_divider": true,
-  //         "date": "",
-  //         "main_groom_and_bride_name": "철수와 영희",
-  //         "main_title_align": "center",
-  //         "main_img_tip": "w:250px이상, h: 362px이상",
-  //         "intro_content_size": 16,
-  //         "main_title": "5월의 어느날..."
-  //     },
-  //     "isFirstDaughter": true,
-  //     "groom_dad": "",
-  //     "type": "type_1",
-  //     "directions_desc": [
-  //         {
-  //             "desc": [
-  //                 "",
-  //                 ""
-  //             ],
-  //             "type": "지하철"
-  //         },
-  //         {
-  //             "type": "버스",
-  //             "desc": [
-  //                 "",
-  //                 ""
-  //             ]
-  //         },
-  //         {
-  //             "type": "주차",
-  //             "desc": [
-  //                 "",
-  //                 ""
-  //             ]
-  //         }
-  //     ],
-  //     "address_detail": "",
-  //     "bride_last_name": "",
-  //     "bride_dad": "",
-  //     "groom_mom": "",
-  //     "isFirstSon": false,
-  //     "wedding_day": "",
-  //     "address": "",
-  //     "groom_phone": "",
-  //     "groom_account": [
-  //         {
-  //             "account": "",
-  //             "name": ""
-  //         }
-  //     ],
-  //     "groom_first_name": "",
-  //     "bride_mom": "",
-  //     "gallery": [
-  //         ""
-  //     ]
-  // }
 
-  const onChangeValue = async (path: any, evt: any) => {
-    const keys = path.split('.');
-    const updated = { ...formData };
-    let temp: any = updated;
-    console.log('path', path);
-    while (keys.length > 1) {
-      const key = keys.shift()!;
-      temp = temp[key];
-    }
-
-    // const copyArr = deepCopy(questionElements);
-    // const index = questionElements.findIndex((item: any) => item.htmlFormInputName === id);
-
-    // if (key === 'main.main_img') {
-    const files = evt.target.files;
-    console.log(files);
-    let validFiles: File[] = [...(temp || [])]; // copyArr에서 가져오기
-    let imageUrlLists: string[] = [...(temp?.filePreiview || [])];
-    setMainImage(URL.createObjectURL(files as File));
-    // 파일 검증
-    Array.from(files).forEach((fileItem) => {
-      //   if (!fileCheck(fileItem, ['jpeg', 'jpg', 'png', 'docx', 'pdf'], 10)) {
-      //     return;
-      //   }
-
-      //   // 유효한 파일 추가
-      validFiles.push(fileItem as File);
-      imageUrlLists.push(URL.createObjectURL(fileItem as File));
-    });
-
-    // 최대 업로드 개수 제한 10장
-    imageUrlLists = imageUrlLists.slice(0, 10);
-    validFiles = validFiles.slice(0, 10);
-
-    // // 현재 상태 기준으로 전체 파일 크기 계산 (copyArr 사용)
-    // copyArr[index] = {
-    //   ...copyArr[index],
-    //   filePreiview: imageUrlLists,
-    //   file: validFiles,
-    //   filename: validFiles.map((f: File) => f.name).join(', '),
-    // };
-
-    const totalFileSize = temp?.reduce((total: number, element: any) => {
-      const files = Array.isArray(element.file) ? element.file : element.file ? [element.file] : [];
-      return total + files.reduce((acc: number, file: File) => acc + file.size, 0);
-    }, 0);
-    console.log('totalFileSize', totalFileSize);
-    // 현재 추가하려는 파일 크기 계산
-    const currentFileSize = validFiles.reduce((acc: number, file: File) => acc + file.size, 0);
-
-    if (totalFileSize > 100 * 1024 * 1024) {
-      // 100MB 초과 체크
-      // setAlertData({ ...alertData, show: true, message: t('phrase.phrase13') });
-      return;
-    }
-    temp[keys[0]] = validFiles;
-
-    setFormData(updated);
-    evt.target.value = '';
-  };
-
-  // 메인 이미지 업로드 핸들러
-  // const handleMainImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (!file) return;
-
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     setFormData((prev: any) => ({
-  //       ...prev,
-  //       main: {
-  //         ...prev.main,
-  //         main_img: reader.result,
-  //       },
-  //     }));
-  //   };
-  //   reader.readAsDataURL(file);
-  // };
-
-  // const handleMainImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (!file) return;
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     setFormData((prev: any) => ({ ...prev, main: { ...prev.main, main_img: reader.result } }));
-  //   };
-  //   reader.readAsDataURL(file);
-  // };
   const handleMainImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
+    setMainImage(file);
     const reader = new FileReader();
     reader.onload = () => {
       setFormData((prev: any) => ({
@@ -321,6 +270,7 @@ export default function AdminTemplatesCreatePage() {
   const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const urls = files.map((file) => URL.createObjectURL(file));
+    setGallery(files);
     const readers: Promise<string>[] = files.map((file) => {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -336,49 +286,15 @@ export default function AdminTemplatesCreatePage() {
       }));
     });
   };
-  const [imageSrc, setImageSrc]: any = useState(null);
-
-  const onUpload = (e: any) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-
-    return new Promise<void>((resolve) => {
-      reader.onload = () => {
-        // setImageSrc(reader.result || null); // 파일의 컨텐츠
-        console.log('reader.result', reader.result);
-        setFormData((prev: any) => ({
-          ...prev,
-          main: {
-            ...prev.main,
-            main_img: reader.result, // Data URL 저장
-          },
-        }));
-        resolve();
-      };
-    });
+  const handleGalleryImageRemove = (index: number) => {
+    const updatedArr = formData.gallery.filter((_: any, idx: number) => idx !== index);
+    setFormData({ ...formData, gallery: updatedArr });
   };
+
   const handleClick = () => {
     inputRef.current?.click();
   };
 
-  //itprogramming119.tistory.com/entry/React-이미지-파일업로드-미리보기-구현하기 [코딩병원:티스토리]
-  // X버튼 클릭 시 이미지 삭제
-  // const handleDeleteImage = (id: any, itemIndex: number) => {
-  //   const copyArr = deepCopy(questionElements);
-  //   const index = questionElements.findIndex((item: any) => item.htmlFormInputName === id);
-
-  //   const arr = copyArr[index]?.filePreiview.filter((_: any, index: number) => index !== itemIndex);
-  //   const validFiles = copyArr[index]?.file.filter((_: any, index: number) => index !== itemIndex);
-
-  //   copyArr[index] = {
-  //     ...copyArr[index],
-  //     filePreiview: arr,
-  //     file: validFiles,
-  //     filename: validFiles.map((f: File) => f.name).join(', '), // 유효한 파일 이름만 추가
-  //   };
-  //   setQuestionElements(copyArr);
-  // };
   return (
     <div className="p-5 sm:p-8 pb-20">
       <Wrap>
@@ -401,7 +317,7 @@ export default function AdminTemplatesCreatePage() {
           <p className="text-[14px] font-suite-medium text-text-default mb-2">메인 이미지 업로드</p>
           {formData?.main?.main_img_tip && <p className="text-[12px] font-suite-medium text-gray-500 mb-2">권장 사이즈 : {formData?.main?.main_img_tip}</p>}
 
-          <input type="file" accept="image/*" onChange={handleMainImgChange} hidden ref={inputRef} />
+          <input type="file" accept="image/*" onChange={handleMainImgChange} hidden ref={inputRef} value={''} />
 
           {/* 이미지가 있을 경우 */}
           {formData?.main?.main_img ? (
@@ -418,22 +334,29 @@ export default function AdminTemplatesCreatePage() {
         <div className="mb-4">
           <p className="text-[14px] font-suite-medium text-text-default mb-2">갤러리 이미지 업로드</p>
           <p className="text-[12px] font-suite-medium text-gray-500 mb-2">최대 10장 업로드 가능</p>
-          <input type="file" accept="image/*" multiple onChange={handleGalleryChange} />
+          <input type="file" accept="image/*" multiple onChange={handleGalleryChange} value={''} />
 
-          <div className="grid grid-cols-3 gap-4 mt-3">
+          <div className="flex flex-wrap gap-3 mt-3">
             {formData?.gallery
               ?.filter((img: string) => !!img)
               .map((img: string, idx: number) => (
-                <PreviewImage>
+                <PreviewImage key={idx}>
                   <Image
                     key={idx}
                     src={img}
                     alt={`gallery-${idx}`}
-                    // width={150} height={150}
+                    // width={120}
+                    // height={120}
                     // sizes="100%"
+                    fill
                     className="rounded"
                   />
-                  <div className="bg-white absolue rignt-0 top-0">
+                  <div
+                    className="bg-white absolute rignt-0 top-0 z-10 bg-white/50"
+                    onClick={() => {
+                      handleGalleryImageRemove(idx);
+                    }}
+                  >
                     <IoClose />
                   </div>
                 </PreviewImage>
@@ -445,7 +368,7 @@ export default function AdminTemplatesCreatePage() {
         <Input
           type="text"
           placeholder="신랑과 신부"
-          value={formData?.main.main_groom_and_bride_name}
+          value={formData?.main.main_groom_and_bride_name || ''}
           onChange={(e) => handleChange('main.main_groom_and_bride_name', e.target.value)}
           className="mb-3"
         />
@@ -454,7 +377,6 @@ export default function AdminTemplatesCreatePage() {
           <Image src={`/assets/img/templates/${formData?.main?.main_text_type}.png`} width={100} height={100} alt={'preview'} className="rounded mb-2" />
           <CustomRadioGroup
             value={formData?.main?.main_text_type}
-            // onChange={(val) => setFormData({ ...formData, intro_content_align: val })}
             onChange={(val) => handleChange('main.main_text_type', val)}
             options={[
               { label: '철수와 영희', value: 'groomAndBride' },
@@ -466,11 +388,10 @@ export default function AdminTemplatesCreatePage() {
         </div>
         <p className="text-[14px] font-suite-medium text-text-default mb-2">제목</p>
         <div className="flex gap-3">
-          <Input type="text" placeholder="제목" value={formData?.main.main_title} onChange={(e) => handleChange('main.main_title', e.target.value)} className="mb-3" />
+          <Input type="text" placeholder="제목" value={formData?.main.main_title || ''} onChange={(e) => handleChange('main.main_title', e.target.value)} className="mb-3" />
           <CustomRadioGroup
             label="제목 정렬"
-            value={formData?.main?.intro_content_align}
-            // onChange={(val) => setFormData({ ...formData, intro_content_align: val })}
+            value={formData?.main?.main_title_align || ''}
             onChange={(val) => handleChange('main.main_title_align', val)}
             options={[
               { label: '왼쪽 정렬', value: 'left' },
@@ -484,7 +405,6 @@ export default function AdminTemplatesCreatePage() {
         <CustomRadioGroup
           label="내용 정렬"
           value={formData?.main?.intro_content_align}
-          // onChange={(val) => setFormData({ ...formData, intro_content_align: val })}
           onChange={(val) => handleChange('main.intro_content_align', val)}
           options={[
             { label: '왼쪽 정렬', value: 'left' },
@@ -492,28 +412,14 @@ export default function AdminTemplatesCreatePage() {
           ]}
           className="w-[240px] flex items-center gap-3 mb-3"
         />
-        <p className="text-[14px] font-suite-medium text-text-default mb-2">식 일자 · 식장 정보</p>
-        <Input
-          type="date"
-          placeholder="날짜"
-          value={formData?.wedding_day}
-          onChange={(e) => {
-            console.log('e', e.target.value);
-            handleChange('wedding_day', e.target.value);
-            handleChange('main.date', e.target.value);
-          }}
-          className="mb-3"
-        />
-        <Input type="text" placeholder="식장 주소" value={formData?.address} onChange={(e) => handleChange('address', e.target.value)} className="mb-3" />
-        <Input type="text" placeholder="식장 상세 정보" value={formData?.address_detail} onChange={(e) => handleChange('address_detail', e.target.value)} className="mb-3" />
-        <Input type="text" placeholder="식장 전화" value={formData?.hall_phone} onChange={(e) => handleChange('hall_phone', e.target.value)} className="mb-3" />
-        <InfoTitle>신랑 측 정보</InfoTitle>
+
+        <InfoTitle className="mt-10">신랑 측 정보</InfoTitle>
         <div className="flex gap-2 mb-3">
-          <Input type="text" placeholder="신랑 성" value={formData?.groom_first_name} onChange={(e) => handleChange('groom_first_name', e.target.value)} />
-          <Input type="text" placeholder="신랑 이름" value={formData?.groom_last_name} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
+          <Input type="text" placeholder="신랑 성" value={formData?.groom_first_name || ''} onChange={(e) => handleChange('groom_first_name', e.target.value)} />
+          <Input type="text" placeholder="신랑 이름" value={formData?.groom_last_name || ''} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
         </div>
         <div className="flex gap-4 mb-3">
-          <Input type="text" placeholder="신랑 연락처" value={formData?.bride_phone} onChange={(e) => handleChange('groom_phone', e.target.value)} />
+          <Input type="text" placeholder="신랑 연락처" value={formData?.groom_phone || ''} onChange={(e) => handleChange('groom_phone', e.target.value)} />
           <CustomRadioGroup
             label="장남 여부"
             value={formData?.isFirstSon}
@@ -526,16 +432,16 @@ export default function AdminTemplatesCreatePage() {
           />
         </div>
         <div className="flex gap-2 mb-3">
-          <Input type="text" placeholder="신랑 아버님 성함" value={formData?.groom_dad} onChange={(e) => handleChange('groom_dad', e.target.value)} />
-          <Input type="text" placeholder="신랑 어머님 성함" value={formData?.groom_mom} onChange={(e) => handleChange('groom_mom', e.target.value)} />
+          <Input type="text" placeholder="신랑 아버님 성함" value={formData?.groom_dad || ''} onChange={(e) => handleChange('groom_dad', e.target.value)} />
+          <Input type="text" placeholder="신랑 어머님 성함" value={formData?.groom_mom || ''} onChange={(e) => handleChange('groom_mom', e.target.value)} />
         </div>
         <div className="flex flex-col gap-2 mb-3">
           <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
           {formData?.groom_account?.map((item: any, idx: number) => (
             <div key={idx} className="flex items-center gap-2">
-              <Input type="text" placeholder="@@은행 " value={item?.bank} onChange={(e) => handleAccountChange('groom_account', idx, 'bank', e.target.value)} />
-              <Input type="text" placeholder="계좌번호" value={item?.account} onChange={(e) => handleAccountChange('groom_account', idx, 'account', e.target.value)} />
-              <Input type="text" placeholder="예금주" value={item?.name} onChange={(e) => handleAccountChange('groom_account', idx, 'name', e.target.value)} />
+              <Input type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'bank', e.target.value)} />
+              <Input type="text" placeholder="계좌번호" value={item?.account || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'account', e.target.value)} />
+              <Input type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'name', e.target.value)} />
               <div>
                 <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('groom_account')} />
               </div>
@@ -549,11 +455,11 @@ export default function AdminTemplatesCreatePage() {
         </div>
         <InfoTitle className="mt-10">신부 측 정보</InfoTitle>
         <div className="flex gap-2 mb-3">
-          <Input type="text" placeholder="신부 성" value={formData?.bride_first_name} onChange={(e) => handleChange('bride_first_name', e.target.value)} />
-          <Input type="text" placeholder="신부 이름" value={formData?.bride_last_name} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
+          <Input type="text" placeholder="신부 성" value={formData?.bride_first_name || ''} onChange={(e) => handleChange('bride_first_name', e.target.value)} />
+          <Input type="text" placeholder="신부 이름" value={formData?.bride_last_name || ''} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
         </div>
         <div className="flex gap-4 mb-3">
-          <Input type="text" placeholder="신부 연락처" value={formData?.bride_phone} onChange={(e) => handleChange('bride_phone', e.target.value)} />
+          <Input type="text" placeholder="신부 연락처" value={formData?.bride_phone || ''} onChange={(e) => handleChange('bride_phone', e.target.value)} />
           <CustomRadioGroup
             label="장녀 여부"
             value={formData?.isFirstDaughter}
@@ -566,16 +472,17 @@ export default function AdminTemplatesCreatePage() {
           />
         </div>
         <div className="flex gap-2 mb-3">
-          <Input type="text" placeholder="신부 아버님 성함" value={formData?.bride_dad} onChange={(e) => handleChange('bride_dad', e.target.value)} />
-          <Input type="text" placeholder="신부 어머님 성함" value={formData?.bride_mom} onChange={(e) => handleChange('bride_mom', e.target.value)} />
+          <Input type="text" placeholder="신부 아버님 성함" value={formData?.bride_dad || ''} onChange={(e) => handleChange('bride_dad', e.target.value)} />
+          <Input type="text" placeholder="신부 어머님 성함" value={formData?.bride_mom || ''} onChange={(e) => handleChange('bride_mom', e.target.value)} />
         </div>
         <div className="flex flex-col gap-2 mb-3">
           <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
+
           {formData?.bride_account?.map((item: any, idx: number) => (
             <div key={idx} className="flex items-center gap-2">
-              <Input type="text" placeholder="@@은행 " value={item?.bank} onChange={(e) => handleAccountChange('bride_account', idx, 'bank', e.target.value)} />
-              <Input type="text" placeholder="계좌번호" value={item?.account} onChange={(e) => handleAccountChange('bride_account', idx, 'account', e.target.value)} />
-              <Input type="text" placeholder="예금주" value={item?.name} onChange={(e) => handleAccountChange('bride_account', idx, 'name', e.target.value)} />
+              <Input type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'bank', e.target.value)} />
+              <Input type="text" placeholder="계좌번호" value={item?.account || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'account', e.target.value)} />
+              <Input type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'name', e.target.value)} />
               <div>
                 <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('bride_account')} />
               </div>
@@ -586,7 +493,77 @@ export default function AdminTemplatesCreatePage() {
               )}
             </div>
           ))}
-          <div className="flex items-center gap-2 mb-3"></div>
+        </div>
+        <p className="text-[14px] font-suite-medium text-text-default mt-10 mb-2">식 일자 · 식장 정보</p>
+        <Input
+          type="date"
+          placeholder="날짜"
+          value={formData?.wedding_day || ''}
+          onChange={(e) => {
+            console.log('e', e.target.value);
+            handleChange('wedding_day', e.target.value);
+            handleChange('main.date', e.target.value);
+          }}
+          className="mb-3"
+        />
+        <Input type="text" placeholder="식장 주소" value={formData?.address || ''} onChange={(e) => handleChange('address', e.target.value)} className="mb-3" />
+        <Input type="text" placeholder="식장 상세 정보" value={formData?.address_detail || ''} onChange={(e) => handleChange('address_detail', e.target.value)} className="mb-3" />
+        <Input type="text" placeholder="식장 전화" value={formData?.hall_phone || ''} onChange={(e) => handleChange('hall_phone', e.target.value)} className="mb-3" />
+
+        <p className="text-[14px] font-suite-medium text-text-default mt-10 mb-2">오시는 길</p>
+        <div className="flex flex-col gap-2 mb-3">
+          <p className="text-[14px] font-suite-medium text-text-default">지하철</p>
+          {formData?.directions_desc
+            ?.filter((direction: any) => direction.type == '지하철')[0]
+            .desc?.map((item: any, idx: number) => (
+              <div key={idx} className="flex items-center gap-2">
+                <Input type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('지하철', idx, e.target.value)} />
+                <div>
+                  <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('지하철')} />
+                </div>
+                {formData?.directions_desc?.filter((direction: any) => direction.type == '지하철')[0].desc?.length > 1 && (
+                  <button onClick={() => removeDirections('지하철', idx)}>
+                    <CiSquareRemove size={20} className="text-red-500" />
+                  </button>
+                )}
+              </div>
+            ))}
+        </div>
+        <div className="flex flex-col gap-2 mb-3">
+          <p className="text-[14px] font-suite-medium text-text-default">버스</p>
+          {formData?.directions_desc
+            ?.filter((direction: any) => direction.type == '버스')[0]
+            .desc?.map((item: any, idx: number) => (
+              <div key={idx} className="flex items-center gap-2">
+                <Input type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('버스', idx, e.target.value)} />
+                <div>
+                  <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('버스')} />
+                </div>
+                {formData?.directions_desc?.filter((direction: any) => direction.type == '버스')[0].desc?.length > 1 && (
+                  <button onClick={() => removeDirections('버스', idx)}>
+                    <CiSquareRemove size={20} className="text-red-500" />
+                  </button>
+                )}
+              </div>
+            ))}
+        </div>
+        <div className="flex flex-col gap-2 mb-3">
+          <p className="text-[14px] font-suite-medium text-text-default">주차</p>
+          {formData?.directions_desc
+            ?.filter((direction: any) => direction.type == '주차')[0]
+            .desc?.map((item: any, idx: number) => (
+              <div key={idx} className="flex items-center gap-2">
+                <Input type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('주차', idx, e.target.value)} />
+                <div>
+                  <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('주차')} />
+                </div>
+                {formData?.directions_desc?.filter((direction: any) => direction.type == '주차')[0].desc?.length > 1 && (
+                  <button onClick={() => removeDirections('주차', idx)}>
+                    <CiSquareRemove size={20} className="text-red-500" />
+                  </button>
+                )}
+              </div>
+            ))}
         </div>
         {/* <Textarea placeholder="소개 문구" value={formData.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} /> */}
         <Button onClick={handleSave}>저장하기</Button>

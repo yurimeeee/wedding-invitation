@@ -38,7 +38,7 @@ export default function Menu({ onClose, isOpen = false }: MenuProps) {
       {/* 메뉴 패널 */}
       <aside
         className={clsx(
-          'fixed top-0 left-0 z-40 h-full w-9/10 bg-white border-r p-4 transition-transform duration-300 sm:static sm:translate-x-0',
+          'fixed top-0 left-0 z-40 h-full w-[90%] bg-white border-r p-4 transition-transform duration-300 sm:static sm:translate-x-0',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >

@@ -498,9 +498,8 @@ export default function AdminTemplatesCreatePage() {
         <Input
           type="date"
           placeholder="날짜"
-          value={formData?.wedding_day || ''}
+          value={formData?.wedding_day || formData?.main.date || ''}
           onChange={(e) => {
-            console.log('e', e.target.value);
             handleChange('wedding_day', e.target.value);
             handleChange('main.date', e.target.value);
           }}

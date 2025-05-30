@@ -58,7 +58,7 @@ export default function Menu({ onClose, isOpen = false }: MenuProps) {
               </li>
               <li>
                 <Link href="/admin/templates" onClick={onClose}>
-                  청첩장 제작
+                  디자인
                 </Link>
               </li>
               <li>

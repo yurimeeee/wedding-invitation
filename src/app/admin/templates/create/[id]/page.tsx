@@ -1,5 +1,6 @@
 'use client';
 
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@components/ui/accordion';
 import { CiSquarePlus, CiSquareRemove } from 'react-icons/ci';
 import { CustomRadioGroup, RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
 import { DocumentData, collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
@@ -9,12 +10,17 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@components/ui/button';
+import CustomAccordion from '@components/admin/feature/templates/custom/Accordion';
 import { FaRegImage } from 'react-icons/fa6';
 import Image from 'next/image';
 import { Input } from '@components/ui/input';
 import { IoClose } from 'react-icons/io5';
 import { Label } from '@components/ui/label';
 import TemplateCard from '@components/admin/feature/TemplateCard';
+import TemplateType1 from '@components/admin/feature/templates/types/TemplateType1';
+import TemplateType2 from '@components/admin/feature/templates/types/TemplateType2';
+import TemplateType3 from '@components/admin/feature/templates/types/TemplateType3';
+import TemplateType4 from '@components/admin/feature/templates/types/TemplateType4';
 import { TemplatesData } from '@type/templates';
 import { Textarea } from '@components/ui/textarea';
 import styled from '@emotion/styled';
@@ -31,7 +37,7 @@ const InfoTitle = styled.div`
 `;
 const Wrap = styled.div`
   width: 100%;
-  max-width: 720px;
+  /* max-width: 720px; */
 `;
 const NoImage = styled.div`
   width: 120px;
@@ -61,7 +67,7 @@ export default function AdminTemplatesCreatePage() {
   const [gallery, setGallery] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const invitationId = uuidv4();
-
+  const [RenderedComponent, setRenderedComponent] = useState<any>(null);
   const handleChange = (path: string, value: string) => {
     const keys = path.split('.');
     const updated = { ...formData };
@@ -285,11 +291,38 @@ export default function AdminTemplatesCreatePage() {
   const handleClick = () => {
     inputRef.current?.click();
   };
-
+  useEffect(() => {
+    switch (formData?.type) {
+      case 'type_1':
+        setRenderedComponent(() => TemplateType1);
+        break;
+      case 'type_2':
+        setRenderedComponent(() => TemplateType2);
+        break;
+      case 'type_3':
+        setRenderedComponent(() => TemplateType3);
+        break;
+      case 'type_4':
+        setRenderedComponent(() => TemplateType4);
+        break;
+      default:
+        setRenderedComponent(() => null);
+        break;
+    }
+  }, [formData?.type]);
   return (
-    <div className="p-5 sm:p-8 pb-20">
+    <div className="p-5 sm:p-8 pb-20 flex">
       <Wrap>
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
+        <CustomAccordion triggerTitle="예식 일시" />
+        {/* 
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>예식 일시</AccordionTrigger>
+            <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+          </AccordionItem>
+        </Accordion> */}
+
         <InfoTitle>메인 정보</InfoTitle>
         <p className="text-[14px] font-suite-medium text-text-default mb-2">템플릿 타입 선택</p>
         <CustomRadioGroup
@@ -560,6 +593,7 @@ export default function AdminTemplatesCreatePage() {
           <Button onClick={handleSave}>저장하기</Button>
         </div>
       </Wrap>
+      <Wrap>{RenderedComponent && <RenderedComponent data={formData} />}</Wrap>
     </div>
   );
 }

@@ -162,9 +162,12 @@ const Gallery = ({ gallery }: { gallery?: string[] }) => {
     <div className="p-4 space-y-6">
       <Image src={'/assets/img/gallery/moment_of_love.svg'} alt="moment_of_love" width={126} height={20} className="mx-auto" />
       <div className="grid grid-cols-2 gap-1">
-        {images?.map((src: string, idx: number) => (
-          <GalleryImage key={src} src={src} alt={`gallery_img_${idx}`} width={0} height={220} sizes="100%" onClick={() => setSelectedIndex(idx)} />
-        ))}
+        {images
+          ?.filter((src) => typeof src === 'string' && src.trim() !== '')
+          ?.slice(0, 4)
+          ?.map((src: string, idx: number) => (
+            <GalleryImage key={src} src={src} alt={`gallery_img_${idx}`} width={0} height={220} sizes="100%" onClick={() => setSelectedIndex(idx)} />
+          ))}
       </div>
 
       <AnimatePresence>

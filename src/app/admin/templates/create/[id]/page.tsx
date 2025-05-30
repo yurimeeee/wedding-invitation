@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@components/ui/button';
 import CustomAccordion from '@components/admin/feature/templates/custom/Accordion';
+import { CustomDatePicker } from '@components/ui/CustomDatePicker';
 import { FaRegImage } from 'react-icons/fa6';
 import Image from 'next/image';
 import { Input } from '@components/ui/input';
@@ -312,9 +313,9 @@ export default function AdminTemplatesCreatePage() {
   }, [formData?.type]);
   return (
     <div className="p-5 sm:p-8 pb-20 flex">
-      <Wrap>
+      <Wrap className="bg-[#F5F4F0] p-6">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
-        <CustomAccordion triggerTitle="예식 일시" />
+        <CustomAccordion title="예식 일시" children={<CustomDatePicker />} />
         {/* 
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">

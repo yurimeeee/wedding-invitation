@@ -4,14 +4,20 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@c
 import { CiSquarePlus, CiSquareRemove } from 'react-icons/ci';
 import { CustomRadioGroup, RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
 import { DocumentData, collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
+import { GRAY_500, GRAY_600 } from '@styles/colors';
 import { auth, db } from '@lib/firebase';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 // import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useRef, useState } from 'react';
 
+import { BsFillInfoCircleFill } from 'react-icons/bs';
 import { Button } from '@components/ui/button';
 import CustomAccordion from '@components/admin/feature/templates/custom/Accordion';
 import { CustomDatePicker } from '@components/ui/CustomDatePicker';
+import { CustomInfoText } from '@components/ui/CustomInfoText';
+import { CustomTooltip } from '@components/ui/tooltip';
+import DaumPost from '@components/admin/feature/DaumPost';
+import { Divide } from 'lucide-react';
 import { FaRegImage } from 'react-icons/fa6';
 import Image from 'next/image';
 import { Input } from '@components/ui/input';
@@ -24,6 +30,7 @@ import TemplateType3 from '@components/admin/feature/templates/types/TemplateTyp
 import TemplateType4 from '@components/admin/feature/templates/types/TemplateType4';
 import { TemplatesData } from '@type/templates';
 import { Textarea } from '@components/ui/textarea';
+import dayjs from 'dayjs';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 import { useParams } from 'next/navigation';
@@ -36,6 +43,12 @@ const InfoTitle = styled.div`
   color: ${theme.color.textDefault};
   margin-bottom: 12px;
 `;
+// const Label = styled.p`
+//   font-family: 'SUITE Variable';
+//   font-weight: 500;
+//   color: ${theme.color.textDefault};
+//   margin-bottom: 12px;
+// `;
 const Wrap = styled.div`
   width: 100%;
   /* max-width: 720px; */
@@ -315,15 +328,116 @@ export default function AdminTemplatesCreatePage() {
     <div className="p-5 sm:p-8 pb-20 flex">
       <Wrap className="bg-[#F5F4F0] p-6">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
-        <CustomAccordion title="예식 일시" children={<CustomDatePicker />} />
-        {/* 
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>예식 일시</AccordionTrigger>
-            <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
-          </AccordionItem>
-        </Accordion> */}
-
+        <div className="flex flex-col gap-2">
+          <CustomAccordion
+            title="예식 일시"
+            children={
+              <div>
+                <Label text="식 일자 · 식장 정보" required={true} className="mb-2" />
+                <CustomDatePicker
+                  value={formData?.wedding_day ? dayjs(formData.wedding_day).toDate() : formData?.main?.date ? dayjs(formData.main.date).toDate() : undefined}
+                  onChange={(date) => {
+                    const formattedDate = dayjs(date).format('YYYY-MM-DD');
+                    handleChange('wedding_day', formattedDate);
+                    handleChange('main.date', formattedDate);
+                  }}
+                />
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="예식 장소"
+            children={
+              <div>
+                <Label text="예식장 주소" required={true} className="mb-2" />
+                <div className="flex items-center gap-2 mb-5">
+                  <Input type="text" placeholder="식장 주소" value={formData?.address || ''} readOnly />
+                  <DaumPost setAddress={(value: any) => handleChange('address', value)} />
+                </div>
+                <Label text="층 / 홀" required={true} className="mb-2" />
+                <Input type="text" placeholder="층 / 홀" value={formData?.address_detail || ''} onChange={(e) => handleChange('address_detail', e.target.value)} className="mb-5" />
+                <Label text="예식장 연락처" required={true} className="mb-2" />
+                <Input type="text" placeholder="예식장 연락처" value={formData?.hall_phone || ''} onChange={(e) => handleChange('hall_phone', e.target.value)} />
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="신랑 · 신부 정보"
+            children={
+              <div>
+                <CustomInfoText text="신랑님과 신부님의 정보를 입력해주세요." className="mb-5" />
+                <Label text="신랑님" required={true} className="mb-2" />
+                <div className="flex gap-2 mb-5">
+                  <Input
+                    type="text"
+                    placeholder="성"
+                    value={formData?.groom_first_name || ''}
+                    onChange={(e) => handleChange('groom_first_name', e.target.value)}
+                    className="w-16"
+                  />
+                  <Input type="text" placeholder="이름" value={formData?.groom_last_name || ''} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
+                </div>
+                <Label text="신부님" required={true} className="mb-2" />
+                <div className="flex gap-2 mb-5">
+                  <Input
+                    type="text"
+                    placeholder="성"
+                    value={formData?.bride_first_name || ''}
+                    onChange={(e) => handleChange('bride_first_name', e.target.value)}
+                    className="w-16"
+                  />
+                  <Input type="text" placeholder="이름" value={formData?.bride_last_name || ''} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
+                </div>
+                <div className="flex gap-2 mb-2">
+                  <Label text="표시순서" required={true} />
+                  <CustomTooltip text="청첩장에 표시되는 신랑 · 신부님의 순서를 변경하실 수 있습니다" />
+                </div>
+                <div className="flex gap-2">
+                  <Button text="신랑 먼저" onClick={() => handleChange('name_display_order', 'groomFirst')} />
+                  <Button text="신부 먼저" onClick={() => handleChange('name_display_order', 'brideFirst')} />
+                </div>
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="혼주 정보"
+            children={
+              <div>
+                <CustomInfoText text="혼주 정보 가리기 : [신랑 · 신부 정보] 블록 '가족 표기' 미입력" className="mb-5" />
+                <Label text="신랑님" required={true} className="mb-2" />
+                <div className="flex gap-2 mb-5">
+                  <Input
+                    type="text"
+                    placeholder="성"
+                    value={formData?.groom_first_name || ''}
+                    onChange={(e) => handleChange('groom_first_name', e.target.value)}
+                    className="w-16"
+                  />
+                  <Input type="text" placeholder="이름" value={formData?.groom_last_name || ''} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
+                </div>
+                <Label text="신부님" required={true} className="mb-2" />
+                <div className="flex gap-2 mb-5">
+                  <Input
+                    type="text"
+                    placeholder="성"
+                    value={formData?.bride_first_name || ''}
+                    onChange={(e) => handleChange('bride_first_name', e.target.value)}
+                    className="w-16"
+                  />
+                  <Input type="text" placeholder="이름" value={formData?.bride_last_name || ''} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
+                </div>
+                <div className="flex gap-2 mb-2">
+                  <Label text="표시순서" required={true} />
+                  <CustomTooltip text="청첩장에 표시되는 신랑 · 신부님의 순서를 변경하실 수 있습니다" />
+                </div>
+                <div className="flex gap-2">
+                  <Button text="신랑 먼저" onClick={() => handleChange('name_display_order', 'groomFirst')} />
+                  <Button text="신부 먼저" onClick={() => handleChange('name_display_order', 'brideFirst')} />
+                </div>
+              </div>
+            }
+          />
+        </div>
         <InfoTitle>메인 정보</InfoTitle>
         <p className="text-[14px] font-suite-medium text-text-default mb-2">템플릿 타입 선택</p>
         <CustomRadioGroup
@@ -530,9 +644,9 @@ export default function AdminTemplatesCreatePage() {
           }}
           className="mb-3"
         />
-        <Input type="text" placeholder="식장 주소" value={formData?.address || ''} onChange={(e) => handleChange('address', e.target.value)} className="mb-3" />
+        {/* <Input type="text" placeholder="식장 주소" value={formData?.address || ''} onChange={(e) => handleChange('address', e.target.value)} className="mb-3" />
         <Input type="text" placeholder="식장 상세 정보" value={formData?.address_detail || ''} onChange={(e) => handleChange('address_detail', e.target.value)} className="mb-3" />
-        <Input type="text" placeholder="식장 전화" value={formData?.hall_phone || ''} onChange={(e) => handleChange('hall_phone', e.target.value)} className="mb-3" />
+        <Input type="text" placeholder="식장 전화" value={formData?.hall_phone || ''} onChange={(e) => handleChange('hall_phone', e.target.value)} className="mb-3" /> */}
 
         <p className="text-[14px] font-suite-medium text-text-default mt-10 mb-2">오시는 길</p>
         <div className="flex flex-col gap-2 mb-3">

@@ -34,6 +34,8 @@ const config: Config = {
         pink100: '#F7ECE8',
         pink200: '#F7ECE8',
         pink300: '#F0DFD8',
+        pink400: '#f7dee2',
+        pink500: '#f3d5d9',
         darkPink100: '#CC9399',
 
         // 레드
@@ -67,6 +69,9 @@ const config: Config = {
       },
       fontFamily: {
         suit: ['var(--font-suit)', 'sans-serif'],
+      },
+      boxShadow: {
+        default: '0 2px 4px -2px rgb(0 0 0 / 0.1)', // 여기서 변수 사용도 가능
       },
     },
   },

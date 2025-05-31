@@ -24,6 +24,8 @@ declare module "@emotion/react" {
       pink100: string,
       pink200: string,
       pink300: string,
+      pink400: string,
+      pink500: string,
       darkPink100: string,
       red: string,
       gray_50: string;
@@ -82,6 +84,8 @@ export const theme = {
     pink100: '#F7ECE8',
     pink200: '#F7ECE8',
     pink300: '#F0DFD8',
+    pink400: '#f7dee2',
+    pink500: '#f3d5d9',
     darkPink100: '#CC9399',
     red: '#9C0000',
     gray_50: "#FAFAFA",

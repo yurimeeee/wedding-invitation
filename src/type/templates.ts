@@ -48,4 +48,6 @@ export type TemplatesData = {
   thumbnail: string;
   type: string;
   id?: string;
+  // 새로 추가
+  name_display_order?: 'groomFirst' | 'brideFirst';
 };

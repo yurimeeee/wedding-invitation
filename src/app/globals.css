@@ -21,6 +21,8 @@
   --pink-100: #f7ece8;
   --pink-200: #f7ece8;
   --pink-300: #f0dfd8;
+  --pink-400: #f7dee2;
+  --pink-500: #f3d5d9;
   --dark-pink-100: #cc9399;
   --red: #9c0000;
   --gray-50: #fafafa;
@@ -35,6 +37,8 @@
   --gray-900: #212121;
   --black: #000000;
   --white: #ffffff;
+
+  --shadow-default: 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -86,6 +90,8 @@
   --color-pink-100: #f7ece8;
   --color-pink-200: #f7ece8;
   --color-pink-300: #f0dfd8;
+  --color-pink-400: #f7dee2;
+  --color-pink-500: #f3d5d9;
   --color-dark-pink-100: #cc9399;
   --color-red: #9c0000;
   --color-gray-50: #fafafa;
@@ -199,6 +205,11 @@
   font-family: 'Chosunilbo_myungjo';
   font-weight: 700;
 }
+/* shadow */
+.shadow-default {
+  box-shadow: 0 3px 4px -2px rgb(0 0 0 / 0.2) !important;
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

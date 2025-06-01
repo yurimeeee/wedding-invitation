@@ -64,4 +64,10 @@ export type TemplatesData = {
   account_layout?: string // 'tap' | 'align'
   is_account_open?: boolean // 계좌 정보 가려두기
 
+  share_kakao_img?: string
+  share_kakao_title?: string
+  share_kakao_desc?: string
+  share_link_img?: string
+  share_link_title?: string
+  share_link_desc?: string
 };

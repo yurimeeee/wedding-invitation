@@ -1,6 +1,6 @@
 type CustomButtonProps = {
   text: string;
-  active: boolean;
+  active?: boolean;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 };
 

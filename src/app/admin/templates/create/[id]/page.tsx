@@ -2,6 +2,7 @@
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@components/ui/accordion';
 import { CiSquarePlus, CiSquareRemove } from 'react-icons/ci';
+import { CustomDialog, DialogTrigger } from '@components/ui/dialog';
 import { CustomRadioGroup, RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
 import { DocumentData, collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import { GRAY_500, GRAY_600 } from '@styles/colors';
@@ -30,6 +31,7 @@ import { IoClose } from 'react-icons/io5';
 import KakaoMap from '@components/admin/feature/KakaoMap';
 import { Label } from '@components/ui/label';
 import { PiFlowerFill } from 'react-icons/pi';
+import ShareSettingsModal from '@components/admin/feature/templates/custom/modal/ShareSettingsModal';
 import TemplateCard from '@components/admin/feature/TemplateCard';
 import TemplateType1 from '@components/admin/feature/templates/types/TemplateType1';
 import TemplateType2 from '@components/admin/feature/templates/types/TemplateType2';
@@ -40,6 +42,7 @@ import { Textarea } from '@components/ui/textarea';
 import dayjs from 'dayjs';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
+import { title } from 'process';
 import { toast } from 'sonner';
 import { useParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
@@ -90,6 +93,7 @@ export default function AdminTemplatesCreatePage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const invitationId = uuidv4();
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
+  const [shareSettingsModal, setShareSettingsModal] = useState<any>({ open: true, title: '', type: '' });
   const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
     const updated = { ...formData };
@@ -360,7 +364,7 @@ export default function AdminTemplatesCreatePage() {
   }, [formData?.type]);
   console.log(formData);
   return (
-    <div className="p-5 sm:p-8 pb-20 flex">
+    <div className="pb-20 flex">
       <Wrap className="bg-[#F5F4F0] p-6">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
         <div className="flex flex-col gap-2">
@@ -634,8 +638,16 @@ export default function AdminTemplatesCreatePage() {
                 <CustomInfoText text="청첩장 공유 시 표시되는 이미지와 문구를 설정하실 수 있습니다." className="mb-1" />
                 <CustomInfoText text="카카오톡 공유는 청첩장 하단의 `카카오톡으로 청첩장 전하기` 버튼으로 공유할 수 있습니다." className="mb-5" />
                 <div className="flex gap-2">
-                  <Button text="카카오톡 공유 설정하기" onClick={() => handleChange('name_display_order', 'groomFirst')} />
-                  <Button text="URL 링크 공유 설정하기" onClick={() => handleChange('name_display_order', 'brideFirst')} />
+                  <CustomButton
+                    text="카카오톡 공유 설정하기"
+                    onClick={() => setShareSettingsModal({ ...shareSettingsModal, open: true, title: '카카오톡 공유 설정하기', type: 'KAKAO' })}
+                    active
+                  />
+                  <CustomButton
+                    text="URL 링크 공유 설정하기"
+                    onClick={() => setShareSettingsModal({ ...shareSettingsModal, open: true, title: 'URL 링크 공유 설정하기', type: 'LINK' })}
+                    active
+                  />
                 </div>
               </div>
             }
@@ -1034,7 +1046,17 @@ export default function AdminTemplatesCreatePage() {
           <Button onClick={handleSave}>저장하기</Button>
         </div>
       </Wrap>
-      <Wrap className="hidden sm:flex">{RenderedComponent && <RenderedComponent data={formData} />}</Wrap>
+      <Wrap className="hidden sm:flex bg-text-default">
+        <div className="max-w-[400px] mx-auto">{RenderedComponent && <RenderedComponent data={formData} />}</div>
+      </Wrap>
+      <ShareSettingsModal
+        open={shareSettingsModal.open}
+        onOpenChange={setShareSettingsModal}
+        title={shareSettingsModal.title}
+        type={shareSettingsModal.type}
+        setData={(key: string, e: any) => setFormData({ ...formData, [key]: e.target.value })}
+        data={formData}
+      />
     </div>
   );
 }

@@ -50,4 +50,18 @@ export type TemplatesData = {
   id?: string;
   // 새로 추가
   name_display_order?: 'groomFirst' | 'brideFirst';
+  // 혼주 정보
+  bride_parents?: {
+    dad: { name: string, isDeceased: boolean, isDeceased_mark?: string }, // 'text' | 'icon'
+    mom: { name: string, isDeceased: boolean, isDeceased_mark?: string },
+  },
+  groom_parents?: {
+    dad: { name: string, isDeceased: boolean, isDeceased_mark?: string },
+    mom: { name: string, isDeceased: boolean, isDeceased_mark?: string },
+  },
+  account_title?: string // 마음 전하실 곳
+  account_desc?: string // 참석이 어려우신 분들을 위해 기재했습니다 너그러운 마음으로 양해 부탁드립니다
+  account_layout?: string // 'tap' | 'align'
+  is_account_open?: boolean // 계좌 정보 가려두기
+
 };

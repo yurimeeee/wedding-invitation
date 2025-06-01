@@ -13,8 +13,13 @@ import { useEffect, useRef, useState } from 'react';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
 import { Button } from '@components/ui/button';
 import CustomAccordion from '@components/admin/feature/templates/custom/Accordion';
+import { CustomButton } from '@components/ui/CustomButton';
+import { CustomCheckbox } from '@components/ui/checkbox';
 import { CustomDatePicker } from '@components/ui/CustomDatePicker';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
+import { CustomInput } from '@components/ui/CustomInput';
+import { CustomSelect } from '@components/ui/select';
+import { CustomToggle } from '@components/ui/toggle';
 import { CustomTooltip } from '@components/ui/tooltip';
 import DaumPost from '@components/admin/feature/DaumPost';
 import { Divide } from 'lucide-react';
@@ -22,7 +27,9 @@ import { FaRegImage } from 'react-icons/fa6';
 import Image from 'next/image';
 import { Input } from '@components/ui/input';
 import { IoClose } from 'react-icons/io5';
+import KakaoMap from '@components/admin/feature/KakaoMap';
 import { Label } from '@components/ui/label';
+import { PiFlowerFill } from 'react-icons/pi';
 import TemplateCard from '@components/admin/feature/TemplateCard';
 import TemplateType1 from '@components/admin/feature/templates/types/TemplateType1';
 import TemplateType2 from '@components/admin/feature/templates/types/TemplateType2';
@@ -33,6 +40,7 @@ import { Textarea } from '@components/ui/textarea';
 import dayjs from 'dayjs';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
+import { toast } from 'sonner';
 import { useParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -82,7 +90,7 @@ export default function AdminTemplatesCreatePage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const invitationId = uuidv4();
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
-  const handleChange = (path: string, value: string) => {
+  const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
     const updated = { ...formData };
     let temp: any = updated;
@@ -95,6 +103,32 @@ export default function AdminTemplatesCreatePage() {
 
     setFormData(updated);
   };
+
+  // function handleParentValueChange(parentType: 'bride_parents' | 'groom_parents', role: 'dad' | 'mom', key: string, value: any) {
+  //   setFormData((prev: any) => ({
+  //     ...prev,
+  //     [parentType]: {
+  //       ...prev[parentType],
+  //       [role]: {
+  //         ...prev[parentType]?.[role],
+  //         [key]: value,
+  //       },
+  //     },
+  //   }));
+  // }
+
+  function handleParentValueChange(parentType: 'groom_parents' | 'bride_parents', role: 'dad' | 'mom', key: string, value: any) {
+    setFormData((prev: any) => ({
+      ...prev,
+      [parentType]: {
+        ...(prev[parentType] || {}),
+        [role]: {
+          ...(prev[parentType]?.[role] || {}),
+          [key]: value,
+        },
+      },
+    }));
+  }
 
   const handleObjectValueChange = (key: string, index: number, value: string) => {
     const keyIndex = formData?.directions_desc?.findIndex((item: any) => item.type === key);
@@ -324,6 +358,7 @@ export default function AdminTemplatesCreatePage() {
         break;
     }
   }, [formData?.type]);
+  console.log(formData);
   return (
     <div className="p-5 sm:p-8 pb-20 flex">
       <Wrap className="bg-[#F5F4F0] p-6">
@@ -351,13 +386,19 @@ export default function AdminTemplatesCreatePage() {
               <div>
                 <Label text="예식장 주소" required={true} className="mb-2" />
                 <div className="flex items-center gap-2 mb-5">
-                  <Input type="text" placeholder="식장 주소" value={formData?.address || ''} readOnly />
+                  <CustomInput type="text" placeholder="식장 주소" value={formData?.address || ''} readOnly />
                   <DaumPost setAddress={(value: any) => handleChange('address', value)} />
                 </div>
                 <Label text="층 / 홀" required={true} className="mb-2" />
-                <Input type="text" placeholder="층 / 홀" value={formData?.address_detail || ''} onChange={(e) => handleChange('address_detail', e.target.value)} className="mb-5" />
+                <CustomInput
+                  type="text"
+                  placeholder="층 / 홀"
+                  value={formData?.address_detail || ''}
+                  onChange={(e) => handleChange('address_detail', e.target.value)}
+                  className="mb-5"
+                />
                 <Label text="예식장 연락처" required={true} className="mb-2" />
-                <Input type="text" placeholder="예식장 연락처" value={formData?.hall_phone || ''} onChange={(e) => handleChange('hall_phone', e.target.value)} />
+                <CustomInput type="text" placeholder="예식장 연락처" value={formData?.hall_phone || ''} onChange={(e) => handleChange('hall_phone', e.target.value)} />
               </div>
             }
           />
@@ -368,33 +409,33 @@ export default function AdminTemplatesCreatePage() {
                 <CustomInfoText text="신랑님과 신부님의 정보를 입력해주세요." className="mb-5" />
                 <Label text="신랑님" required={true} className="mb-2" />
                 <div className="flex gap-2 mb-5">
-                  <Input
+                  <CustomInput
                     type="text"
                     placeholder="성"
                     value={formData?.groom_first_name || ''}
                     onChange={(e) => handleChange('groom_first_name', e.target.value)}
-                    className="w-16"
+                    className="!w-2/5"
                   />
-                  <Input type="text" placeholder="이름" value={formData?.groom_last_name || ''} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
+                  <CustomInput type="text" placeholder="이름" value={formData?.groom_last_name || ''} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
                 </div>
                 <Label text="신부님" required={true} className="mb-2" />
                 <div className="flex gap-2 mb-5">
-                  <Input
+                  <CustomInput
                     type="text"
                     placeholder="성"
                     value={formData?.bride_first_name || ''}
                     onChange={(e) => handleChange('bride_first_name', e.target.value)}
-                    className="w-16"
+                    className="!w-2/5"
                   />
-                  <Input type="text" placeholder="이름" value={formData?.bride_last_name || ''} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
+                  <CustomInput type="text" placeholder="이름" value={formData?.bride_last_name || ''} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
                 </div>
                 <div className="flex gap-2 mb-2">
                   <Label text="표시순서" required={true} />
                   <CustomTooltip text="청첩장에 표시되는 신랑 · 신부님의 순서를 변경하실 수 있습니다" />
                 </div>
                 <div className="flex gap-2">
-                  <Button text="신랑 먼저" onClick={() => handleChange('name_display_order', 'groomFirst')} />
-                  <Button text="신부 먼저" onClick={() => handleChange('name_display_order', 'brideFirst')} />
+                  <CustomButton text="신랑 먼저" onClick={() => handleChange('name_display_order', 'groomFirst')} active={formData?.name_display_order === 'groomFirst'} />
+                  <CustomButton text="신부 먼저" onClick={() => handleChange('name_display_order', 'brideFirst')} active={formData?.name_display_order === 'brideFirst'} />
                 </div>
               </div>
             }
@@ -403,74 +444,477 @@ export default function AdminTemplatesCreatePage() {
             title="혼주 정보"
             children={
               <div>
-                <CustomInfoText text="혼주 정보 가리기 : [신랑 · 신부 정보] 블록 '가족 표기' 미입력" className="mb-5" />
-                <Label text="신랑님" required={true} className="mb-2" />
-                <div className="flex gap-2 mb-5">
-                  <Input
+                <CustomInfoText text="혼주 정보 가리기 : [신랑 · 신부 정보] 블록 '가족 표기' 미입력" className="mb-1" />
+                <CustomInfoText text="입력하지 않은 혼주분의 정보는 노출되지 않습니다." className="mb-5" />
+                <Label text="신랑 아버지" required={true} className="mb-2" />
+                <div className="flex gap-2 mb-5 flex-wrap">
+                  <CustomInput
                     type="text"
-                    placeholder="성"
-                    value={formData?.groom_first_name || ''}
-                    onChange={(e) => handleChange('groom_first_name', e.target.value)}
-                    className="w-16"
+                    placeholder="성함"
+                    value={formData?.groom_parents?.dad?.name}
+                    onChange={(e) => handleParentValueChange('groom_parents', 'dad', 'name', e.target.value)}
+                    className="w-full sm:max-w-[270px]"
                   />
-                  <Input type="text" placeholder="이름" value={formData?.groom_last_name || ''} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
+                  <div className="flex gap-2">
+                    <CustomCheckbox
+                      text="고인 표시"
+                      value={formData?.groom_parents?.dad?.isDeceased}
+                      onChange={() => handleParentValueChange('groom_parents', 'dad', 'isDeceased', !formData?.groom_parents?.dad?.isDeceased)}
+                    />
+                    {formData?.groom_parents?.dad?.isDeceased && (
+                      <CustomSelect
+                        value={formData?.groom_parents?.dad?.isDeceased_mark}
+                        onChange={(value) => handleParentValueChange('groom_parents', 'dad', 'isDeceased_mark', value)}
+                        options={[
+                          { label: '故', value: 'text' },
+                          { label: <PiFlowerFill />, value: 'icon' },
+                        ]}
+                        className="max-w-[100px]"
+                      />
+                    )}
+                  </div>
                 </div>
-                <Label text="신부님" required={true} className="mb-2" />
-                <div className="flex gap-2 mb-5">
-                  <Input
+                <Label text="신랑 어머니" required={true} className="mb-2" />
+                <div className="flex gap-2 mb-5 flex-wrap">
+                  <CustomInput
                     type="text"
-                    placeholder="성"
-                    value={formData?.bride_first_name || ''}
-                    onChange={(e) => handleChange('bride_first_name', e.target.value)}
-                    className="w-16"
+                    placeholder="성함"
+                    value={formData?.groom_parents?.mom?.name}
+                    onChange={(e) => handleParentValueChange('groom_parents', 'mom', 'name', e.target.value)}
+                    className="w-full sm:max-w-[270px]"
                   />
-                  <Input type="text" placeholder="이름" value={formData?.bride_last_name || ''} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
+                  <div className="flex gap-2">
+                    <CustomCheckbox
+                      text="고인 표시"
+                      value={formData?.groom_parents?.mom?.isDeceased}
+                      onChange={() => handleParentValueChange('groom_parents', 'mom', 'isDeceased', !formData?.groom_parents?.mom?.isDeceased)}
+                    />
+                    {formData?.groom_parents?.mom?.isDeceased && (
+                      <CustomSelect
+                        value={formData?.groom_parents?.mom?.isDeceased_mark}
+                        onChange={(value) => handleParentValueChange('groom_parents', 'mom', 'isDeceased_mark', value)}
+                        options={[
+                          { label: '故', value: 'text' },
+                          { label: <PiFlowerFill />, value: 'icon' },
+                        ]}
+                        className="max-w-[100px]"
+                      />
+                    )}
+                  </div>
+                </div>
+                <Label text="신부 아버지" required={true} className="mb-2" />
+                <div className="flex gap-2 mb-5 flex-wrap">
+                  <CustomInput
+                    type="text"
+                    placeholder="성함"
+                    value={formData?.bride_parents?.dad?.name}
+                    onChange={(e) => handleParentValueChange('bride_parents', 'dad', 'name', e.target.value)}
+                    className="w-full sm:max-w-[270px]"
+                  />
+                  <div className="flex gap-2">
+                    <CustomCheckbox
+                      text="고인 표시"
+                      value={formData?.bride_parents?.dad?.isDeceased}
+                      onChange={() => handleParentValueChange('bride_parents', 'dad', 'isDeceased', !formData?.bride_parents?.dad?.isDeceased)}
+                    />
+                    {formData?.bride_parents?.dad?.isDeceased && (
+                      <CustomSelect
+                        value={formData?.bride_parents?.dad?.isDeceased_mark}
+                        onChange={(value) => handleParentValueChange('bride_parents', 'dad', 'isDeceased_mark', value)}
+                        options={[
+                          { label: '故', value: 'text' },
+                          { label: <PiFlowerFill />, value: 'icon' },
+                        ]}
+                        className="max-w-[100px]"
+                      />
+                    )}
+                  </div>
+                </div>
+                <Label text="신부 어머니" required={true} className="mb-2" />
+                <div className="flex gap-2 mb-5 flex-wrap">
+                  <CustomInput
+                    type="text"
+                    placeholder="성함"
+                    value={formData?.bride_parents?.mom?.name}
+                    onChange={(e) => handleParentValueChange('bride_parents', 'mom', 'name', e.target.value)}
+                    className="w-full sm:max-w-[270px]"
+                  />
+                  <div className="flex gap-2">
+                    <CustomCheckbox
+                      text="고인 표시"
+                      value={formData?.bride_parents?.mom?.isDeceased}
+                      onChange={() => handleParentValueChange('bride_parents', 'mom', 'isDeceased', !formData?.bride_parents?.mom?.isDeceased)}
+                    />
+                    {formData?.bride_parents?.mom?.isDeceased && (
+                      <CustomSelect
+                        value={formData?.bride_parents?.mom?.isDeceased_mark}
+                        onChange={(value) => handleParentValueChange('bride_parents', 'mom', 'isDeceased_mark', value)}
+                        options={[
+                          { label: '故', value: 'text' },
+                          { label: <PiFlowerFill />, value: 'icon' },
+                        ]}
+                        className="max-w-[100px]"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="커버 디자인"
+            children={
+              <div>
+                <CustomInfoText text="커버 이미지는 레이아웃에 자동으로 맞춰집니다." className="mb-1" />
+                <CustomInfoText text="텍스트 정보는 별도 입력 없이 자동으로 완성됩니다." className="mb-5" />
+                <Label text="디자인" required={true} className="mb-2" />
+                <CustomRadioGroup
+                  label=""
+                  value={formData?.type}
+                  onChange={(val) => setFormData({ ...formData, type: val })}
+                  options={[
+                    { label: 'type 1', value: 'type_1' },
+                    { label: 'type 2', value: 'type_2' },
+                    { label: 'type 3', value: 'type_3' },
+                    { label: 'type 4', value: 'type_4' },
+                  ]}
+                  className="w-[240px] flex items-center gap-3 mb-4"
+                />
+
+                <div className="mb-4">
+                  <div className="flex gap-2 mb-2">
+                    <Label text="커버 이미지" required={true} />
+                    <CustomTooltip text="에디터와 미리보기에서는 화질이 저하되어 보일 수 있으나, 실제 공유 시 모바일에 최적화 된 화질로 표시됩니다" />
+                  </div>
+                  {formData?.main?.main_img_tip && <p className="text-[12px] font-suite-medium text-gray-500 mb-2">권장 사이즈 : {formData?.main?.main_img_tip}</p>}
+
+                  <input type="file" accept="image/*" onChange={handleMainImgChange} hidden ref={inputRef} value={''} />
+
+                  {/* 이미지가 있을 경우 */}
+                  {formData?.main?.main_img ? (
+                    <div onClick={handleClick} className="cursor-pointer">
+                      <Image src={formData.main.main_img} alt="main image" width={120} height={120} className="mt-2 rounded" />
+                    </div>
+                  ) : (
+                    // 이미지 없을 경우 아이콘 클릭
+                    <NoImage onClick={handleClick}>
+                      <FaRegImage size={24} color={theme.color.gray_600} />
+                    </NoImage>
+                  )}
+                </div>
+                <Label text="이름 레이아웃 타입" required={true} className="mb-2" />
+                <div className="flex gap-3">
+                  <Image src={`/assets/img/templates/${formData?.main?.main_text_type}.png`} width={100} height={100} alt={'preview'} className="rounded mb-2" />
+                  <CustomRadioGroup
+                    value={formData?.main?.main_text_type}
+                    onChange={(val) => handleChange('main.main_text_type', val)}
+                    options={[
+                      { label: '철수와 영희', value: 'groomAndBride' },
+                      { label: '철수 그리고 영희', value: 'groomAndBrideVertical' },
+                      { label: '김철수 · 이영희', value: 'groomDotBride' },
+                    ]}
+                    className="w-[240px] flex items-center gap-3 flex-wrap sm:flex-nowrap"
+                  />
+                </div>
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="폰트"
+            children={
+              <div>
+                <CustomInfoText text="청첩장의 폰트와 사이즈를 변경하실 수 있습니다." className="mb-5" />
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="카톡 · 링크 공유 설정"
+            children={
+              <div>
+                <CustomInfoText text="청첩장 공유 시 표시되는 이미지와 문구를 설정하실 수 있습니다." className="mb-1" />
+                <CustomInfoText text="카카오톡 공유는 청첩장 하단의 `카카오톡으로 청첩장 전하기` 버튼으로 공유할 수 있습니다." className="mb-5" />
+                <div className="flex gap-2">
+                  <Button text="카카오톡 공유 설정하기" onClick={() => handleChange('name_display_order', 'groomFirst')} />
+                  <Button text="URL 링크 공유 설정하기" onClick={() => handleChange('name_display_order', 'brideFirst')} />
+                </div>
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="모시는 글"
+            children={
+              <div>
+                <CustomInfoText text="많은 커플들이 선택한 샘플 문구를 활용하여 수정하실 수 있습니다." className="mb-5" />
+                <Label text="모시는 글" required={true} className="mb-2" />
+                <Textarea placeholder="입력해주세요" value={formData?.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} className="mb-5" />
+                <CustomRadioGroup
+                  label="내용 정렬"
+                  value={formData?.main?.intro_content_align}
+                  onChange={(val) => handleChange('main.intro_content_align', val)}
+                  options={[
+                    { label: '왼쪽 정렬', value: 'left' },
+                    { label: '가운데 정렬', value: 'center' },
+                  ]}
+                  className="w-[240px] flex items-center gap-3 "
+                />
+                <Button text="샘플문구 활용하기" onClick={() => {}} className="mt-5" />
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="예식일 하이라이트"
+            children={
+              <div>
+                <CustomInfoText text="예식 일자를 영문으로 표시해주는 블럭입니다." className="mb-1" />
+                <CustomInfoText text="[폰트] 블록에서 선택한 폰트를 동일하게 적용할 수 있습니다." className="mb-5" />
+                <Label text="타입" required={true} className="mb-2" />
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="캘린더"
+            children={
+              <div>
+                <CustomInfoText text="설정하신 예식 일시가 캘린더에 자동으로 반영됩니다." className="mb-5" />
+                <Label text="설정" className="mb-2" />
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="갤러리"
+            children={
+              <div>
+                <CustomInfoText text="사진은 최대 10장까지 업로드하실 수 있습니다." className="mb-1" />
+                <CustomInfoText text="사진을 업로드 한 뒤 드래그하면 순서를 변경하실 수 있습니다." className="mb-1" />
+                <CustomInfoText text="용량이 큰 사진은 최적화된 해상도와 크기로 업로드 됩니다." className="mb-5" />
+                <Label text="제목" className="mb-2" />
+                <CustomInput
+                  type="text"
+                  placeholder="입력해주세요"
+                  value={formData?.groom_parents?.dad?.name}
+                  onChange={(e) => handleParentValueChange('groom_parents', 'dad', 'name', e.target.value)}
+                  className="mb-5"
+                />
+                <Label text="설명" className="mb-2" />
+                <CustomInput
+                  type="text"
+                  placeholder="입력해주세요"
+                  value={formData?.groom_parents?.dad?.name}
+                  onChange={(e) => handleParentValueChange('groom_parents', 'dad', 'name', e.target.value)}
+                  className="mb-5"
+                />
+                <div className="flex justify-between items-center">
+                  <Label text="이미지" required={true} className="mb-2" /> <p className="text-xs text-text-default">{formData?.gallery?.length}/10 장</p>
+                </div>
+                <input type="file" accept="image/*" multiple onChange={handleGalleryChange} value={''} />
+                <div className="flex flex-wrap gap-3 mt-3 mb-5">
+                  {formData?.gallery
+                    ?.filter((img: string) => !!img)
+                    .map((img: string, idx: number) => (
+                      <PreviewImage key={idx}>
+                        <Image
+                          key={idx}
+                          src={img}
+                          alt={`gallery-${idx}`}
+                          // width={120}
+                          // height={120}
+                          // sizes="100%"
+                          fill
+                          className="rounded"
+                        />
+                        <div
+                          className="bg-white absolute rignt-0 top-0 z-10 bg-white/50"
+                          onClick={() => {
+                            handleGalleryImageRemove(idx);
+                          }}
+                        >
+                          <IoClose />
+                        </div>
+                      </PreviewImage>
+                    ))}
+                </div>
+                <Label text="설정" className="mb-2" />
+                이미지 클릭 시 전체화면 팝업
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="오시는 길"
+            children={
+              <div>
+                <CustomInfoText text="지도 서비스에 등록 신청한 주소와 핀 표시 위치가 상이할 수 있습니다." className="mb-1" />
+                <CustomInfoText text="핀 위치 정정하기 : 아래 지도에서 클릭하는 위치로 옮길 수 있습니다." className="mb-5" />
+                <KakaoMap address={formData?.address} />
+                <Label text="교통수단 안내" required={true} className="mb-2 mt-5" />
+                <div className="flex flex-col gap-2 mb-3">
+                  <p className="text-[14px] font-suite-medium text-text-default">지하철</p>
+                  {formData?.directions_desc
+                    ?.filter((direction: any) => direction.type == '지하철')[0]
+                    .desc?.map((item: any, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <CustomInput type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('지하철', idx, e.target.value)} />
+                        <div>
+                          <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('지하철')} />
+                        </div>
+                        {formData?.directions_desc?.filter((direction: any) => direction.type == '지하철')[0].desc?.length > 1 && (
+                          <button onClick={() => removeDirections('지하철', idx)}>
+                            <CiSquareRemove size={20} className="text-red-500" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                </div>
+                <div className="flex flex-col gap-2 mb-3">
+                  <p className="text-[14px] font-suite-medium text-text-default">버스</p>
+                  {formData?.directions_desc
+                    ?.filter((direction: any) => direction.type == '버스')[0]
+                    .desc?.map((item: any, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <CustomInput type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('버스', idx, e.target.value)} />
+                        <div>
+                          <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('버스')} />
+                        </div>
+                        {formData?.directions_desc?.filter((direction: any) => direction.type == '버스')[0].desc?.length > 1 && (
+                          <button onClick={() => removeDirections('버스', idx)}>
+                            <CiSquareRemove size={20} className="text-red-500" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                </div>
+                <div className="flex flex-col gap-2 mb-3">
+                  <p className="text-[14px] font-suite-medium text-text-default">주차</p>
+                  {formData?.directions_desc
+                    ?.filter((direction: any) => direction.type == '주차')[0]
+                    .desc?.map((item: any, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <CustomInput type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('주차', idx, e.target.value)} />
+                        <div>
+                          <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('주차')} />
+                        </div>
+                        {formData?.directions_desc?.filter((direction: any) => direction.type == '주차')[0].desc?.length > 1 && (
+                          <button onClick={() => removeDirections('주차', idx)}>
+                            <CiSquareRemove size={20} className="text-red-500" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="계좌 정보"
+            children={
+              <div>
+                <CustomInfoText text="입력하지 않은 분의 계좌 정보는 노출되지 않습니다." className="mb-1" />
+                <CustomInfoText text="계좌 정보를 정확하게 입력해 주세요." className="mb-5" />
+                <Label text="제목" className="mb-2" />
+                <CustomInput
+                  type="text"
+                  placeholder="제목"
+                  value={formData?.account_title || '마음 전하실 곳'}
+                  onChange={(e) => handleChange('account_title', e.target.value)}
+                  className="mb-5"
+                />
+                <Label text="설명" className="mb-2" />
+                <Textarea placeholder="설명" value={formData?.account_desc} onChange={(e) => handleChange('account_desc', e.target.value)} className="mb-5" />
+                <Label text="배치" className="mb-2" />
+                <div className="flex gap-2 mb-5">
+                  <CustomButton text="탭" onClick={() => handleChange('account_layout', 'tap')} active={formData?.account_layout === 'tap'} />
+                  <CustomButton text="나열" onClick={() => handleChange('account_layout', 'align')} active={formData?.account_layout === 'align'} />
                 </div>
                 <div className="flex gap-2 mb-2">
-                  <Label text="표시순서" required={true} />
-                  <CustomTooltip text="청첩장에 표시되는 신랑 · 신부님의 순서를 변경하실 수 있습니다" />
+                  <Label text="설정" />
+                  <CustomTooltip text="계좌 정보가 바로 노출되는 것이 부담스러우실 경우, 가려둔 후 선택적으로 표시할 수 있습니다" />
                 </div>
-                <div className="flex gap-2">
-                  <Button text="신랑 먼저" onClick={() => handleChange('name_display_order', 'groomFirst')} />
-                  <Button text="신부 먼저" onClick={() => handleChange('name_display_order', 'brideFirst')} />
+                <CustomToggle
+                  checked={formData?.is_account_open || false}
+                  onChange={(val) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      is_account_open: val,
+                    }))
+                  }
+                />
+                {/* <CustomToggle checked={formData?.is_account_open || false} onChange={() => handleChange('is_account_open', !formData?.is_account_open)} /> */}
+                <div className="flex flex-col gap-2 mb-3">
+                  <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
+                  {formData?.groom_account?.map((item: any, idx: number) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <CustomInput type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'bank', e.target.value)} />
+                      <CustomInput
+                        type="text"
+                        placeholder="계좌번호"
+                        value={item?.account || ''}
+                        onChange={(e) => handleAccountChange('groom_account', idx, 'account', e.target.value)}
+                      />
+                      <CustomInput type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'name', e.target.value)} />
+                      <div>
+                        <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('groom_account')} />
+                      </div>
+                      {formData?.groom_account?.length > 1 && (
+                        <button onClick={() => removeAccount('groom_account', idx)}>
+                          <CiSquareRemove size={20} className="text-red-500" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <Label text="배치" required={true} className="mb-2 mt-5" />
+                <div className="flex flex-col gap-2 mb-3">
+                  <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
+                  {formData?.groom_account?.map((item: any, idx: number) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <CustomInput type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'bank', e.target.value)} />
+                      <CustomInput
+                        type="text"
+                        placeholder="계좌번호"
+                        value={item?.account || ''}
+                        onChange={(e) => handleAccountChange('groom_account', idx, 'account', e.target.value)}
+                      />
+                      <CustomInput type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'name', e.target.value)} />
+                      <div>
+                        <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('groom_account')} />
+                      </div>
+                      {formData?.groom_account?.length > 1 && (
+                        <button onClick={() => removeAccount('groom_account', idx)}>
+                          <CiSquareRemove size={20} className="text-red-500" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-col gap-2 mb-3">
+                  <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
+
+                  {formData?.bride_account?.map((item: any, idx: number) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <CustomInput type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'bank', e.target.value)} />
+                      <CustomInput
+                        type="text"
+                        placeholder="계좌번호"
+                        value={item?.account || ''}
+                        onChange={(e) => handleAccountChange('bride_account', idx, 'account', e.target.value)}
+                      />
+                      <CustomInput type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'name', e.target.value)} />
+                      <div>
+                        <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('bride_account')} />
+                      </div>
+                      {formData?.bride_account?.length > 1 && (
+                        <button onClick={() => removeAccount('bride_account', idx)}>
+                          <CiSquareRemove size={20} className="text-red-500" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             }
           />
         </div>
-        <InfoTitle>메인 정보</InfoTitle>
-        <p className="text-[14px] font-suite-medium text-text-default mb-2">템플릿 타입 선택</p>
-        <CustomRadioGroup
-          label=""
-          value={formData?.type}
-          onChange={(val) => setFormData({ ...formData, type: val })}
-          options={[
-            { label: 'type 1', value: 'type_1' },
-            { label: 'type 2', value: 'type_2' },
-            { label: 'type 3', value: 'type_3' },
-            { label: 'type 4', value: 'type_4' },
-          ]}
-          className="w-[240px] flex items-center gap-3 mb-4"
-        />
-        <div className="mb-4">
-          <p className="text-[14px] font-suite-medium text-text-default mb-2">메인 이미지 업로드</p>
-          {formData?.main?.main_img_tip && <p className="text-[12px] font-suite-medium text-gray-500 mb-2">권장 사이즈 : {formData?.main?.main_img_tip}</p>}
 
-          <input type="file" accept="image/*" onChange={handleMainImgChange} hidden ref={inputRef} value={''} />
-
-          {/* 이미지가 있을 경우 */}
-          {formData?.main?.main_img ? (
-            <div onClick={handleClick} className="cursor-pointer">
-              <Image src={formData.main.main_img} alt="main image" width={120} height={120} className="mt-2 rounded" />
-            </div>
-          ) : (
-            // 이미지 없을 경우 아이콘 클릭
-            <NoImage onClick={handleClick}>
-              <FaRegImage size={24} color={theme.color.gray_600} />
-            </NoImage>
-          )}
-        </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <p className="text-[14px] font-suite-medium text-text-default mb-2">갤러리 이미지 업로드</p>
           <p className="text-[12px] font-suite-medium text-gray-500 mb-2">최대 10장 업로드 가능</p>
           <input type="file" accept="image/*" multiple onChange={handleGalleryChange} value={''} />
@@ -501,33 +945,19 @@ export default function AdminTemplatesCreatePage() {
                 </PreviewImage>
               ))}
           </div>
-        </div>
-        {/* <input type="file" placeholder="신랑과 신부" value={formData?.main?.main_img || ''} onChange={(e) => handleChange('main.main_img', e.target.value)} /> */}
-        <p className="text-[14px] font-suite-medium text-text-default mb-2">메인 내용</p>
-        <Input
+        </div> */}
+
+        <CustomInput
           type="text"
           placeholder="신랑과 신부"
           value={formData?.main.main_groom_and_bride_name || ''}
           onChange={(e) => handleChange('main.main_groom_and_bride_name', e.target.value)}
           className="mb-3"
         />
-        <p className="text-[14px] font-suite-medium text-text-default mb-2">이름 레이아웃 타입</p>
-        <div className="flex gap-3">
-          <Image src={`/assets/img/templates/${formData?.main?.main_text_type}.png`} width={100} height={100} alt={'preview'} className="rounded mb-2" />
-          <CustomRadioGroup
-            value={formData?.main?.main_text_type}
-            onChange={(val) => handleChange('main.main_text_type', val)}
-            options={[
-              { label: '철수와 영희', value: 'groomAndBride' },
-              { label: '철수 그리고 영희', value: 'groomAndBrideVertical' },
-              { label: '김철수 · 이영희', value: 'groomDotBride' },
-            ]}
-            className="w-[240px] flex items-center gap-3 mb-3 flex-wrap sm:flex-nowrap"
-          />
-        </div>
+
         <p className="text-[14px] font-suite-medium text-text-default mb-2">제목</p>
         <div className="flex flex-wrap gap-3 mb-3">
-          <Input type="text" placeholder="제목" value={formData?.main.main_title || ''} onChange={(e) => handleChange('main.main_title', e.target.value)} />
+          <CustomInput type="text" placeholder="제목" value={formData?.main.main_title || ''} onChange={(e) => handleChange('main.main_title', e.target.value)} />
           <CustomRadioGroup
             label="제목 정렬"
             value={formData?.main?.main_title_align || ''}
@@ -539,7 +969,7 @@ export default function AdminTemplatesCreatePage() {
             className="w-[240px] flex items-center gap-3"
           />
         </div>
-        <p className="text-[14px] font-suite-medium text-text-default mb-2">인삿말</p>
+        {/* <p className="text-[14px] font-suite-medium text-text-default mb-2">인삿말</p>
         <Textarea placeholder="인삿말" value={formData?.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} className="mb-3" />
         <CustomRadioGroup
           label="내용 정렬"
@@ -550,15 +980,12 @@ export default function AdminTemplatesCreatePage() {
             { label: '가운데 정렬', value: 'center' },
           ]}
           className="w-[240px] flex items-center gap-3"
-        />
+        /> */}
 
         <InfoTitle className="mt-10">신랑 측 정보</InfoTitle>
-        <div className="flex gap-2 mb-3">
-          <Input type="text" placeholder="신랑 성" value={formData?.groom_first_name || ''} onChange={(e) => handleChange('groom_first_name', e.target.value)} />
-          <Input type="text" placeholder="신랑 이름" value={formData?.groom_last_name || ''} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
-        </div>
+
         <div className="flex gap-4 mb-3">
-          <Input type="text" placeholder="신랑 연락처" value={formData?.groom_phone || ''} onChange={(e) => handleChange('groom_phone', e.target.value)} />
+          <CustomInput type="text" placeholder="신랑 연락처" value={formData?.groom_phone || ''} onChange={(e) => handleChange('groom_phone', e.target.value)} />
           <CustomRadioGroup
             label="장남 여부"
             value={String(formData?.isFirstSon)}
@@ -570,35 +997,11 @@ export default function AdminTemplatesCreatePage() {
             className="w-[240px] flex items-center gap-3"
           />
         </div>
-        <div className="flex gap-2 mb-3">
-          <Input type="text" placeholder="신랑 아버님 성함" value={formData?.groom_dad || ''} onChange={(e) => handleChange('groom_dad', e.target.value)} />
-          <Input type="text" placeholder="신랑 어머님 성함" value={formData?.groom_mom || ''} onChange={(e) => handleChange('groom_mom', e.target.value)} />
-        </div>
-        <div className="flex flex-col gap-2 mb-3">
-          <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
-          {formData?.groom_account?.map((item: any, idx: number) => (
-            <div key={idx} className="flex items-center gap-2">
-              <Input type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'bank', e.target.value)} />
-              <Input type="text" placeholder="계좌번호" value={item?.account || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'account', e.target.value)} />
-              <Input type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'name', e.target.value)} />
-              <div>
-                <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('groom_account')} />
-              </div>
-              {formData?.groom_account?.length > 1 && (
-                <button onClick={() => removeAccount('groom_account', idx)}>
-                  <CiSquareRemove size={20} className="text-red-500" />
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+
         <InfoTitle className="mt-10">신부 측 정보</InfoTitle>
-        <div className="flex gap-2 mb-3">
-          <Input type="text" placeholder="신부 성" value={formData?.bride_first_name || ''} onChange={(e) => handleChange('bride_first_name', e.target.value)} />
-          <Input type="text" placeholder="신부 이름" value={formData?.bride_last_name || ''} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
-        </div>
+
         <div className="flex gap-4 mb-3">
-          <Input type="text" placeholder="신부 연락처" value={formData?.bride_phone || ''} onChange={(e) => handleChange('bride_phone', e.target.value)} />
+          <CustomInput type="text" placeholder="신부 연락처" value={formData?.bride_phone || ''} onChange={(e) => handleChange('bride_phone', e.target.value)} />
           <CustomRadioGroup
             label="장녀 여부"
             value={String(formData?.isFirstDaughter)}
@@ -610,31 +1013,9 @@ export default function AdminTemplatesCreatePage() {
             className="w-[240px] flex items-center gap-3"
           />
         </div>
-        <div className="flex gap-2 mb-3">
-          <Input type="text" placeholder="신부 아버님 성함" value={formData?.bride_dad || ''} onChange={(e) => handleChange('bride_dad', e.target.value)} />
-          <Input type="text" placeholder="신부 어머님 성함" value={formData?.bride_mom || ''} onChange={(e) => handleChange('bride_mom', e.target.value)} />
-        </div>
-        <div className="flex flex-col gap-2 mb-3">
-          <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
 
-          {formData?.bride_account?.map((item: any, idx: number) => (
-            <div key={idx} className="flex items-center gap-2">
-              <Input type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'bank', e.target.value)} />
-              <Input type="text" placeholder="계좌번호" value={item?.account || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'account', e.target.value)} />
-              <Input type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'name', e.target.value)} />
-              <div>
-                <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('bride_account')} />
-              </div>
-              {formData?.bride_account?.length > 1 && (
-                <button onClick={() => removeAccount('bride_account', idx)}>
-                  <CiSquareRemove size={20} className="text-red-500" />
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
         <p className="text-[14px] font-suite-medium text-text-default mt-10 mb-2">식 일자 · 식장 정보</p>
-        <Input
+        <CustomInput
           type="date"
           placeholder="날짜"
           value={formData?.wedding_day || formData?.main.date || ''}
@@ -644,71 +1025,16 @@ export default function AdminTemplatesCreatePage() {
           }}
           className="mb-3"
         />
-        {/* <Input type="text" placeholder="식장 주소" value={formData?.address || ''} onChange={(e) => handleChange('address', e.target.value)} className="mb-3" />
-        <Input type="text" placeholder="식장 상세 정보" value={formData?.address_detail || ''} onChange={(e) => handleChange('address_detail', e.target.value)} className="mb-3" />
-        <Input type="text" placeholder="식장 전화" value={formData?.hall_phone || ''} onChange={(e) => handleChange('hall_phone', e.target.value)} className="mb-3" /> */}
+        {/* <CustomInput type="text" placeholder="식장 주소" value={formData?.address || ''} onChange={(e) => handleChange('address', e.target.value)} className="mb-3" />
+        <CustomInput type="text" placeholder="식장 상세 정보" value={formData?.address_detail || ''} onChange={(e) => handleChange('address_detail', e.target.value)} className="mb-3" />
+        <CustomInput type="text" placeholder="식장 전화" value={formData?.hall_phone || ''} onChange={(e) => handleChange('hall_phone', e.target.value)} className="mb-3" /> */}
 
-        <p className="text-[14px] font-suite-medium text-text-default mt-10 mb-2">오시는 길</p>
-        <div className="flex flex-col gap-2 mb-3">
-          <p className="text-[14px] font-suite-medium text-text-default">지하철</p>
-          {formData?.directions_desc
-            ?.filter((direction: any) => direction.type == '지하철')[0]
-            .desc?.map((item: any, idx: number) => (
-              <div key={idx} className="flex items-center gap-2">
-                <Input type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('지하철', idx, e.target.value)} />
-                <div>
-                  <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('지하철')} />
-                </div>
-                {formData?.directions_desc?.filter((direction: any) => direction.type == '지하철')[0].desc?.length > 1 && (
-                  <button onClick={() => removeDirections('지하철', idx)}>
-                    <CiSquareRemove size={20} className="text-red-500" />
-                  </button>
-                )}
-              </div>
-            ))}
-        </div>
-        <div className="flex flex-col gap-2 mb-3">
-          <p className="text-[14px] font-suite-medium text-text-default">버스</p>
-          {formData?.directions_desc
-            ?.filter((direction: any) => direction.type == '버스')[0]
-            .desc?.map((item: any, idx: number) => (
-              <div key={idx} className="flex items-center gap-2">
-                <Input type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('버스', idx, e.target.value)} />
-                <div>
-                  <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('버스')} />
-                </div>
-                {formData?.directions_desc?.filter((direction: any) => direction.type == '버스')[0].desc?.length > 1 && (
-                  <button onClick={() => removeDirections('버스', idx)}>
-                    <CiSquareRemove size={20} className="text-red-500" />
-                  </button>
-                )}
-              </div>
-            ))}
-        </div>
-        <div className="flex flex-col gap-2 mb-3">
-          <p className="text-[14px] font-suite-medium text-text-default">주차</p>
-          {formData?.directions_desc
-            ?.filter((direction: any) => direction.type == '주차')[0]
-            .desc?.map((item: any, idx: number) => (
-              <div key={idx} className="flex items-center gap-2">
-                <Input type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('주차', idx, e.target.value)} />
-                <div>
-                  <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('주차')} />
-                </div>
-                {formData?.directions_desc?.filter((direction: any) => direction.type == '주차')[0].desc?.length > 1 && (
-                  <button onClick={() => removeDirections('주차', idx)}>
-                    <CiSquareRemove size={20} className="text-red-500" />
-                  </button>
-                )}
-              </div>
-            ))}
-        </div>
         {/* <Textarea placeholder="소개 문구" value={formData.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} /> */}
         <div className="mt-6 flex justify-end">
           <Button onClick={handleSave}>저장하기</Button>
         </div>
       </Wrap>
-      <Wrap>{RenderedComponent && <RenderedComponent data={formData} />}</Wrap>
+      <Wrap className="hidden sm:flex">{RenderedComponent && <RenderedComponent data={formData} />}</Wrap>
     </div>
   );
 }

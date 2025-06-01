@@ -66,9 +66,13 @@ const StyledCalendar = styled(Calendar)`
     border-radius: 8px;
   }
 `;
+const isValidDate = (date: string) => {
+  const d = new Date(date);
+  return !isNaN(d.getTime());
+};
 
 const WeddingCalendar = ({ weddingDate }: WeddingCalendarProps) => {
-  const wedding = new Date(weddingDate);
+  const wedding = isValidDate(weddingDate) ? new Date(weddingDate) : new Date();
 
   const tileClassName = ({ date }: { date: Date }) => {
     if (date.getFullYear() === wedding.getFullYear() && date.getMonth() === wedding.getMonth() && date.getDate() === wedding.getDate()) {
@@ -79,6 +83,7 @@ const WeddingCalendar = ({ weddingDate }: WeddingCalendarProps) => {
 
   return (
     <div className="flex justify-center items-center">
+      {}
       <StyledCalendar tileClassName={tileClassName} value={wedding} />
     </div>
   );

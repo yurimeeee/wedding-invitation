@@ -39,7 +39,7 @@ const TemplateType1 = ({ data }: any) => {
           <div className="flex flex-col gap-5 w-full">
             <ContactInfo data={data} />
             <Gallery gallery={data?.gallery} />
-            <WeddingCalendar weddingDate="2025-10-12" />
+            <WeddingCalendar weddingDate={data?.main?.date} />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />
             <CopyAndShare data={data} />

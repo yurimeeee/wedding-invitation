@@ -49,7 +49,9 @@ const TemplateType3 = ({ data }: TemplateTypeProps) => {
           <MainImage>
             {/* <Image src="/assets/img/templates/type_3/main_img.png" alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" /> */}
             <Image src={data?.main?.main_img || '/assets/img/templates/type_3/main_img.png'} alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" />
-            <Date>12.24</Date>
+            <Date>
+              {data?.main?.date?.split('-')[1]}.{data?.main?.date?.split('-')[2]}
+            </Date>
           </MainImage>
           <div className="mt-14">
             <MainTextRenderer type={data?.main?.main_text_type} data={data} />
@@ -57,7 +59,7 @@ const TemplateType3 = ({ data }: TemplateTypeProps) => {
           <div className="flex flex-col gap-5 w-full">
             <ContactInfo data={data} />
             <Gallery gallery={data?.gallery} />
-            <WeddingCalendar weddingDate="2025-10-12" />
+            <WeddingCalendar weddingDate={data?.main?.date} />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />
             <CopyAndShare data={data} />

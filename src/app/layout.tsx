@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { EmotionRegistry } from '@lib/EmotionRegistry';
 import type { Metadata } from 'next';
 import ThemeProviders from '@lib/ThemeProviders';
+import { Toaster } from '@components/ui/sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,7 +35,9 @@ export default function RootLayout({
       >
         {/* <body className={`${geistSans.variable} ${geistMono.variable} ${suitFont.variable} antialiased`}> */}
         <EmotionRegistry>
-          <ThemeProviders>{children}</ThemeProviders>
+          <ThemeProviders>
+            {children} <Toaster />
+          </ThemeProviders>
         </EmotionRegistry>
       </body>
     </html>

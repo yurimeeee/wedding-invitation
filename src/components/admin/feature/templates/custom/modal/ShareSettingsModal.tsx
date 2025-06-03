@@ -39,34 +39,33 @@ export default function ShareSettingsModal({ open, onOpenChange, title, type, da
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>
-          <CustomInfoText text="공유 썸네일 이미지의 권장 비율은 가로 1 : 세로 1 입니다." className="mb-1" />
-          <CustomInfoText text="기기 및 브라우저 캐시 정책에 따라 최대 24시간 뒤에 반영될 수 있습니다." className="mb-1" />
-          <CustomInfoText text="직접 캐시 초기화를 하면 바로 반영됩니다." className="mb-5" />
-          {type === 'KAKAO' ? (
-            <div>
-              <ShareBox className="shadow-md md p-4 rounded-lg">최대 20MB 이하 JPEG / JPG / PNG 파일만 가능</ShareBox>
-              <CustomInput
-                type="text"
-                placeholder="타이틀"
-                value={data?.groom_parents?.mom?.name}
-                onChange={(e) => setData('groom_parents', 'mom', 'name', e.target.value)}
-                className="w-full sm:max-w-[270px]"
-              />
-            </div>
-          ) : (
-            <div>
-              <ShareBox className="shadow-md md p-4 rounded-lg">최대 20MB 이하 JPEG / JPG / PNG 파일만 가능</ShareBox>
-              <CustomInput
-                type="text"
-                placeholder="타이틀"
-                value={data?.groom_parents?.mom?.name}
-                onChange={(e) => setData('groom_parents', 'mom', 'name', e.target.value)}
-                className="w-full sm:max-w-[270px]"
-              />
-            </div>
-          )}
-        </DialogDescription>
+        <CustomInfoText text="공유 썸네일 이미지의 권장 비율은 가로 1 : 세로 1 입니다." className="mb-1" />
+        <CustomInfoText text="기기 및 브라우저 캐시 정책에 따라 최대 24시간 뒤에 반영될 수 있습니다." className="mb-1" />
+        <CustomInfoText text="직접 캐시 초기화를 하면 바로 반영됩니다." className="mb-5" />
+        {type === 'KAKAO' ? (
+          <div>
+            <ShareBox className="shadow-md md p-4 rounded-lg">최대 20MB 이하 JPEG / JPG / PNG 파일만 가능</ShareBox>
+            <CustomInput
+              type="text"
+              placeholder="타이틀"
+              value={data?.groom_parents?.mom?.name}
+              onChange={(e) => setData('groom_parents', 'mom', 'name', e.target.value)}
+              className="w-full sm:max-w-[270px]"
+            />
+          </div>
+        ) : (
+          <div>
+            <ShareBox className="shadow-md md p-4 rounded-lg">최대 20MB 이하 JPEG / JPG / PNG 파일만 가능</ShareBox>
+            <CustomInput
+              type="text"
+              placeholder="타이틀"
+              value={data?.groom_parents?.mom?.name}
+              onChange={(e) => setData('groom_parents', 'mom', 'name', e.target.value)}
+              className="w-full sm:max-w-[270px]"
+            />
+          </div>
+        )}
+        <DialogDescription></DialogDescription>
       </DialogContent>
     </Dialog>
   );

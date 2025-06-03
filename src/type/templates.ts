@@ -62,6 +62,7 @@ export type TemplatesData = {
   account_title?: string // 마음 전하실 곳
   account_desc?: string // 참석이 어려우신 분들을 위해 기재했습니다 너그러운 마음으로 양해 부탁드립니다
   account_layout?: string // 'tap' | 'align'
+  account_design?: string //'row' | 'col'  계좌 노출 디자인
   is_account_open?: boolean // 계좌 정보 가려두기
 
   share_kakao_img?: string

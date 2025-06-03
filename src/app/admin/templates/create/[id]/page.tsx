@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from 'react';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
 import { Button } from '@components/ui/button';
 import CustomAccordion from '@components/admin/feature/templates/custom/Accordion';
+import { CustomBox } from '@components/ui/CustomBox';
 import { CustomButton } from '@components/ui/CustomButton';
 import { CustomCheckbox } from '@components/ui/checkbox';
 import { CustomDatePicker } from '@components/ui/CustomDatePicker';
@@ -836,46 +837,41 @@ export default function AdminTemplatesCreatePage() {
                   <CustomButton text="탭" onClick={() => handleChange('account_layout', 'tap')} active={formData?.account_layout === 'tap'} />
                   <CustomButton text="나열" onClick={() => handleChange('account_layout', 'align')} active={formData?.account_layout === 'align'} />
                 </div>
+                <Label text="디자인" className="mb-2" />
+                <div className="flex gap-2 mb-5">
+                  <CustomButton text="가로" onClick={() => handleChange('account_design', 'row')} active={formData?.account_design === 'row'} />
+                  <CustomButton text="세로" onClick={() => handleChange('account_design', 'col')} active={formData?.account_design === 'col'} />
+                </div>
                 <div className="flex gap-2 mb-2">
                   <Label text="설정" />
                   <CustomTooltip text="계좌 정보가 바로 노출되는 것이 부담스러우실 경우, 가려둔 후 선택적으로 표시할 수 있습니다" />
                 </div>
-                <CustomToggle
-                  checked={formData?.is_account_open || false}
-                  onChange={(val) =>
-                    setFormData((prev: any) => ({
-                      ...prev,
-                      is_account_open: val,
-                    }))
+                <CustomBox
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label
+                        text="계좌 정보 접어두기
+
+"
+                      />
+                      <CustomToggle
+                        checked={formData?.is_account_open || false}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            is_account_open: val,
+                          }))
+                        }
+                      />
+                    </div>
                   }
                 />
+
                 {/* <CustomToggle checked={formData?.is_account_open || false} onChange={() => handleChange('is_account_open', !formData?.is_account_open)} /> */}
+
                 <div className="flex flex-col gap-2 mb-3">
-                  <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
-                  {formData?.groom_account?.map((item: any, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <CustomInput type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'bank', e.target.value)} />
-                      <CustomInput
-                        type="text"
-                        placeholder="계좌번호"
-                        value={item?.account || ''}
-                        onChange={(e) => handleAccountChange('groom_account', idx, 'account', e.target.value)}
-                      />
-                      <CustomInput type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'name', e.target.value)} />
-                      <div>
-                        <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('groom_account')} />
-                      </div>
-                      {formData?.groom_account?.length > 1 && (
-                        <button onClick={() => removeAccount('groom_account', idx)}>
-                          <CiSquareRemove size={20} className="text-red-500" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <Label text="배치" required={true} className="mb-2 mt-5" />
-                <div className="flex flex-col gap-2 mb-3">
-                  <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
+                  <p className="text-[14px] font-suite-medium text-text-default">신랑측</p>
                   {formData?.groom_account?.map((item: any, idx: number) => (
                     <div key={idx} className="flex items-center gap-2">
                       <CustomInput type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'bank', e.target.value)} />
@@ -898,7 +894,7 @@ export default function AdminTemplatesCreatePage() {
                   ))}
                 </div>
                 <div className="flex flex-col gap-2 mb-3">
-                  <p className="text-[14px] font-suite-medium text-text-default">계좌</p>
+                  <p className="text-[14px] font-suite-medium text-text-default">신부측</p>
 
                   {formData?.bride_account?.map((item: any, idx: number) => (
                     <div key={idx} className="flex items-center gap-2">

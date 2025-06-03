@@ -14,9 +14,9 @@ export function CustomInfoText({ text, color = GRAY_500, className }: CustomInfo
   return (
     <div css={styles.wrapper} className={className}>
       <BsFillInfoCircleFill color={color} />
-      <p css={styles.text(color)} className="font-suite">
+      <span css={styles.text(color)} className="font-suite">
         {text}
-      </p>
+      </span>
     </div>
   );
 }

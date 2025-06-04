@@ -94,7 +94,7 @@ export default function AdminTemplatesCreatePage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const invitationId = uuidv4();
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
-  const [shareSettingsModal, setShareSettingsModal] = useState<any>({ open: true, title: '', type: '' });
+  const [shareSettingsModal, setShareSettingsModal] = useState<any>({ open: false, title: '', type: '' });
   const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
     const updated = { ...formData };
@@ -641,12 +641,12 @@ export default function AdminTemplatesCreatePage() {
                 <div className="flex gap-2">
                   <CustomButton
                     text="카카오톡 공유 설정하기"
-                    onClick={() => setShareSettingsModal({ ...shareSettingsModal, open: true, title: '카카오톡 공유 설정하기', type: 'KAKAO' })}
+                    onClick={() => setShareSettingsModal({ ...shareSettingsModal, open: true, title: '카카오톡 공유 설정하기', type: 'KAKAO', data: formData })}
                     active
                   />
                   <CustomButton
                     text="URL 링크 공유 설정하기"
-                    onClick={() => setShareSettingsModal({ ...shareSettingsModal, open: true, title: 'URL 링크 공유 설정하기', type: 'LINK' })}
+                    onClick={() => setShareSettingsModal({ ...shareSettingsModal, open: true, title: 'URL 링크 공유 설정하기', type: 'LINK', data: formData })}
                     active
                   />
                 </div>
@@ -847,6 +847,7 @@ export default function AdminTemplatesCreatePage() {
                   <CustomTooltip text="계좌 정보가 바로 노출되는 것이 부담스러우실 경우, 가려둔 후 선택적으로 표시할 수 있습니다" />
                 </div>
                 <CustomBox
+                  type="input"
                   className="mb-5"
                   children={
                     <div className="flex justify-between w-full">
@@ -1050,7 +1051,12 @@ export default function AdminTemplatesCreatePage() {
         onOpenChange={setShareSettingsModal}
         title={shareSettingsModal.title}
         type={shareSettingsModal.type}
-        setData={(key: string, e: any) => setFormData({ ...formData, [key]: e.target.value })}
+        setData={(key: string, value: string) => {
+          setFormData((prev: any) => ({
+            ...prev,
+            [key]: value ?? '',
+          }));
+        }}
         data={formData}
       />
     </div>

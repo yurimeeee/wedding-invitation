@@ -3,12 +3,16 @@
 import 'react-calendar/dist/Calendar.css';
 
 import Calendar from 'react-calendar';
+import Countdown from './Countdown';
+import DDAY from './DDAY';
 import React from 'react';
+import { TemplatesData } from '@type/templates';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 
 type WeddingCalendarProps = {
   weddingDate: string; // 'YYYY-MM-DD'
+  data: TemplatesData; // 'YYYY-MM-DD'
 };
 
 const StyledCalendar = styled(Calendar)`
@@ -71,7 +75,7 @@ const isValidDate = (date: string) => {
   return !isNaN(d.getTime());
 };
 
-const WeddingCalendar = ({ weddingDate }: WeddingCalendarProps) => {
+const WeddingCalendar = ({ weddingDate, data }: WeddingCalendarProps) => {
   const wedding = isValidDate(weddingDate) ? new Date(weddingDate) : new Date();
 
   const tileClassName = ({ date }: { date: Date }) => {
@@ -80,11 +84,12 @@ const WeddingCalendar = ({ weddingDate }: WeddingCalendarProps) => {
     }
     return null;
   };
-
+  console.log(data);
   return (
-    <div className="flex justify-center items-center">
-      {}
-      <StyledCalendar tileClassName={tileClassName} value={wedding} />
+    <div className="flex justify-center items-center flex-col gap-4">
+      {data?.calendar_display && <StyledCalendar tileClassName={tileClassName} value={wedding} />}
+      {data?.countdown_display && <Countdown targetDate={wedding} />}
+      {data?.d_day_display && <DDAY targetDate={wedding} />}
     </div>
   );
 };

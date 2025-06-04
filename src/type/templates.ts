@@ -71,4 +71,8 @@ export type TemplatesData = {
   share_link_img?: string
   share_link_title?: string
   share_link_desc?: string
+
+  calendar_display?: boolean
+  countdown_display?: boolean
+  d_day_display?: boolean
 };

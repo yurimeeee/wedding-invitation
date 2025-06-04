@@ -38,7 +38,7 @@ const TemplateType1Editor = ({ data }: any) => {
           <div className="flex flex-col gap-5 w-full">
             <ContactInfo data={data} />
             <Gallery gallery={data?.gallery} />
-            <WeddingCalendar weddingDate={data?.main?.date} />
+            <WeddingCalendar weddingDate={data?.main?.date} data={data} />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />
             <CopyAndShare data={data} />

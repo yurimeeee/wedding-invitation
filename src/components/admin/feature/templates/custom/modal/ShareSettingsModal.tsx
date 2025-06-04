@@ -1,6 +1,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@components/ui/accordion';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@components/ui/dialog';
 import { GRAY_300, GRAY_400 } from '@styles/colors';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { Button } from '@components/ui/button';
 import { CiSquarePlus } from 'react-icons/ci';
@@ -8,7 +9,6 @@ import { CustomBox } from '@components/ui/CustomBox';
 import { CustomButton } from '@components/ui/CustomButton';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
 import { CustomInput } from '@components/ui/CustomInput';
-import { ReactNode } from 'react';
 import { TemplatesData } from '@type/templates';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
@@ -47,7 +47,26 @@ const Content = styled(AccordionContent)`
 `;
 
 export default function ShareSettingsModal({ open, onOpenChange, title, type, data, setData }: ShareSettingsModalProps) {
-  // setData={(key: string, e: any) => setFormData({ ...formData, [key]: e.target.value })}
+  const [localData, setLocalData] = useState<TemplatesData>({
+    ...data,
+  });
+  useEffect(() => {
+    if (open) {
+      setLocalData({ ...data });
+    }
+  }, [open, data]);
+  const handleChange = (key: keyof TemplatesData, value: string) => {
+    setLocalData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleSave = () => {
+    setData(localData); // 부모의 setFormData 호출
+    onOpenChange(false); // 모달 닫기
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -55,9 +74,9 @@ export default function ShareSettingsModal({ open, onOpenChange, title, type, da
         <CustomInfoText text="공유 썸네일 이미지의 권장 비율은 가로 1 : 세로 1 입니다." />
         <CustomInfoText text="기기 및 브라우저 캐시 정책에 따라 최대 24시간 뒤에 반영될 수 있습니다." />
         <CustomInfoText text="직접 캐시 초기화를 하면 바로 반영됩니다." className="mb-5" />
+
         {type === 'KAKAO' ? (
-          // <CustomBox type="box" className="max-w-[320px] mx-auto">
-          <div className="max-w-[320px] mx-auto shadow-xl rounded-md ">
+          <div className="max-w-[320px] mx-auto shadow-xl rounded-md">
             <div className="flex flex-col gap-3">
               <ShareBox className="flex flex-col gap-3">
                 <CiSquarePlus size={30} color={GRAY_400} />
@@ -67,8 +86,20 @@ export default function ShareSettingsModal({ open, onOpenChange, title, type, da
                 </p>
               </ShareBox>
               <div className="bg-gray-300 flex flex-col gap-3 p-3">
-                <CustomInput type="text" placeholder="제목" value={data?.share_kakao_title} onChange={(e) => setData('share_kakao_title', e.target.value)} className="w-full" />
-                <CustomInput type="text" placeholder="설명" value={data?.share_kakao_desc} onChange={(e) => setData('share_kakao_desc', e.target.value)} className="w-full" />
+                <CustomInput
+                  type="text"
+                  placeholder="제목"
+                  value={localData?.share_kakao_title || ''}
+                  onChange={(e) => handleChange('share_kakao_title', e.target.value)}
+                  className="w-full"
+                />
+                <CustomInput
+                  type="text"
+                  placeholder="설명"
+                  value={localData?.share_kakao_desc || ''}
+                  onChange={(e) => handleChange('share_kakao_desc', e.target.value)}
+                  className="w-full"
+                />
                 <Button text="모바일 청첩장 보기" onClick={() => {}} disabled variant={'outline'} className="!bg-white rounded-md shadow-md h-12" />
               </div>
             </div>
@@ -83,14 +114,27 @@ export default function ShareSettingsModal({ open, onOpenChange, title, type, da
                   <br /> JPEG / JPG / PNG 파일만 가능
                 </p>
               </ShareBox>
-              <CustomInput type="text" placeholder="제목" value={data?.share_link_title} onChange={(e) => setData('share_link_title', e.target.value)} className="w-full" />
-              <CustomInput type="text" placeholder="설명" value={data?.share_link_desc} onChange={(e) => setData('share_link_desc', e.target.value)} className="w-full" />
-              <Button text="모바일 청첩장 보기" onClick={() => {}} disabled />
+              <CustomInput
+                type="text"
+                placeholder="제목"
+                value={localData?.share_link_title || ''}
+                onChange={(e) => handleChange('share_link_title', e.target.value)}
+                className="w-full"
+              />
+              <CustomInput
+                type="text"
+                placeholder="설명"
+                value={localData?.share_link_desc || ''}
+                onChange={(e) => handleChange('share_link_desc', e.target.value)}
+                className="w-full"
+              />
+              <Button text="모바일 청첩장 보기" onClick={() => {}} disabled variant={'outline'} className="!bg-white rounded-md shadow-md h-12" />
             </div>
           </CustomBox>
         )}
-        <Button text="저장하기" onClick={() => {}} className="mt-4" />
-        <DialogDescription></DialogDescription>
+
+        <Button text="저장하기" onClick={handleSave} className="mt-4" />
+        <DialogDescription />
       </DialogContent>
     </Dialog>
   );

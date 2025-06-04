@@ -295,6 +295,7 @@ export default function AdminTemplatesCreatePage() {
       setLoading(false);
     }
   };
+  console.log('formD', formData);
   useEffect(() => {
     getTemplateType1Document();
   }, []);
@@ -690,6 +691,60 @@ export default function AdminTemplatesCreatePage() {
               <div>
                 <CustomInfoText text="설정하신 예식 일시가 캘린더에 자동으로 반영됩니다." className="mb-5" />
                 <Label text="설정" className="mb-2" />
+
+                <CustomBox
+                  type="input"
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="달력 표시" />
+                      <CustomToggle
+                        checked={formData?.calendar_display}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            calendar_display: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
+                <CustomBox
+                  type="input"
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="카운트다운 표시" />
+                      <CustomToggle
+                        checked={formData?.countdown_display}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            countdown_display: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
+                <CustomBox
+                  type="input"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="D-day 표시" />
+                      <CustomToggle
+                        checked={formData?.d_day_display}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            d_day_display: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
               </div>
             }
           />
@@ -851,11 +906,7 @@ export default function AdminTemplatesCreatePage() {
                   className="mb-5"
                   children={
                     <div className="flex justify-between w-full">
-                      <Label
-                        text="계좌 정보 접어두기
-
-"
-                      />
+                      <Label text="계좌 정보 접어두기" />
                       <CustomToggle
                         checked={formData?.is_account_open || false}
                         onChange={(val) =>
@@ -1051,12 +1102,13 @@ export default function AdminTemplatesCreatePage() {
         onOpenChange={setShareSettingsModal}
         title={shareSettingsModal.title}
         type={shareSettingsModal.type}
-        setData={(key: string, value: string) => {
-          setFormData((prev: any) => ({
-            ...prev,
-            [key]: value ?? '',
-          }));
-        }}
+        // setData={(key: string, value: string) => {
+        //   setFormData((prev: any) => ({
+        //     ...prev,
+        //     [key]: value ?? '',
+        //   }));
+        // }}
+        setData={(newData: any) => setFormData({ ...formData, ...newData })}
         data={formData}
       />
     </div>

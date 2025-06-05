@@ -423,6 +423,7 @@ export default function AdminTemplatesCreatePage() {
                     className="!w-2/5"
                   />
                   <CustomInput type="text" placeholder="이름" value={formData?.groom_last_name || ''} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
+                  <CustomCheckbox text="장남" value={formData?.isFirstSon} onChange={(val) => setFormData({ ...formData, isFirstSon: val })} />
                 </div>
                 <Label text="신부님" required={true} className="mb-2" />
                 <div className="flex gap-2 mb-5">
@@ -434,6 +435,7 @@ export default function AdminTemplatesCreatePage() {
                     className="!w-2/5"
                   />
                   <CustomInput type="text" placeholder="이름" value={formData?.bride_last_name || ''} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
+                  <CustomCheckbox text="장녀" value={formData?.isFirstDaughter} onChange={(val) => setFormData({ ...formData, isFirstDaughter: val })} />
                 </div>
                 <div className="flex gap-2 mb-2">
                   <Label text="표시순서" required={true} />
@@ -568,6 +570,60 @@ export default function AdminTemplatesCreatePage() {
             }
           />
           <CustomAccordion
+            title="양가 가족 안내"
+            children={
+              <div>
+                <CustomInfoText text="부모님 연락처를 비워두시면 노출되지 않습니다." className="mb-5" />
+
+                <Label text="표시 타입" className="mb-2" />
+                <div className="flex gap-2 mb-5">
+                  <CustomButton text="가로형" onClick={() => handleChange('family_display_type', 'row')} active={formData?.family_display_type === 'row'} />
+                  <CustomButton text="중앙정렬형" onClick={() => handleChange('family_display_type', 'center')} active={formData?.family_display_type === 'center'} />
+                  <CustomButton text="간략형" onClick={() => handleChange('family_display_type', 'brief')} active={formData?.family_display_type === 'brief'} />
+                </div>
+                <Label text="설정" className="mb-2" />
+                <CustomBox
+                  type="input"
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="신랑 · 신부 전체 이름으로 표시" />
+                      <CustomToggle
+                        checked={formData?.calendar_display}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            calendar_display: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
+                <Label text="신랑님 연락처" className="mb-2" />
+                {/* <div className="flex gap-4 mb-3"> */}
+                <CustomInput
+                  type="text"
+                  placeholder="신랑님 연락처"
+                  value={formData?.groom_phone || ''}
+                  onChange={(e) => handleChange('groom_phone', e.target.value)}
+                  className="mb-5"
+                />
+                {/* </div> */}
+                <Label text="신부님 연락처" className="mb-2" />
+                {/* <div className="flex gap-4 mb-3"> */}
+                <CustomInput
+                  type="text"
+                  placeholder="신부님 연락처"
+                  value={formData?.bride_phone || ''}
+                  onChange={(e) => handleChange('bride_phone', e.target.value)}
+                  className="mb-5"
+                />
+                {/* </div> */}
+              </div>
+            }
+          />
+          <CustomAccordion
             title="커버 디자인"
             children={
               <div>
@@ -691,7 +747,6 @@ export default function AdminTemplatesCreatePage() {
               <div>
                 <CustomInfoText text="설정하신 예식 일시가 캘린더에 자동으로 반영됩니다." className="mb-5" />
                 <Label text="설정" className="mb-2" />
-
                 <CustomBox
                   type="input"
                   className="mb-5"
@@ -1041,38 +1096,6 @@ export default function AdminTemplatesCreatePage() {
           ]}
           className="w-[240px] flex items-center gap-3"
         /> */}
-
-        <InfoTitle className="mt-10">신랑 측 정보</InfoTitle>
-
-        <div className="flex gap-4 mb-3">
-          <CustomInput type="text" placeholder="신랑 연락처" value={formData?.groom_phone || ''} onChange={(e) => handleChange('groom_phone', e.target.value)} />
-          <CustomRadioGroup
-            label="장남 여부"
-            value={String(formData?.isFirstSon)}
-            onChange={(val) => setFormData({ ...formData, isFirstSon: val })}
-            options={[
-              { label: '예', value: 'true' },
-              { label: '아니요', value: 'false' },
-            ]}
-            className="w-[240px] flex items-center gap-3"
-          />
-        </div>
-
-        <InfoTitle className="mt-10">신부 측 정보</InfoTitle>
-
-        <div className="flex gap-4 mb-3">
-          <CustomInput type="text" placeholder="신부 연락처" value={formData?.bride_phone || ''} onChange={(e) => handleChange('bride_phone', e.target.value)} />
-          <CustomRadioGroup
-            label="장녀 여부"
-            value={String(formData?.isFirstDaughter)}
-            onChange={(val) => setFormData({ ...formData, isFirstDaughter: val })}
-            options={[
-              { label: '예', value: 'true' },
-              { label: '아니요', value: 'false' },
-            ]}
-            className="w-[240px] flex items-center gap-3"
-          />
-        </div>
 
         <p className="text-[14px] font-suite-medium text-text-default mt-10 mb-2">식 일자 · 식장 정보</p>
         <CustomInput

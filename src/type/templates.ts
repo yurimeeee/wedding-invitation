@@ -75,4 +75,6 @@ export type TemplatesData = {
   calendar_display?: boolean
   countdown_display?: boolean
   d_day_display?: boolean
+
+  family_display_type?: string  //'row' | 'center' | 'brief'  // 가족 표시
 };

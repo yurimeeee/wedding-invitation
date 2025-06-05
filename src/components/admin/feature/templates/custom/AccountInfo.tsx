@@ -10,7 +10,8 @@ type AccountInfoProps = {
 const AccountInfo = ({ data }: AccountInfoProps) => {
   return (
     <div className="w-full font-suite flex flex-col gap-2 px-4">
-      <p className="font-chosun-bold text-gray-600 text-center text-base mb-5"> 마음 전하실 곳</p>
+      <p className="font-chosun-bold text-gray-600 text-center text-base mb-3">{data?.account_title}</p>
+      <p className="text-[14px] mb-2 text-center text-gray-600">{data?.account_desc}</p>
       <div className="w-full p-5 rounded-md border border-solid border-pink-300">
         <p className="text-base mb-2">신랑측</p>
         {data?.groom_account[0].account ? (

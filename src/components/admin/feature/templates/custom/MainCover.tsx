@@ -1,6 +1,6 @@
 import { TemplatesData } from '@type/templates';
 
-type MainTextRendererProps = {
+type MainCoverProps = {
   type: string;
   data: TemplatesData;
 };
@@ -44,7 +44,7 @@ const GroomAndBrideVertical = ({ data }: GroomAndBrideProps) => {
   );
 };
 
-const MainTextRenderer = ({ type, data }: MainTextRendererProps) => {
+const MainCover = ({ type, data }: MainCoverProps) => {
   //type_1 : "groomAndBride"
   //type_2 : "groomDotBride"
   //type_3 : "groomAndBrideVertical"
@@ -89,9 +89,9 @@ const MainTextRenderer = ({ type, data }: MainTextRendererProps) => {
           <p className="text-base ">·</p>
         </div>
       )}
-      {renderIntro()}
+      {/* {renderIntro()} */}
     </>
   );
 };
 
-export default MainTextRenderer;
+export default MainCover;

@@ -1,12 +1,13 @@
 'use';
 
 import AccountInfo from '../custom/AccountInfo';
-import ContactInfo from '../custom/ContactInfo';
-import CopyAndShare from '../custom/CopyAndShare';
+import FamilyInfo from '../custom/FamilyInfo';
 import Gallery from '../custom/Gallery';
+import GreetingMessage from '../custom/GreetingMessage';
 import Image from 'next/image';
-import MainTextRenderer from '../custom/MainTextRenderer';
+import MainCover from '../custom/MainCover';
 import React from 'react';
+import ShareLinks from '../custom/ShareLinks';
 import { TemplatesData } from '@type/templates';
 import WeddingCalendar from '../custom/WeddingCalendar';
 import WeddingLocation from '../custom/WeddingLocation';
@@ -45,15 +46,16 @@ const TemplateType4 = ({ data }: TemplateTypeProps) => {
             {/* <Image src="/assets/img/templates/type_4/main_img.png" alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" /> */}
           </MainImage>
           <div className="mt-14 z-2">
-            <MainTextRenderer type={data?.main?.main_text_type} data={data} />
+            <MainCover type={data?.main?.main_text_type} data={data} />
           </div>
           <div className="flex flex-col gap-5 w-full">
-            <ContactInfo data={data} />
+            <GreetingMessage data={data} />
+            <FamilyInfo data={data} />
             <Gallery gallery={data?.gallery} />
             <WeddingCalendar weddingDate={data?.main?.date} data={data} />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />
-            <CopyAndShare data={data} />
+            <ShareLinks data={data} />
           </div>
           <div className="border-t border-gray-300 w-full">
             <Image src="/assets/img/logo-invi.svg" alt="logo" width={132} height={40} className="mt-4 mx-auto" />

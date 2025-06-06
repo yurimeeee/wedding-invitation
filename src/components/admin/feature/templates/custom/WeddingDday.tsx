@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { differenceInCalendarDays } from 'date-fns';
 
-type CountdownProps = {
+type WeddingDdayProps = {
   targetDate: Date;
 };
 
-export default function DDAY({ targetDate }: CountdownProps) {
+export default function WeddingDday({ targetDate }: WeddingDdayProps) {
   const [today, setToday] = useState(new Date());
   const dDay = differenceInCalendarDays(targetDate, today);
   function calculateTimeLeft(target: Date) {

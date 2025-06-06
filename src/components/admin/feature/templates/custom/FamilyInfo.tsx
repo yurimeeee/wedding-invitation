@@ -12,11 +12,11 @@ const CallButton = styled.a`
   background-color: #f0dfd8;
 `;
 
-type ContactInfoProps = {
+type FamilyInfoProps = {
   data: TemplatesData;
 };
 
-const ContactInfo = ({ data }: ContactInfoProps) => {
+const FamilyInfo = ({ data }: FamilyInfoProps) => {
   // groom_dad;
   // bride_dad;
   // groom_phone;
@@ -53,4 +53,4 @@ const ContactInfo = ({ data }: ContactInfoProps) => {
   );
 };
 
-export default ContactInfo;
+export default FamilyInfo;

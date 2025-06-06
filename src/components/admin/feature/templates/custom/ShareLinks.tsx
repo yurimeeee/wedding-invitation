@@ -6,7 +6,7 @@ import { TemplatesData } from '@type/templates';
 import { handleCopy } from '../../../../../utils/func';
 import styled from '@emotion/styled';
 import { useEffect } from 'react';
-type CopyAndShareProps = {
+type ShareLinksProps = {
   data: TemplatesData;
 };
 interface Window {
@@ -24,7 +24,7 @@ const CircleButton = styled.div`
   cursor: pointer;
 `;
 
-const CopyAndShare = ({ data }: CopyAndShareProps) => {
+const ShareLinks = ({ data }: ShareLinksProps) => {
   const apiKey = process.env.NEXT_PUBLIC_KAKAOMAP_KEY;
 
   useEffect(() => {
@@ -83,4 +83,4 @@ const CopyAndShare = ({ data }: CopyAndShareProps) => {
   );
 };
 
-export default CopyAndShare;
+export default ShareLinks;

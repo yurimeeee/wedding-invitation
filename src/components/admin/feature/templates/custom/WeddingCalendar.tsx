@@ -4,9 +4,9 @@ import 'react-calendar/dist/Calendar.css';
 
 import Calendar from 'react-calendar';
 import Countdown from './Countdown';
-import DDAY from './DDAY';
 import React from 'react';
 import { TemplatesData } from '@type/templates';
+import WeddingDday from './WeddingDday';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 
@@ -89,7 +89,7 @@ const WeddingCalendar = ({ weddingDate, data }: WeddingCalendarProps) => {
     <div className="flex justify-center items-center flex-col gap-4">
       {data?.calendar_display && <StyledCalendar tileClassName={tileClassName} value={wedding} />}
       {data?.countdown_display && <Countdown targetDate={wedding} />}
-      {data?.d_day_display && <DDAY targetDate={wedding} />}
+      {data?.d_day_display && <WeddingDday targetDate={wedding} />}
     </div>
   );
 };

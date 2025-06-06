@@ -40,6 +40,7 @@ import TemplateType3 from '@components/admin/feature/templates/types/TemplateTyp
 import TemplateType4 from '@components/admin/feature/templates/types/TemplateType4';
 import { TemplatesData } from '@type/templates';
 import { Textarea } from '@components/ui/textarea';
+import TiptapEditor from '@components/admin/feature/TiptapEditor';
 import dayjs from 'dayjs';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
@@ -716,6 +717,7 @@ export default function AdminTemplatesCreatePage() {
               <div>
                 <CustomInfoText text="많은 커플들이 선택한 샘플 문구를 활용하여 수정하실 수 있습니다." className="mb-5" />
                 <Label text="모시는 글" required={true} className="mb-2" />
+                <TiptapEditor />
                 <Textarea placeholder="입력해주세요" value={formData?.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} className="mb-5" />
                 <CustomRadioGroup
                   label="내용 정렬"

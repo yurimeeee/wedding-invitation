@@ -366,6 +366,14 @@ export default function AdminTemplatesCreatePage() {
     }
   }, [formData?.type]);
   console.log(formData);
+
+  const [htmlContent, setHtmlContent] = useState('');
+
+  const handleEditorChange = (html: string) => {
+    setHtmlContent(html);
+    console.log('💾 저장할 HTML:', html);
+  };
+
   return (
     <div className="pb-20 flex">
       <Wrap className="bg-[#F5F4F0] p-6">
@@ -717,7 +725,13 @@ export default function AdminTemplatesCreatePage() {
               <div>
                 <CustomInfoText text="많은 커플들이 선택한 샘플 문구를 활용하여 수정하실 수 있습니다." className="mb-5" />
                 <Label text="모시는 글" required={true} className="mb-2" />
-                <TiptapEditor />
+                {/* <TiptapEditor /> */}
+                <TiptapEditor value={formData?.main.intro_content} onChange={(html) => handleChange('main.intro_content', html)} />
+                {/* <TiptapEditor onChange={handleEditorChange} />/ */}
+                <div className="mt-4">
+                  <h2>🔍 Preview</h2>
+                  <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+                </div>
                 <Textarea placeholder="입력해주세요" value={formData?.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} className="mb-5" />
                 <CustomRadioGroup
                   label="내용 정렬"

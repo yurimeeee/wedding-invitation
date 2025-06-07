@@ -252,3 +252,32 @@
     @apply bg-background text-foreground;
   }
 }
+
+h1.my-custom-heading {
+  @apply text-4xl font-bold text-gray-800;
+}
+
+h2.my-custom-heading {
+  @apply text-3xl font-bold text-gray-800;
+}
+h3.my-custom-heading {
+  @apply text-2xl font-bold text-gray-800;
+}
+.heading-level-1 {
+  @apply text-4xl font-bold text-red-500;
+}
+.heading-level-2 {
+  @apply text-3xl font-semibold text-orange-500;
+}
+.heading-level-3 {
+  @apply text-2xl font-medium text-yellow-500;
+}
+.heading-level-4 {
+  @apply text-xl font-medium text-green-500;
+}
+.heading-level-5 {
+  @apply text-lg font-medium text-blue-500;
+}
+.heading-level-6 {
+  @apply text-base font-normal text-purple-500;
+}

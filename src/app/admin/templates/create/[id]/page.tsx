@@ -376,7 +376,7 @@ export default function AdminTemplatesCreatePage() {
   };
 
   return (
-    <div className="pb-20 flex h-screen">
+    <div className="flex h-screen">
       <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto w-1/2 h-full">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
         <div className="flex flex-col gap-2">

@@ -201,20 +201,19 @@ export default function AdminTemplatesCreatePage() {
     const firestore = getFirestore();
 
     const validateForm = (): string | null => {
-      if (!mainImage) return '메인 이미지를 업로드해주세요.';
-      if (!gallery || !gallery.length || gallery.some((img: any) => !img)) return '갤러리 이미지를 하나 이상 등록해주세요.';
-      if (!formData.main.main_title?.trim()) return '메인 타이틀을 입력해주세요.';
-      if (!formData.main.main_groom_and_bride_name?.trim()) return '신랑과 신부 이름을 입력해주세요.';
-      if (!formData.main.intro_content?.trim()) return '소개 문구를 입력해주세요.';
-      if (!formData.groom_first_name?.trim() || !formData.groom_last_name?.trim()) return '신랑의 성함을 입력해주세요.';
-      if (!formData.groom_phone?.trim()) return '신랑의 연락처를 입력해주세요.';
-      if (!formData.groom_mom?.trim() || !formData.groom_dad?.trim()) return '신랑 측 부모님 정보를 입력해주세요.';
-      if (!formData.bride_first_name?.trim() || !formData.bride_last_name?.trim()) return '신부의 성함을 입력해주세요.';
-      if (!formData.bride_phone?.trim()) return '신부의 연락처를 입력해주세요.';
-      if (!formData.bride_mom?.trim() || !formData.bride_dad?.trim()) return '신부 측 부모님 정보를 입력해주세요.';
-      if (!formData.main.date?.trim()) return '날짜를 입력해주세요.';
+      if (!formData.main.date?.trim()) return '예식 일자를 입력해주세요.';
+      if (!formData.main.time?.trim()) return '예식 시간을 입력해주세요.';
       if (!formData.address?.trim()) return '식장 주소를 입력해주세요.';
+      if (!formData.address_name?.trim() || !formData.address_detail?.trim()) return '식장 상세정보를 입력해주세요.';
       if (!formData.hall_phone?.trim()) return '식장 연락처를 입력해주세요.';
+      if (!formData.groom_first_name?.trim() || !formData.groom_last_name?.trim() || !formData.bride_first_name?.trim() || !formData.bride_last_name?.trim())
+        return '신랑 신부의 성함을 입력해주세요.';
+      if (!formData.groom_phone?.trim()) return '신랑의 연락처를 입력해주세요.';
+      if (!formData.bride_phone?.trim()) return '신부의 연락처를 입력해주세요.';
+      if (!mainImage) return '커버 메인 이미지를 업로드해주세요.';
+      if (!formData.main.intro_content?.trim()) return '모시는 글을 입력해주세요.';
+      if (!gallery || !gallery.length || gallery.some((img: any) => !img)) return '갤러리 이미지를 하나 이상 등록해주세요.';
+
       return null;
     };
 
@@ -626,7 +625,7 @@ export default function AdminTemplatesCreatePage() {
                     </div>
                   }
                 />
-                <Label text="신랑님 연락처" className="mb-2" />
+                <Label text="신랑님 연락처" required={true} className="mb-2" />
                 <CustomInput
                   type="text"
                   placeholder="신랑님 연락처"
@@ -650,7 +649,7 @@ export default function AdminTemplatesCreatePage() {
                   onChange={(e) => handleChange('groom_mom_phone', e.target.value)}
                   className="mb-5"
                 />
-                <Label text="신부님 연락처" className="mb-2" />
+                <Label text="신부님 연락처" required={true} className="mb-2" />
                 <CustomInput
                   type="text"
                   placeholder="신부님 연락처"

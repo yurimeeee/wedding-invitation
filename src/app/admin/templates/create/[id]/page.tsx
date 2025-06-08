@@ -249,7 +249,7 @@ export default function AdminTemplatesCreatePage() {
       });
 
       const galleryImageURLs = await Promise.all(galleryUploadPromises);
-      const kakaoShareResult = await uploadBytes(mainStorageRef, formData?.share_kakao_img);
+      const kakaoShareResult = await uploadBytes(kakaoStorageRef, formData?.share_kakao_img);
       const linkShareResult = await uploadBytes(linkStorageRef, formData?.share_link_img);
       const kakaoShareImageURL = await getDownloadURL(kakaoStorageRef);
       const linkShareImageURL = await getDownloadURL(linkStorageRef);

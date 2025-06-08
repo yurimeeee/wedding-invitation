@@ -45,7 +45,7 @@ const KakaoMap = ({ address }: KakaoMapProps) => {
               position: coords,
             });
           } else {
-            console.error('주소 검색 실패:', status);
+            // console.error('주소 검색 실패:', status);
           }
         });
       });

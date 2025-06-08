@@ -40,17 +40,6 @@ type FamilyInfoProps = {
 const FamilyInfo = ({ data }: FamilyInfoProps) => {
   const [familyInfoModal, setFamilyInfoModal] = useState<any>({ open: false, title: '', type: '' });
 
-  // groom_dad;
-  // bride_dad;
-  // groom_phone;
-  // bride_first_name;
-  // bride_last_name;
-  // groom_first__name;
-  // groom_last_name;
-  // bride_mom;
-  // bride_dad;
-  // bride_phone;
-
   const renderDeceasedMark = (mark?: string) => {
     switch (mark) {
       case 'text':
@@ -208,6 +197,7 @@ const FamilyInfo = ({ data }: FamilyInfoProps) => {
         return null;
     }
   };
+
   return (
     <div className="flex flex-col items-center font-chosun my-6 px-8 border-t border-gray-300 pt-6 font-chosun">
       {renderComponentByType()}

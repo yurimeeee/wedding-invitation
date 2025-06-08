@@ -180,7 +180,7 @@ export default function AdminTemplatesCreatePage() {
     setFormData({ ...formData, directions_desc: updatedDirections });
   };
 
-  const handleAccountChange = (key: string, index: number, field: 'name' | 'account' | 'bank', value: string) => {
+  const handleAccountChange = (key: string, index: number, field: 'name' | 'account' | 'bank' | 'kakao', value: string) => {
     const updatedArr = [...formData[key]];
     updatedArr[index][field] = value;
     setFormData({ ...formData, [key]: updatedArr });
@@ -1019,7 +1019,7 @@ export default function AdminTemplatesCreatePage() {
                 <Textarea placeholder="설명" value={formData?.account_desc} onChange={(e) => handleChange('account_desc', e.target.value)} className="mb-5" />
                 <Label text="배치" className="mb-2" />
                 <div className="flex gap-2 mb-5">
-                  <CustomButton text="탭" onClick={() => handleChange('account_layout', 'tap')} active={formData?.account_layout === 'tap'} />
+                  <CustomButton text="탭" onClick={() => handleChange('account_layout', 'tab')} active={formData?.account_layout === 'tab'} />
                   <CustomButton text="나열" onClick={() => handleChange('account_layout', 'align')} active={formData?.account_layout === 'align'} />
                 </div>
                 <Label text="디자인" className="mb-2" />
@@ -1049,8 +1049,24 @@ export default function AdminTemplatesCreatePage() {
                     </div>
                   }
                 />
-
-                {/* <CustomToggle checked={formData?.is_account_open || false} onChange={() => handleChange('is_account_open', !formData?.is_account_open)} /> */}
+                <CustomBox
+                  type="input"
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="간편송금" />
+                      <CustomToggle
+                        checked={formData?.is_kakao_account}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            is_kakao_account: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
 
                 <div className="flex flex-col gap-2 mb-3">
                   <p className="text-[14px] font-suite-medium text-text-default">신랑측</p>
@@ -1076,6 +1092,12 @@ export default function AdminTemplatesCreatePage() {
                           placeholder="계좌번호"
                           value={item?.account || ''}
                           onChange={(e) => handleAccountChange('groom_account', idx, 'account', e.target.value)}
+                        />
+                        <CustomInput
+                          type="text"
+                          placeholder="간편송금"
+                          value={item?.kakao || ''}
+                          onChange={(e) => handleAccountChange('groom_account', idx, 'kakao', e.target.value)}
                         />
                       </div>
                       <div>
@@ -1114,6 +1136,12 @@ export default function AdminTemplatesCreatePage() {
                           placeholder="계좌번호"
                           value={item?.account || ''}
                           onChange={(e) => handleAccountChange('bride_account', idx, 'account', e.target.value)}
+                        />
+                        <CustomInput
+                          type="text"
+                          placeholder="간편송금"
+                          value={item?.kakao || ''}
+                          onChange={(e) => handleAccountChange('bride_account', idx, 'kakao', e.target.value)}
                         />
                       </div>
                       <div>

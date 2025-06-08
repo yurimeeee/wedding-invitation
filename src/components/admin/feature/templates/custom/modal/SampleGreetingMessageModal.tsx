@@ -24,7 +24,7 @@ export default function SampleGreetingMessageModal({ open, onOpenChange, title, 
     { text: '명언', value: 'quotes' },
     { text: '정중한', value: 'polite' },
   ];
-  const [activeTap, setActiveTap] = useState<Category>('long');
+  const [activeTab, setActiveTab] = useState<Category>('long');
   const handleSave = (value: string) => {
     setData({
       ...data,
@@ -47,16 +47,16 @@ export default function SampleGreetingMessageModal({ open, onOpenChange, title, 
             <div
               key={idx}
               onClick={() => {
-                setActiveTap(item.value as Category);
+                setActiveTab(item.value as Category);
               }}
               className={`px-3 py-1 rounded-full text-text-defult text-sm transition-colors duration-200 shadow-default
-              ${activeTap === item.value ? 'bg-pink-400 text-text-default border border-pink-500' : 'bg-pink-200 text-muted-foreground border border-pink-200'}`}
+              ${activeTab === item.value ? 'bg-pink-400 text-text-default border border-pink-500' : 'bg-pink-200 text-muted-foreground border border-pink-200'}`}
             >
               {item.text}
             </div>
           ))}
         </div>
-        {GREETING_MESSAGES[activeTap]?.map((item: any, index: number) => (
+        {GREETING_MESSAGES[activeTab]?.map((item: any, index: number) => (
           <button key={index} onClick={() => handleSave(item.msg)} className="text-[#666666] text-center text-sm border rounded-md p-6 shadow-md whitespace-pre-wrap w-full">
             {item.msg.split('\n').map((line: string, idx: number) => (
               <p key={`${index}-${idx}`} style={{ textAlign: 'center' }}>

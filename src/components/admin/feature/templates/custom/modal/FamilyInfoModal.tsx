@@ -40,7 +40,7 @@ export default function FamilyInfoModal({ open, onOpenChange, type, data, setDat
     { text: '신랑에게', value: 'groom' },
     { text: '신부에게', value: 'bride' },
   ];
-  const [activeTap, setActiveTap] = useState<string>('groom');
+  const [activeTab, setActiveTab] = useState<string>('groom');
   useEffect(() => {
     AOS.init(); // 최초 초기화
   }, []);
@@ -49,7 +49,7 @@ export default function FamilyInfoModal({ open, onOpenChange, type, data, setDat
     setTimeout(() => {
       AOS.refresh();
     }, 100);
-  }, [activeTap]);
+  }, [activeTab]);
 
   const renderItem = (type: string, name: string, phone: string) => {
     return (
@@ -80,12 +80,12 @@ export default function FamilyInfoModal({ open, onOpenChange, type, data, setDat
           </p>
           <div className="flex">
             {tabList?.map((item, idx) => (
-              <TabItem key={idx} active={item.value === activeTap} onClick={() => setActiveTap(item.value)}>
+              <TabItem key={idx} active={item.value === activeTab} onClick={() => setActiveTab(item.value)}>
                 {item.text}
               </TabItem>
             ))}
           </div>
-          {activeTap === 'groom' ? (
+          {activeTab === 'groom' ? (
             <div className="flex flex-col gap-4 mt-4" data-aos="fade-up" data-aos-duration="1000" data-aos-once="false">
               {renderItem('신랑', (data?.full_name_display && data?.groom_first_name && data?.groom_first_name + data?.groom_last_name) || '철수', data?.groom_phone)}
               {data?.groom_dad_phone && renderItem('신랑 아버지', data?.groom_parents?.dad?.name || 'OOO', data?.groom_dad_phone)}

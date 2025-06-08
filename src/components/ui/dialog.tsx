@@ -95,7 +95,7 @@ type CustomDialogProps = {
   contents: React.ReactNode;
 };
 
-export function CustomDialog({ open, onOpenChange, showCloseButton, title, contents, type }: CustomDialogProps) {
+export function CustomDialog({ open, onOpenChange, showCloseButton, title, contents }: CustomDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={showCloseButton}>

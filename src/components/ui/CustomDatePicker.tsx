@@ -15,9 +15,10 @@ import theme from '@styles/theme';
 interface CustomDatePickerProps {
   value?: Date;
   onChange: (date: Date | undefined) => void;
+  className?: string;
 }
 
-export function CustomDatePicker({ value, onChange }: CustomDatePickerProps) {
+export function CustomDatePicker({ value, onChange, className }: CustomDatePickerProps) {
   const [open, setOpen] = React.useState(false);
 
   const handleSelect = (date: Date | undefined) => {
@@ -50,7 +51,9 @@ export function CustomDatePicker({ value, onChange }: CustomDatePickerProps) {
             'disabled:pointer-events-none disabled:opacity-50',
 
             // 조건부 클래스
-            !value && 'text-muted-foreground'
+            !value && 'text-muted-foreground',
+
+            className && className
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" color={theme.color.gray_500} />

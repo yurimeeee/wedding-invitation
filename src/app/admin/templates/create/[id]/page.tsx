@@ -21,6 +21,7 @@ import { CustomDatePicker } from '@components/ui/CustomDatePicker';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
 import { CustomInput } from '@components/ui/CustomInput';
 import { CustomSelect } from '@components/ui/select';
+import { CustomTimePicker } from '@components/ui/CustomTimePicker';
 import { CustomToggle } from '@components/ui/toggle';
 import { CustomTooltip } from '@components/ui/tooltip';
 import DaumPost from '@components/admin/feature/DaumPost';
@@ -32,6 +33,7 @@ import { IoClose } from 'react-icons/io5';
 import KakaoMap from '@components/admin/feature/KakaoMap';
 import { Label } from '@components/ui/label';
 import { PiFlowerFill } from 'react-icons/pi';
+import SampleGreetingMessageModal from '@components/admin/feature/templates/custom/modal/SampleGreetingMessageModal';
 import ShareSettingsModal from '@components/admin/feature/templates/custom/modal/ShareSettingsModal';
 import TemplateCard from '@components/admin/feature/TemplateCard';
 import TemplateType1 from '@components/admin/feature/templates/types/TemplateType1';
@@ -96,6 +98,7 @@ export default function AdminTemplatesCreatePage() {
   const invitationId = uuidv4();
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
   const [shareSettingsModal, setShareSettingsModal] = useState<any>({ open: false, title: '', type: '' });
+  const [sampleGreetingMessageModal, setSampleGreetingMessageModal] = useState<any>({ open: false, title: '', type: '' });
   const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
     const updated = { ...formData };
@@ -371,7 +374,6 @@ export default function AdminTemplatesCreatePage() {
 
   const handleEditorChange = (html: string) => {
     setHtmlContent(html);
-    console.log('💾 저장할 HTML:', html);
   };
 
   return (
@@ -391,6 +393,13 @@ export default function AdminTemplatesCreatePage() {
                     handleChange('wedding_day', formattedDate);
                     handleChange('main.date', formattedDate);
                   }}
+                  className="mb-3"
+                />
+                <CustomTimePicker
+                  value={formData?.main?.time}
+                  onChange={(type, value) => {
+                    handleChange('main.time', value);
+                  }}
                 />
               </div>
             }
@@ -404,6 +413,14 @@ export default function AdminTemplatesCreatePage() {
                   <CustomInput type="text" placeholder="식장 주소" value={formData?.address || ''} readOnly />
                   <DaumPost setAddress={(value: any) => handleChange('address', value)} />
                 </div>
+                <Label text="예식장 명" required={true} className="mb-2" />
+                <CustomInput
+                  type="text"
+                  placeholder="예식장 명"
+                  value={formData?.address_name || ''}
+                  onChange={(e) => handleChange('address_name', e.target.value)}
+                  className="mb-5"
+                />
                 <Label text="층 / 홀" required={true} className="mb-2" />
                 <CustomInput
                   type="text"
@@ -724,26 +741,54 @@ export default function AdminTemplatesCreatePage() {
             children={
               <div>
                 <CustomInfoText text="많은 커플들이 선택한 샘플 문구를 활용하여 수정하실 수 있습니다." className="mb-5" />
-                <Label text="모시는 글" required={true} className="mb-2" />
-                {/* <TiptapEditor /> */}
-                <TiptapEditor value={formData?.main.intro_content} onChange={(html) => handleChange('main.intro_content', html)} />
-                {/* <TiptapEditor onChange={handleEditorChange} />/ */}
-                <div className="mt-4">
-                  <h2>🔍 Preview</h2>
-                  <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+
+                <div className="flex gap-2 mb-2">
+                  <Label text="제목" />
+                  <CustomTooltip text="미입력시 해당 부분이 가려집니다." />
                 </div>
-                <Textarea placeholder="입력해주세요" value={formData?.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} className="mb-5" />
-                <CustomRadioGroup
-                  label="내용 정렬"
-                  value={formData?.main?.intro_content_align}
-                  onChange={(val) => handleChange('main.intro_content_align', val)}
-                  options={[
-                    { label: '왼쪽 정렬', value: 'left' },
-                    { label: '가운데 정렬', value: 'center' },
-                  ]}
-                  className="w-[240px] flex items-center gap-3 "
+                <CustomInput
+                  type="text"
+                  placeholder="제목"
+                  value={formData?.main.main_title || ''}
+                  onChange={(e) => handleChange('main.main_title', e.target.value)}
+                  className="mb-5"
                 />
-                <Button text="샘플문구 활용하기" onClick={() => {}} className="mt-5" />
+                <Label text="제목 정렬" className="mb-2" />
+                <div className="flex gap-2 mb-5">
+                  <CustomButton text="왼쪽 정렬" onClick={() => handleChange('main.main_title_align', 'left')} active={formData?.main.main_title_align === 'left'} />
+                  <CustomButton text="가운데 정렬" onClick={() => handleChange('main.main_title_align', 'center')} active={formData?.main.main_title_align === 'center'} />
+                </div>
+
+                <Label text="모시는 글" required={true} className="mb-2" />
+                {/* <TiptapEditor value={formData?.main.intro_content} onChange={(html) => handleChange('main.intro_content', html)} /> */}
+                {/* <TiptapEditor onChange={handleEditorChange} />/ */}
+                {/* <div className="mt-4">
+                  <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+                </div> */}
+                <Textarea placeholder="입력해주세요" value={formData?.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} className="mb-5" />
+                <Label text="내용 정렬" className="mb-2" />
+                <div className="flex gap-2 mb-5">
+                  <CustomButton text="왼쪽 정렬" onClick={() => handleChange('main.intro_content_align', 'left')} active={formData?.main.intro_content_align === 'left'} />
+                  <CustomButton text="가운데 정렬" onClick={() => handleChange('main.intro_content_align', 'center')} active={formData?.main.intro_content_align === 'center'} />
+                </div>
+
+                <Button
+                  text="샘플문구 활용하기"
+                  onClick={() => setSampleGreetingMessageModal({ ...sampleGreetingMessageModal, open: true, data: formData })}
+                  className="mt-5 mb-5"
+                />
+
+                <Label text="설정" className="mb-2" />
+                <CustomBox
+                  type="input"
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="글 하단 신랑 · 신부 이름 표기" />
+                      <CustomToggle checked={formData?.main?.intro_name_display} onChange={(val) => handleChange('main.intro_name_display', val)} />
+                    </div>
+                  }
+                />
               </div>
             }
           />
@@ -1078,57 +1123,6 @@ export default function AdminTemplatesCreatePage() {
           </div>
         </div> */}
 
-        <CustomInput
-          type="text"
-          placeholder="신랑과 신부"
-          value={formData?.main.main_groom_and_bride_name || ''}
-          onChange={(e) => handleChange('main.main_groom_and_bride_name', e.target.value)}
-          className="mb-3"
-        />
-
-        <p className="text-[14px] font-suite-medium text-text-default mb-2">제목</p>
-        <div className="flex flex-wrap gap-3 mb-3">
-          <CustomInput type="text" placeholder="제목" value={formData?.main.main_title || ''} onChange={(e) => handleChange('main.main_title', e.target.value)} />
-          <CustomRadioGroup
-            label="제목 정렬"
-            value={formData?.main?.main_title_align || ''}
-            onChange={(val) => handleChange('main.main_title_align', val)}
-            options={[
-              { label: '왼쪽 정렬', value: 'left' },
-              { label: '가운데 정렬', value: 'center' },
-            ]}
-            className="w-[240px] flex items-center gap-3"
-          />
-        </div>
-        {/* <p className="text-[14px] font-suite-medium text-text-default mb-2">인삿말</p>
-        <Textarea placeholder="인삿말" value={formData?.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} className="mb-3" />
-        <CustomRadioGroup
-          label="내용 정렬"
-          value={formData?.main?.intro_content_align}
-          onChange={(val) => handleChange('main.intro_content_align', val)}
-          options={[
-            { label: '왼쪽 정렬', value: 'left' },
-            { label: '가운데 정렬', value: 'center' },
-          ]}
-          className="w-[240px] flex items-center gap-3"
-        /> */}
-
-        <p className="text-[14px] font-suite-medium text-text-default mt-10 mb-2">식 일자 · 식장 정보</p>
-        <CustomInput
-          type="date"
-          placeholder="날짜"
-          value={formData?.wedding_day || formData?.main.date || ''}
-          onChange={(e) => {
-            handleChange('wedding_day', e.target.value);
-            handleChange('main.date', e.target.value);
-          }}
-          className="mb-3"
-        />
-        {/* <CustomInput type="text" placeholder="식장 주소" value={formData?.address || ''} onChange={(e) => handleChange('address', e.target.value)} className="mb-3" />
-        <CustomInput type="text" placeholder="식장 상세 정보" value={formData?.address_detail || ''} onChange={(e) => handleChange('address_detail', e.target.value)} className="mb-3" />
-        <CustomInput type="text" placeholder="식장 전화" value={formData?.hall_phone || ''} onChange={(e) => handleChange('hall_phone', e.target.value)} className="mb-3" /> */}
-
-        {/* <Textarea placeholder="소개 문구" value={formData.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} /> */}
         <div className="mt-6 flex justify-end">
           <Button onClick={handleSave}>저장하기</Button>
         </div>
@@ -1141,12 +1135,14 @@ export default function AdminTemplatesCreatePage() {
         onOpenChange={setShareSettingsModal}
         title={shareSettingsModal.title}
         type={shareSettingsModal.type}
-        // setData={(key: string, value: string) => {
-        //   setFormData((prev: any) => ({
-        //     ...prev,
-        //     [key]: value ?? '',
-        //   }));
-        // }}
+        setData={(newData: any) => setFormData({ ...formData, ...newData })}
+        data={formData}
+      />
+      <SampleGreetingMessageModal
+        open={sampleGreetingMessageModal.open}
+        onOpenChange={setSampleGreetingMessageModal}
+        title={'샘플 문구 활용'}
+        type={sampleGreetingMessageModal.type}
         setData={(newData: any) => setFormData({ ...formData, ...newData })}
         data={formData}
       />

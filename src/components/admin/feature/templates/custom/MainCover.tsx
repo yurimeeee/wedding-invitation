@@ -1,3 +1,5 @@
+import { formatTime, formattedDate } from '@utils/func';
+
 import { TemplatesData } from '@type/templates';
 
 type MainCoverProps = {
@@ -14,9 +16,17 @@ type GroomAndBrideProps = {
 const GroomAndBride = ({ name, data }: GroomAndBrideProps) => {
   return (
     <div className="flex flex-col items-center font-chosun">
-      <p className="text-sm mb-1">{data?.main?.date || '2025년 6월 24일 토요일 오후 2시'}</p>
-      <p className="text-sm mb-8">{data?.main?.address || '컨벤션웨딩홀 베일리홀'}</p>
-      <p className="text-base leading-8 tracking-wider">{name || '철수와 영희'}</p>
+      <p className="text-sm mb-1">
+        <span>{formattedDate(data?.main?.date) || '2025년 6월 24일 토요일'}</span>
+        <span className="ml-1">{formatTime(data?.main?.time) || '오후 2시'}</span>
+      </p>
+      <p className="text-sm mb-8">
+        <span> {data?.address_name || '컨벤션웨딩홀'}</span>
+        <span className="ml-1"> {data?.address_detail || '베일리홀'}</span>
+      </p>
+      <p className="text-base leading-8 tracking-wider">
+        {data?.groom_last_name || '철수'} · {data?.bride_last_name || '영희'}
+      </p>
       <p className="text-base leading-8 tracking-wider">저희 둘</p>
       <p className="text-xl tracking-wider mt-2">결혼합니다.</p>
     </div>
@@ -62,23 +72,6 @@ const MainCover = ({ type, data }: MainCoverProps) => {
     }
   };
 
-  const renderIntro = () => {
-    return (
-      <div className="font-chosun mt-10 mb-8">
-        {data?.main?.main_title && <p className={`text-xl text-${data?.main?.intro_content_align} leading-8 tracking-wider mb-4`}>{data?.main?.main_title}</p>}
-
-        <div className={`text-[${data?.main?.intro_content_size}] text-${data?.main?.intro_content_align} leading-[24px] tracking-wide `}>
-          {data?.main?.intro_content?.split('\n').map((line: string, index: number) => (
-            <span key={index}>
-              {line}
-              <br />
-            </span>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <>
       {renderComponentByType()}
@@ -89,7 +82,6 @@ const MainCover = ({ type, data }: MainCoverProps) => {
           <p className="text-base ">·</p>
         </div>
       )}
-      {/* {renderIntro()} */}
     </>
   );
 };

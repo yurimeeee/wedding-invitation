@@ -7,12 +7,15 @@ export type TemplatesData = {
     intro_content_align: 'left' | 'center' | 'right';
     main_title_align: 'left' | 'center' | 'right';
     date: string;
+    time: string;
     intro_content_size: number;
     main_text_type: 'groomAndBride' | 'groomDotBride' | 'groomAndBrideVertical';
     address: string;
     intro_content: string;
     main_img_tip: string;
     dot_divider: boolean;
+    // 새로 추가
+    intro_name_display?: boolean //글 하단 신랑 · 신부 이름 표기
   };
   directions_desc: {
     type: '지하철' | '버스' | '주차' | string;
@@ -40,6 +43,7 @@ export type TemplatesData = {
   }[];
   address_detail: string;
   address: string;
+  address_name: string;
   wedding_day: string;
   hall_phone: string;
   isFirstSon: boolean;
@@ -77,4 +81,5 @@ export type TemplatesData = {
   d_day_display?: boolean
 
   family_display_type?: string  //'row' | 'center' | 'brief'  // 가족 표시
+
 };

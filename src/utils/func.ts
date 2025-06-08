@@ -1,3 +1,6 @@
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+
 export const handleCopy = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text);
@@ -21,3 +24,28 @@ export const handleCopy = async (text: string) => {
     document.body.removeChild(textarea);
   }
 };
+
+export const formattedDate = (date?: string) => {
+  if (!date) return null;
+
+  const parsedDate = new Date(date);
+  return format(parsedDate, 'PPPP', { locale: ko });
+};
+
+export const formatTime = (time?: string) => {
+  if (!time) return null;
+
+  const [hour, minute] = time.split(':').map(Number);
+  const isPM = hour >= 12;
+  const displayHour = hour % 12 || 12;
+  if (minute > 0) {
+    return `${isPM ? '오후' : '오전'} ${displayHour}시 ${minute}분`;
+
+  } else {
+    return `${isPM ? '오후' : '오전'} ${displayHour}시`;
+  }
+};
+
+
+
+

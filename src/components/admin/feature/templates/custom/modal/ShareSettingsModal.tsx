@@ -1,17 +1,14 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@components/ui/accordion';
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@components/ui/dialog';
-import { GRAY_300, GRAY_400 } from '@styles/colors';
-import { ReactNode, useEffect, useState } from 'react';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@components/ui/dialog';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@components/ui/button';
 import { CiSquarePlus } from 'react-icons/ci';
 import { CustomBox } from '@components/ui/CustomBox';
-import { CustomButton } from '@components/ui/CustomButton';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
 import { CustomInput } from '@components/ui/CustomInput';
+import { GRAY_400 } from '@styles/colors';
 import { TemplatesData } from '@type/templates';
 import styled from '@emotion/styled';
-import theme from '@styles/theme';
 
 type ShareSettingsModalProps = {
   open: boolean;
@@ -31,19 +28,6 @@ const ShareBox = styled.div`
   aspect-ratio: 1;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  /* border: 1px solid ${theme.color.gray_300}; */
-`;
-const Trigger = styled(AccordionTrigger)`
-  background: white;
-  padding: 16px 24px;
-  box-shadow: 0 3px 4px -2px rgb(0 0 0 / 0.2);
-`;
-const Content = styled(AccordionContent)`
-  background: #fbfbfb;
-  padding: 24px 36px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  box-shadow: 0 3px 4px -2px rgb(0 0 0 / 0.2);
 `;
 
 export default function ShareSettingsModal({ open, onOpenChange, title, type, data, setData }: ShareSettingsModalProps) {
@@ -63,8 +47,8 @@ export default function ShareSettingsModal({ open, onOpenChange, title, type, da
   };
 
   const handleSave = () => {
-    setData(localData); // 부모의 setFormData 호출
-    onOpenChange(false); // 모달 닫기
+    setData(localData);
+    onOpenChange(false);
   };
 
   return (

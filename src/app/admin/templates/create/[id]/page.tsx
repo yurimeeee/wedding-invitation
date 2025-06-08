@@ -249,7 +249,8 @@ export default function AdminTemplatesCreatePage() {
       });
 
       const galleryImageURLs = await Promise.all(galleryUploadPromises);
-
+      const kakaoShareResult = await uploadBytes(mainStorageRef, formData?.share_kakao_img);
+      const linkShareResult = await uploadBytes(linkStorageRef, formData?.share_link_img);
       const kakaoShareImageURL = await getDownloadURL(kakaoStorageRef);
       const linkShareImageURL = await getDownloadURL(linkStorageRef);
       // 3. Firestore에 저장할 데이터 구성
@@ -1111,10 +1112,10 @@ export default function AdminTemplatesCreatePage() {
                         />
                       </div>
                       <div>
-                        <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('bride_account')} />
+                        <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('groom_account')} />
                       </div>
-                      {formData?.bride_account?.length > 1 && (
-                        <button onClick={() => removeAccount('bride_account', idx)}>
+                      {formData?.groom_account?.length > 1 && (
+                        <button onClick={() => removeAccount('groom_account', idx)}>
                           <CiSquareRemove size={20} className="text-red-500" />
                         </button>
                       )}

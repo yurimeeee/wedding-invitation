@@ -91,6 +91,7 @@ export default function AdminTemplatesCreatePage() {
   const params = useParams();
   const id = params.id;
   const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<any>(null);
   const [mainImage, setMainImage] = useState<any>(null);
   const [gallery, setGallery] = useState<any>(null);
@@ -197,6 +198,7 @@ export default function AdminTemplatesCreatePage() {
 
   // 파일 업로드 및 Firestore 저장 함수
   async function handleSave(): Promise<void> {
+    setIsLoading(true);
     const storage = getStorage();
     const firestore = getFirestore();
 
@@ -219,6 +221,7 @@ export default function AdminTemplatesCreatePage() {
 
     const errorMessage = validateForm();
     if (errorMessage) {
+      setIsLoading(false);
       alert(errorMessage);
       return;
     }
@@ -377,7 +380,7 @@ export default function AdminTemplatesCreatePage() {
 
   return (
     <div className="flex h-screen">
-      <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto w-1/2 h-full">
+      <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto w-1/2 h-full pb-20">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
         <div className="flex flex-col gap-2">
           <CustomAccordion
@@ -898,22 +901,6 @@ export default function AdminTemplatesCreatePage() {
                 <CustomInfoText text="사진은 최대 10장까지 업로드하실 수 있습니다." className="mb-1" />
                 <CustomInfoText text="사진을 업로드 한 뒤 드래그하면 순서를 변경하실 수 있습니다." className="mb-1" />
                 <CustomInfoText text="용량이 큰 사진은 최적화된 해상도와 크기로 업로드 됩니다." className="mb-5" />
-                <Label text="제목" className="mb-2" />
-                <CustomInput
-                  type="text"
-                  placeholder="입력해주세요"
-                  value={formData?.groom_parents?.dad?.name}
-                  onChange={(e) => handleParentValueChange('groom_parents', 'dad', 'name', e.target.value)}
-                  className="mb-5"
-                />
-                <Label text="설명" className="mb-2" />
-                <CustomInput
-                  type="text"
-                  placeholder="입력해주세요"
-                  value={formData?.groom_parents?.dad?.name}
-                  onChange={(e) => handleParentValueChange('groom_parents', 'dad', 'name', e.target.value)}
-                  className="mb-5"
-                />
                 <div className="flex justify-between items-center">
                   <Label text="이미지" required={true} className="mb-2" /> <p className="text-xs text-text-default">{formData?.gallery?.length}/10 장</p>
                 </div>
@@ -1068,20 +1055,34 @@ export default function AdminTemplatesCreatePage() {
                 <div className="flex flex-col gap-2 mb-3">
                   <p className="text-[14px] font-suite-medium text-text-default">신랑측</p>
                   {formData?.groom_account?.map((item: any, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <CustomInput type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'bank', e.target.value)} />
-                      <CustomInput
-                        type="text"
-                        placeholder="계좌번호"
-                        value={item?.account || ''}
-                        onChange={(e) => handleAccountChange('groom_account', idx, 'account', e.target.value)}
-                      />
-                      <CustomInput type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('groom_account', idx, 'name', e.target.value)} />
-                      <div>
-                        <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('groom_account')} />
+                    <div key={idx} className="flex gap-2 items-center">
+                      <div className="flex flex-col items-center gap-2 w-full">
+                        <div className="flex gap-2 w-full">
+                          <CustomInput
+                            type="text"
+                            placeholder="@@은행 "
+                            value={item?.bank || ''}
+                            onChange={(e) => handleAccountChange('groom_account', idx, 'bank', e.target.value)}
+                          />
+                          <CustomInput
+                            type="text"
+                            placeholder="예금주"
+                            value={item?.name || ''}
+                            onChange={(e) => handleAccountChange('groom_account', idx, 'name', e.target.value)}
+                          />
+                        </div>
+                        <CustomInput
+                          type="text"
+                          placeholder="계좌번호"
+                          value={item?.account || ''}
+                          onChange={(e) => handleAccountChange('groom_account', idx, 'account', e.target.value)}
+                        />
                       </div>
-                      {formData?.groom_account?.length > 1 && (
-                        <button onClick={() => removeAccount('groom_account', idx)}>
+                      <div>
+                        <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('bride_account')} />
+                      </div>
+                      {formData?.bride_account?.length > 1 && (
+                        <button onClick={() => removeAccount('bride_account', idx)}>
                           <CiSquareRemove size={20} className="text-red-500" />
                         </button>
                       )}
@@ -1092,15 +1093,29 @@ export default function AdminTemplatesCreatePage() {
                   <p className="text-[14px] font-suite-medium text-text-default">신부측</p>
 
                   {formData?.bride_account?.map((item: any, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <CustomInput type="text" placeholder="@@은행 " value={item?.bank || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'bank', e.target.value)} />
-                      <CustomInput
-                        type="text"
-                        placeholder="계좌번호"
-                        value={item?.account || ''}
-                        onChange={(e) => handleAccountChange('bride_account', idx, 'account', e.target.value)}
-                      />
-                      <CustomInput type="text" placeholder="예금주" value={item?.name || ''} onChange={(e) => handleAccountChange('bride_account', idx, 'name', e.target.value)} />
+                    <div key={idx} className="flex gap-2 items-center">
+                      <div className="flex flex-col items-center gap-2 w-full">
+                        <div className="flex gap-2 w-full">
+                          <CustomInput
+                            type="text"
+                            placeholder="@@은행 "
+                            value={item?.bank || ''}
+                            onChange={(e) => handleAccountChange('bride_account', idx, 'bank', e.target.value)}
+                          />
+                          <CustomInput
+                            type="text"
+                            placeholder="예금주"
+                            value={item?.name || ''}
+                            onChange={(e) => handleAccountChange('bride_account', idx, 'name', e.target.value)}
+                          />
+                        </div>
+                        <CustomInput
+                          type="text"
+                          placeholder="계좌번호"
+                          value={item?.account || ''}
+                          onChange={(e) => handleAccountChange('bride_account', idx, 'account', e.target.value)}
+                        />
+                      </div>
                       <div>
                         <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addAccount('bride_account')} />
                       </div>
@@ -1117,41 +1132,10 @@ export default function AdminTemplatesCreatePage() {
           />
         </div>
 
-        {/* <div className="mb-4">
-          <p className="text-[14px] font-suite-medium text-text-default mb-2">갤러리 이미지 업로드</p>
-          <p className="text-[12px] font-suite-medium text-gray-500 mb-2">최대 10장 업로드 가능</p>
-          <input type="file" accept="image/*" multiple onChange={handleGalleryChange} value={''} />
-
-          <div className="flex flex-wrap gap-3 mt-3">
-            {formData?.gallery
-              ?.filter((img: string) => !!img)
-              .map((img: string, idx: number) => (
-                <PreviewImage key={idx}>
-                  <Image
-                    key={idx}
-                    src={img}
-                    alt={`gallery-${idx}`}
-                    // width={120}
-                    // height={120}
-                    // sizes="100%"
-                    fill
-                    className="rounded"
-                  />
-                  <div
-                    className="bg-white absolute rignt-0 top-0 z-10 bg-white/50"
-                    onClick={() => {
-                      handleGalleryImageRemove(idx);
-                    }}
-                  >
-                    <IoClose />
-                  </div>
-                </PreviewImage>
-              ))}
-          </div>
-        </div> */}
-
         <div className="mt-6 flex justify-end">
-          <Button onClick={handleSave}>저장하기</Button>
+          <Button onClick={handleSave} disabled={isLoading}>
+            저장하기
+          </Button>
         </div>
       </Wrap>
       <Wrap className="scroll-container hidden sm:flex bg-text-default overflow-auto w-1/2 h-full">

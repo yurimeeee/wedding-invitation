@@ -62,7 +62,7 @@ export default function FamilyInfoModal({ open, onOpenChange, type, data, setDat
           <a href={`sms:${phone}`} className="w-1/2 rounded-lg" style={{ backgroundColor: ` rgb(235, 173, 173)` }}>
             문자 보내기
           </a>
-          <a href={`sms:${phone}`} className="w-1/2 rounded-lg" style={{ backgroundColor: ` rgb(17, 17, 17)`, opacity: `0.7` }}>
+          <a href={`tel:${phone}`} className="w-1/2 rounded-lg" style={{ backgroundColor: ` rgb(17, 17, 17)`, opacity: `0.7` }}>
             전화하기
           </a>
         </div>

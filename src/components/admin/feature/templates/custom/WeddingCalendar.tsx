@@ -2,6 +2,8 @@
 
 import 'react-calendar/dist/Calendar.css';
 
+import { formatTime, formattedDate } from '@utils/func';
+
 import Calendar from 'react-calendar';
 import Countdown from './Countdown';
 import React from 'react';
@@ -31,6 +33,9 @@ const StyledCalendar = styled(Calendar)`
       background-color: transparent !important;
       background: transparent !important;
     }
+  }
+  .react-calendar__navigation {
+    display: none;
   }
   .react-calendar__navigation__label {
     pointer-events: none;
@@ -87,7 +92,12 @@ const WeddingCalendar = ({ weddingDate, data }: WeddingCalendarProps) => {
   console.log(data);
   return (
     <div className="flex justify-center items-center flex-col gap-4">
-      {data?.calendar_display && <StyledCalendar tileClassName={tileClassName} value={wedding} />}
+      <p className="text-md mb-1 font-chosun">
+        <span>{formattedDate(data?.main?.date) || '2025년 6월 24일 토요일'}</span>
+        <span className="px-2">|</span>
+        <span>{formatTime(data?.main?.time) || '오후 2시'}</span>
+      </p>
+      {data?.calendar_display && <StyledCalendar tileClassName={tileClassName} value={wedding} formatDay={(_, date) => date.getDate().toString()} />}
       {data?.countdown_display && <Countdown targetDate={wedding} />}
       {data?.d_day_display && <WeddingDday targetDate={wedding} />}
     </div>

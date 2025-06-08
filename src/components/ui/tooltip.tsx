@@ -53,7 +53,7 @@ type CustomTooltipProps = {
 export function CustomTooltip({ text, children, trigger }: CustomTooltipProps) {
   return (
     <Tooltip>
-      <TooltipTrigger>{trigger ? trigger : <BsQuestionCircle color={GRAY_500} />}</TooltipTrigger>
+      <TooltipTrigger>{trigger ? trigger : <BsQuestionCircle color={GRAY_500} size={16} />}</TooltipTrigger>
       <TooltipContent>
         <p className="text-sm font-suite">{text || children}</p>
       </TooltipContent>

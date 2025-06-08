@@ -281,3 +281,10 @@ h3.my-custom-heading {
 .heading-level-6 {
   @apply text-base font-normal text-purple-500;
 }
+.scroll-container {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

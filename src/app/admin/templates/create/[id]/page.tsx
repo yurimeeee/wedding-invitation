@@ -377,8 +377,8 @@ export default function AdminTemplatesCreatePage() {
   };
 
   return (
-    <div className="pb-20 flex">
-      <Wrap className="bg-[#F5F4F0] p-6">
+    <div className="pb-20 flex h-screen">
+      <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto w-1/2 h-full">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
         <div className="flex flex-col gap-2">
           <CustomAccordion
@@ -1127,7 +1127,7 @@ export default function AdminTemplatesCreatePage() {
           <Button onClick={handleSave}>저장하기</Button>
         </div>
       </Wrap>
-      <Wrap className="hidden sm:flex bg-text-default">
+      <Wrap className="scroll-container hidden sm:flex bg-text-default overflow-auto w-1/2 h-full">
         <div className="max-w-[400px] mx-auto">{RenderedComponent && <RenderedComponent data={formData} />}</div>
       </Wrap>
       <ShareSettingsModal

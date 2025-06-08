@@ -48,9 +48,9 @@ const ShareLinks = ({ data }: ShareLinksProps) => {
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: data?.main?.main_title,
-        description: `${data?.groom_last_name} ${data?.bride_last_name}의 결혼식에 초대합니다`,
-        imageUrl: data?.main?.main_img,
+        title: data?.share_kakao_title || data?.main?.main_title,
+        description: data?.share_kakao_desc || `${data?.groom_last_name} ${data?.bride_last_name}의 결혼식에 초대합니다`,
+        imageUrl: data?.share_kakao_img || data?.main?.main_img,
         link: {
           mobileWebUrl: window.location.href,
           webUrl: window.location.href,

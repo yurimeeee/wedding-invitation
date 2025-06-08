@@ -1,15 +1,9 @@
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@components/ui/dialog';
-import { useEffect, useState } from 'react';
 
-import { Button } from '@components/ui/button';
-import { CiSquarePlus } from 'react-icons/ci';
-import { CustomBox } from '@components/ui/CustomBox';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
-import { CustomInput } from '@components/ui/CustomInput';
-import { GRAY_400 } from '@styles/colors';
 import { GREETING_MESSAGES } from '@utils/greetingMsg';
 import { TemplatesData } from '@type/templates';
-import styled from '@emotion/styled';
+import { useState } from 'react';
 
 type GreetingCategory = { text: string; value: string };
 type Category = 'long' | 'short' | 'love_poem' | 'quotes' | 'polite';
@@ -18,24 +12,11 @@ type SampleGreetingMessageModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  type: 'KAKAO' | 'LINK';
   data: TemplatesData;
   setData: any;
 };
 
-const ShareBox = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #fbfbfb;
-  width: 240px;
-  aspect-ratio: 1;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-`;
-
-export default function SampleGreetingMessageModal({ open, onOpenChange, title, type, data, setData }: SampleGreetingMessageModalProps) {
-  // const category: GreetingCategory[] = ['long', 'short', 'love_poem', 'quotes', 'polite'];
+export default function SampleGreetingMessageModal({ open, onOpenChange, title, data, setData }: SampleGreetingMessageModalProps) {
   const category: GreetingCategory[] = [
     { text: '장문형', value: 'long' },
     { text: '간결한', value: 'short' },
@@ -60,6 +41,7 @@ export default function SampleGreetingMessageModal({ open, onOpenChange, title, 
       <DialogContent>
         <DialogTitle>{title}</DialogTitle>
         <CustomInfoText text="설레는 마음으로 두 분의 사랑을 전해보세요" className="mb-5" />
+
         <div className="flex flex-wrap gap-2 items-center">
           {category?.map((item, idx) => (
             <div
@@ -67,6 +49,8 @@ export default function SampleGreetingMessageModal({ open, onOpenChange, title, 
               onClick={() => {
                 setActiveTap(item.value as Category);
               }}
+              className={`px-3 py-1 rounded-full text-text-defult text-sm transition-colors duration-200 shadow-default
+              ${activeTap === item.value ? 'bg-pink-400 text-text-default border border-pink-500' : 'bg-pink-200 text-muted-foreground border border-pink-200'}`}
             >
               {item.text}
             </div>

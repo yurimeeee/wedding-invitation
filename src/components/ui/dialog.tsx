@@ -3,6 +3,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import * as React from 'react';
 
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { XIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -100,7 +101,13 @@ export function CustomDialog({ open, onOpenChange, showCloseButton, title, conte
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={showCloseButton}>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          {title ? (
+            <DialogTitle>{title}</DialogTitle>
+          ) : (
+            <VisuallyHidden>
+              <DialogTitle>Dialog</DialogTitle>
+            </VisuallyHidden>
+          )}
           <DialogDescription>{contents}</DialogDescription>
         </DialogHeader>
       </DialogContent>

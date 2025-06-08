@@ -54,6 +54,7 @@ export type TemplatesData = {
   id?: string;
   // 새로 추가
   name_display_order?: 'groomFirst' | 'brideFirst';
+  full_name_display: boolean;
   // 혼주 정보
   bride_parents?: {
     dad: { name: string, isDeceased: boolean, isDeceased_mark?: string }, // 'text' | 'icon'
@@ -82,4 +83,8 @@ export type TemplatesData = {
 
   family_display_type?: string  //'row' | 'center' | 'brief'  // 가족 표시
 
+  groom_dad_phone: string
+  groom_mom_phone: string
+  bride_dad_phone: string
+  bride_mom_phone: string
 };

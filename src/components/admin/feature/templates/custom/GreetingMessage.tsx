@@ -27,24 +27,24 @@ const GreetingMessage = ({ data }: GreetingMessageProps) => {
             <div className="flex">
               <p className="text-base">
                 신랑 {data?.groom_first_name}
-                {data?.groom_last_name}
+                {data?.groom_last_name || '철수'}
               </p>
               <p className="text-base px-2">·</p>
               <p className="text-base">
                 신부 {data?.bride_first_name}
-                {data?.bride_last_name}
+                {data?.bride_last_name || '영희'}
               </p>
             </div>
           ) : (
             <div className="flex">
               <p className="text-base">
                 신부 {data?.bride_first_name}
-                {data?.bride_last_name}
+                {data?.bride_last_name || '영희'}
               </p>
               <p className="text-base px-2">·</p>
               <p className="text-base">
                 신랑 {data?.groom_first_name}
-                {data?.groom_last_name}
+                {data?.groom_last_name || '철수'}
               </p>
             </div>
           )}

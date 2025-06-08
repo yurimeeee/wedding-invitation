@@ -615,11 +615,11 @@ export default function AdminTemplatesCreatePage() {
                     <div className="flex justify-between w-full">
                       <Label text="신랑 · 신부 전체 이름으로 표시" />
                       <CustomToggle
-                        checked={formData?.calendar_display}
+                        checked={formData?.full_name_display}
                         onChange={(val) =>
                           setFormData((prev: any) => ({
                             ...prev,
-                            calendar_display: val,
+                            full_name_display: val,
                           }))
                         }
                       />
@@ -627,7 +627,6 @@ export default function AdminTemplatesCreatePage() {
                   }
                 />
                 <Label text="신랑님 연락처" className="mb-2" />
-                {/* <div className="flex gap-4 mb-3"> */}
                 <CustomInput
                   type="text"
                   placeholder="신랑님 연락처"
@@ -635,9 +634,23 @@ export default function AdminTemplatesCreatePage() {
                   onChange={(e) => handleChange('groom_phone', e.target.value)}
                   className="mb-5"
                 />
-                {/* </div> */}
+                <Label text="신랑 아버지 연락처" className="mb-2" />
+                <CustomInput
+                  type="text"
+                  placeholder="신랑 아버지 연락처"
+                  value={formData?.groom_dad_phone || ''}
+                  onChange={(e) => handleChange('groom_dad_phone', e.target.value)}
+                  className="mb-5"
+                />
+                <Label text="신랑 어머니 연락처" className="mb-2" />
+                <CustomInput
+                  type="text"
+                  placeholder="신랑 어머니 연락처"
+                  value={formData?.groom_mom_phone || ''}
+                  onChange={(e) => handleChange('groom_mom_phone', e.target.value)}
+                  className="mb-5"
+                />
                 <Label text="신부님 연락처" className="mb-2" />
-                {/* <div className="flex gap-4 mb-3"> */}
                 <CustomInput
                   type="text"
                   placeholder="신부님 연락처"
@@ -645,7 +658,22 @@ export default function AdminTemplatesCreatePage() {
                   onChange={(e) => handleChange('bride_phone', e.target.value)}
                   className="mb-5"
                 />
-                {/* </div> */}
+                <Label text="신부 아버지 연락처" className="mb-2" />
+                <CustomInput
+                  type="text"
+                  placeholder="신부 아버지 연락처"
+                  value={formData?.bride_dad_phone || ''}
+                  onChange={(e) => handleChange('bride_dad_phone', e.target.value)}
+                  className="mb-5"
+                />
+                <Label text="신부 어머니 연락처" className="mb-2" />
+                <CustomInput
+                  type="text"
+                  placeholder="신부 어머니 연락처"
+                  value={formData?.bride_mom_phone || ''}
+                  onChange={(e) => handleChange('bride_mom_phone', e.target.value)}
+                  className="mb-5"
+                />
               </div>
             }
           />
@@ -1142,7 +1170,6 @@ export default function AdminTemplatesCreatePage() {
         open={sampleGreetingMessageModal.open}
         onOpenChange={setSampleGreetingMessageModal}
         title={'샘플 문구 활용'}
-        type={sampleGreetingMessageModal.type}
         setData={(newData: any) => setFormData({ ...formData, ...newData })}
         data={formData}
       />

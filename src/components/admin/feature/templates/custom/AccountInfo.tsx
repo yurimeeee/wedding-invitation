@@ -12,11 +12,16 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
     <div className="w-full font-suite flex flex-col gap-2 px-4">
       <p className="font-chosun-bold text-gray-600 text-center text-base mb-3">{data?.account_title}</p>
       <p className="text-[14px] mb-2 text-center text-gray-600">
-        {data?.account_desc?.split('\n').map((line: string, idx: number) => (
+        {/* {data?.account_desc?.split('\n')?.map((line: string, idx: number) => (
           <p key={idx} style={{ textAlign: 'center' }}>
             <span>{line}</span>
             <br />
           </p>
+        ))} */}
+        {data?.account_desc?.split('\n')?.map((line: string, idx: number) => (
+          <span key={idx} style={{ display: 'block', textAlign: 'center' }}>
+            {line}
+          </span>
         ))}
       </p>
       <div className="w-full p-5 rounded-md border border-solid border-pink-300">

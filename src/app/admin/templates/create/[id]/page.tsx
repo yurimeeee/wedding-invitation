@@ -230,6 +230,12 @@ export default function AdminTemplatesCreatePage() {
     const mainStoragePath = `invitation/${invitationId}/main/main_img`;
     const mainStorageRef = ref(storage, mainStoragePath);
 
+    // 카카오 이미지 경로 및 참조 생성
+    const kakaoStoragePath = `invitation/${invitationId}/share/share_kakao_img`;
+    const kakaoStorageRef = ref(storage, kakaoStoragePath);
+    // 링크 이미지 경로 및 참조 생성
+    const linkStoragePath = `invitation/${invitationId}/share/share_link_img`;
+    const linkStorageRef = ref(storage, linkStoragePath);
     try {
       // 1. 메인 이미지 업로드
       const mainUploadResult = await uploadBytes(mainStorageRef, mainImage);
@@ -244,6 +250,8 @@ export default function AdminTemplatesCreatePage() {
 
       const galleryImageURLs = await Promise.all(galleryUploadPromises);
 
+      const kakaoShareImageURL = await getDownloadURL(kakaoStorageRef);
+      const linkShareImageURL = await getDownloadURL(linkStorageRef);
       // 3. Firestore에 저장할 데이터 구성
       const dataToSave = {
         ...formData,
@@ -253,6 +261,8 @@ export default function AdminTemplatesCreatePage() {
         },
         gallery: galleryImageURLs,
         uploadedAt: new Date(),
+        share_kakao_img: kakaoShareImageURL,
+        share_link_img: linkShareImageURL,
       };
 
       // 4. Firestore에 데이터 저장

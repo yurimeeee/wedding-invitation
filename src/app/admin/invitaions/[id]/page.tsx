@@ -66,7 +66,7 @@ export default function InvitaionsDetailPage() {
           <BeatLoader color={theme.color.pink300} loading={!data} />
         </motion.div>
       ) : (
-        data && RenderedComponent && <RenderedComponent data={data} />
+        data && RenderedComponent && <RenderedComponent data={{ ...data, id: id }} />
       )}
     </div>
   );

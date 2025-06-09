@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export type TemplatesData = {
   main: {
     main_img: string;
@@ -90,4 +92,16 @@ export type TemplatesData = {
   groom_mom_phone: string
   bride_dad_phone: string
   bride_mom_phone: string
+  guestbook_title: string
+  guestbook_desc: string
+  guestbook_password: string
+};
+
+
+export type GuestMessageData = {
+  name: string
+  password: string
+  contents: string
+  createdAt?: Timestamp
+  id?: string
 };

@@ -4,6 +4,7 @@ import AccountInfo from '../custom/AccountInfo';
 import FamilyInfo from '../custom/FamilyInfo';
 import Gallery from '../custom/Gallery';
 import GreetingMessage from '../custom/GreetingMessage';
+import GuestMessage from '../custom/GuestMessage';
 import Image from 'next/image';
 import MainCover from '../custom/MainCover';
 import React from 'react';
@@ -63,6 +64,7 @@ const TemplateType3Editor = ({ data }: TemplateTypeProps) => {
             <WeddingCalendar weddingDate={data?.main?.date} data={data} />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />
+            <GuestMessage data={data} />
             <ShareLinks data={data} />
           </div>
           <div className="border-t border-gray-300 w-full">

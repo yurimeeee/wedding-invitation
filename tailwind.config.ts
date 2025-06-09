@@ -36,6 +36,7 @@ const config: Config = {
         pink300: '#F0DFD8',
         pink400: '#f7dee2',
         pink500: '#f3d5d9',
+        pink600: '#cb949a',
         darkPink100: '#CC9399',
 
         // 레드

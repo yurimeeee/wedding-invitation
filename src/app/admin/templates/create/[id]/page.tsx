@@ -100,7 +100,9 @@ export default function AdminTemplatesCreatePage() {
   const [shareKakaoImg, setShareKakaoImg] = useState<any>(null);
   const [shareLinkImg, setShareLinkImg] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const invitationId = uuidv4();
+  // const invitationId = uuidv4();
+  const [invitationId, setInvitationId] = useState<string>('');
+  // const invitationId = uuidv4();
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
   const [shareSettingsModal, setShareSettingsModal] = useState<any>({ open: false, title: '', type: '' });
   const [sampleGreetingMessageModal, setSampleGreetingMessageModal] = useState<any>({ open: false, title: '', type: '' });
@@ -405,7 +407,12 @@ export default function AdminTemplatesCreatePage() {
       )} */}
       <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto w-1/2 h-full pb-20">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
+
         <div className="flex flex-col gap-2">
+          <div>
+            <Label text="URL 입력" required={true} className="mb-2" />
+            <CustomInput type="text" placeholder="URL을 입력해주세요" value={invitationId} onChange={(e) => setInvitationId(e.target.value)} />
+          </div>
           <CustomAccordion
             title="예식 일시"
             children={
@@ -1178,6 +1185,30 @@ export default function AdminTemplatesCreatePage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="방명록"
+            children={
+              <div>
+                <CustomInfoText text="청첩장 소유자와 작성자는 방명록의 글을 삭제할 수 있습니다." className="mb-1" />
+                <CustomInfoText text="[삭제 권한 비밀번호]를 자유롭게 설정하실 수 있습니다." className="mb-5" />
+                <Label text="제목" className="mb-2" />
+                <CustomInput type="text" placeholder="제목" value={formData?.guestbook_title} onChange={(e) => handleChange('guestbook_title', e.target.value)} className="mb-5" />
+                <Label text="설명" className="mb-2" />
+                <Textarea placeholder="설명" value={formData?.guestbook_desc} onChange={(e) => handleChange('guestbook_desc', e.target.value)} className="mb-5" />
+                <div className="flex gap-2 mb-2">
+                  <Label text="삭제 권한 비밀번호" required={true} />
+                  <CustomTooltip text="방명록에 남겨진 특정 게시물을 삭제하실 경우, 입력하셔야 하는 비밀번호입니다" />
+                </div>
+                <CustomInput
+                  type="text"
+                  placeholder="비밀번호 입력"
+                  value={formData?.guestbook_password}
+                  onChange={(e) => handleChange('guestbook_password', e.target.value)}
+                  className="mb-5"
+                />
               </div>
             }
           />

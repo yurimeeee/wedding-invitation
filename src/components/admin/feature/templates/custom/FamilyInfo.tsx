@@ -1,10 +1,9 @@
 'use client';
 
-import { GRAY_100, GRAY_400, GRAY_500, PINK_300 } from '@styles/colors';
+import { GRAY_500, PINK_300 } from '@styles/colors';
 
 import { ArrowRight } from 'lucide-react';
 import FamilyInfoModal from './modal/FamilyInfoModal';
-import { IoIosCall } from 'react-icons/io';
 import { PiFlowerFill } from 'react-icons/pi';
 import { TemplatesData } from '@type/templates';
 import styled from '@emotion/styled';

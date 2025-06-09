@@ -46,6 +46,24 @@ export const formatTime = (time?: string) => {
   }
 };
 
+export function formatUnixTimestamp(seconds?: number, nanoSeconds?: number): string {
+  if (!seconds || !nanoSeconds) {
+    return ''
+  }
+  // 밀리초 단위로 변환
+  const timestampMs = seconds * 1000 + Math.floor(nanoSeconds / 1_000_000);
+
+  // Date 객체 생성 (로컬 시간 기준, 한국 기준이면 자동으로 KST)
+  const date = new Date(timestampMs);
+
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  const hh = String(date.getHours()).padStart(2, '0');
+  const min = String(date.getMinutes()).padStart(2, '0');
+
+  return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
+}
 
 
 

@@ -31,7 +31,7 @@ export default function AdminInvitationListPage() {
   useEffect(() => {
     fetchInvitationsList();
   }, []);
-
+  console.log('invitations', invitations);
   return (
     <div className="p-8 pb-20">
       <p className="text-[18px] font-suite-bold text-text-default mb-6">Templates</p>

@@ -92,6 +92,7 @@ export type TemplatesData = {
   groom_mom_phone: string
   bride_dad_phone: string
   bride_mom_phone: string
+  guestbook_display?: boolean
   guestbook_title: string
   guestbook_desc: string
   guestbook_password: string

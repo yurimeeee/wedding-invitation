@@ -1194,6 +1194,25 @@ export default function AdminTemplatesCreatePage() {
               <div>
                 <CustomInfoText text="청첩장 소유자와 작성자는 방명록의 글을 삭제할 수 있습니다." className="mb-1" />
                 <CustomInfoText text="[삭제 권한 비밀번호]를 자유롭게 설정하실 수 있습니다." className="mb-5" />
+
+                <CustomBox
+                  type="input"
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="방명록 노출" />
+                      <CustomToggle
+                        checked={formData?.guestbook_display}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            guestbook_display: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
                 <Label text="제목" className="mb-2" />
                 <CustomInput type="text" placeholder="제목" value={formData?.guestbook_title} onChange={(e) => handleChange('guestbook_title', e.target.value)} className="mb-5" />
                 <Label text="설명" className="mb-2" />

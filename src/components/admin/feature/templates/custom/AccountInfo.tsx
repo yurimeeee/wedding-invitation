@@ -59,8 +59,9 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
                 <MdOutlineContentCopy color={theme.color.gray_500} />
               </button>
               {data?.is_kakao_account && item?.kakao && (
-                <button
-                  onClick={() => handleCopy(item?.kakao)}
+                <a
+                  href={item?.kakao}
+                  target="_blank"
                   className="px-3 w-full rounded-lg cursor-pointer flex items-center justify-between text-[12px] text-text-default bg-[#FFEB00]"
                 >
                   간편송금
@@ -82,7 +83,7 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
                       fill="#444444"
                     ></path>
                   </svg>
-                </button>
+                </a>
               )}
             </div>
           </div>

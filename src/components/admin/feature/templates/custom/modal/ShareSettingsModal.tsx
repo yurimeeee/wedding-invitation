@@ -18,6 +18,8 @@ type ShareSettingsModalProps = {
   type: 'KAKAO' | 'LINK';
   data: TemplatesData;
   setData: any;
+  setShareKakaoImg: React.Dispatch<React.SetStateAction<File | null>>;
+  setShareLinkImg: React.Dispatch<React.SetStateAction<File | null>>;
 };
 
 const ShareBox = styled.div`
@@ -36,7 +38,7 @@ const ImageBox = styled(Image)`
   object-fit: cover;
 `;
 
-export default function ShareSettingsModal({ open, onOpenChange, title, type, data, setData }: ShareSettingsModalProps) {
+export default function ShareSettingsModal({ open, onOpenChange, title, type, data, setData, setShareKakaoImg, setShareLinkImg }: ShareSettingsModalProps) {
   const [localData, setLocalData] = useState<TemplatesData>({
     ...data,
   });
@@ -51,9 +53,10 @@ export default function ShareSettingsModal({ open, onOpenChange, title, type, da
     }
   }, [open, data]);
 
-  const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+  const handleImgChange = (e: React.ChangeEvent<HTMLInputElement>, key: string, setState: React.Dispatch<React.SetStateAction<File | null>>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setState(file);
     const reader = new FileReader();
     reader.onload = () => {
       setLocalData((prev: any) => ({
@@ -90,7 +93,7 @@ export default function ShareSettingsModal({ open, onOpenChange, title, type, da
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
-                  handleImgChange(e, 'share_kakao_img');
+                  handleImgChange(e, 'share_kakao_img', setShareKakaoImg);
                 }}
                 hidden
                 ref={kakaoInputRef}
@@ -136,7 +139,7 @@ export default function ShareSettingsModal({ open, onOpenChange, title, type, da
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
-                  handleImgChange(e, 'share_link_img');
+                  handleImgChange(e, 'share_link_img', setShareLinkImg);
                 }}
                 hidden
                 ref={linkInputRef}

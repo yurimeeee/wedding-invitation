@@ -11,6 +11,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 // import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useRef, useState } from 'react';
 
+import BeatLoader from 'react-spinners/BeatLoader';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
 import { Button } from '@components/ui/button';
 import CustomAccordion from '@components/admin/feature/templates/custom/Accordion';
@@ -44,6 +45,7 @@ import { TemplatesData } from '@type/templates';
 import { Textarea } from '@components/ui/textarea';
 import TiptapEditor from '@components/admin/feature/TiptapEditor';
 import dayjs from 'dayjs';
+import { motion } from 'framer-motion';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 import { title } from 'process';
@@ -95,11 +97,14 @@ export default function AdminTemplatesCreatePage() {
   const [formData, setFormData] = useState<any>(null);
   const [mainImage, setMainImage] = useState<any>(null);
   const [gallery, setGallery] = useState<any>(null);
+  const [shareKakaoImg, setShareKakaoImg] = useState<any>(null);
+  const [shareLinkImg, setShareLinkImg] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const invitationId = uuidv4();
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
   const [shareSettingsModal, setShareSettingsModal] = useState<any>({ open: false, title: '', type: '' });
   const [sampleGreetingMessageModal, setSampleGreetingMessageModal] = useState<any>({ open: false, title: '', type: '' });
+
   const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
     const updated = { ...formData };
@@ -199,6 +204,7 @@ export default function AdminTemplatesCreatePage() {
   // 파일 업로드 및 Firestore 저장 함수
   async function handleSave(): Promise<void> {
     setIsLoading(true);
+    toast('청첩장이 제작 중이니 잠시만 기다려주세요.');
     const storage = getStorage();
     const firestore = getFirestore();
 
@@ -222,7 +228,8 @@ export default function AdminTemplatesCreatePage() {
     const errorMessage = validateForm();
     if (errorMessage) {
       setIsLoading(false);
-      alert(errorMessage);
+      toast(errorMessage);
+
       return;
     }
 
@@ -249,8 +256,8 @@ export default function AdminTemplatesCreatePage() {
       });
 
       const galleryImageURLs = await Promise.all(galleryUploadPromises);
-      const kakaoShareResult = await uploadBytes(kakaoStorageRef, formData?.share_kakao_img);
-      const linkShareResult = await uploadBytes(linkStorageRef, formData?.share_link_img);
+      const kakaoShareResult = await uploadBytes(kakaoStorageRef, shareKakaoImg);
+      const linkShareResult = await uploadBytes(linkStorageRef, shareLinkImg);
       const kakaoShareImageURL = await getDownloadURL(kakaoStorageRef);
       const linkShareImageURL = await getDownloadURL(linkStorageRef);
       // 3. Firestore에 저장할 데이터 구성
@@ -269,7 +276,7 @@ export default function AdminTemplatesCreatePage() {
       // 4. Firestore에 데이터 저장
       const docRef = doc(firestore, 'invitation', invitationId);
       await setDoc(docRef, dataToSave, { merge: true });
-      alert('청접장이 등록되었습니다.');
+      toast('청접장이 등록되었습니다.');
     } catch (error) {
       console.error('Error during upload or Firestore saving:', error);
       throw error;
@@ -391,6 +398,11 @@ export default function AdminTemplatesCreatePage() {
 
   return (
     <div className="flex h-screen">
+      {/* {isLoading && (
+        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="h-screen w-full flex justify-center items-center">
+          <BeatLoader color={theme.color.pink300} loading={isLoading} />
+        </motion.div>
+      )} */}
       <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto w-1/2 h-full pb-20">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
         <div className="flex flex-col gap-2">
@@ -1187,6 +1199,8 @@ export default function AdminTemplatesCreatePage() {
         type={shareSettingsModal.type}
         setData={(newData: any) => setFormData({ ...formData, ...newData })}
         data={formData}
+        setShareKakaoImg={setShareKakaoImg}
+        setShareLinkImg={setShareLinkImg}
       />
       <SampleGreetingMessageModal
         open={sampleGreetingMessageModal.open}

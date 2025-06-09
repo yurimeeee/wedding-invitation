@@ -1,6 +1,5 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import { DocumentData, doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +9,7 @@ import TemplateType2 from '@components/admin/feature/templates/types/TemplateTyp
 import TemplateType3 from '@components/admin/feature/templates/types/TemplateType3';
 import TemplateType4 from '@components/admin/feature/templates/types/TemplateType4';
 import { db } from '@lib/firebase';
+import { motion } from 'framer-motion';
 import theme from '@styles/theme';
 import { useParams } from 'next/navigation';
 

@@ -14,9 +14,9 @@ interface Window {
   Kakao: any;
 }
 const CircleButton = styled.div`
-  width: 48px;
+  width: 100%;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 9999px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -69,13 +69,15 @@ const ShareLinks = ({ data }: ShareLinksProps) => {
   };
 
   return (
-    <div className="my-6">
+    <div className="my-6 px-8">
       {/* <p className="font-chosun-bold text-gray-600 text-center text-base mb-5">공유하기</p> */}
-      <div className="flex gap-3 justify-center items-center font-chosun my-6">
-        <CircleButton className="bg-[#FFEB00] hover:bg-[#ffea75]">
+      <div className="flex flex-col gap-3 justify-center items-center font-chosun my-6">
+        <CircleButton className="bg-[#FFEB00] hover:bg-[#ffea75] flex gap-2">
+          카카오톡으로 청첩장 전하기
           <RiKakaoTalkFill onClick={handleShareKakao} color="#3B1E1E" size={24} />
         </CircleButton>
-        <CircleButton className="bg-[#EBF1FF] hover:bg-[#e1eaff]">
+        <CircleButton className="bg-[#EBF1FF] hover:bg-[#e1eaff] flex gap-2">
+          청첩장 주소 복사하기
           <IoLink onClick={() => handleCopy(window.location.href)} color="#7499CB" size={24} />
         </CircleButton>
       </div>

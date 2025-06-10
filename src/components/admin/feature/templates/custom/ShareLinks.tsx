@@ -70,7 +70,7 @@ const ShareLinks = ({ data }: ShareLinksProps) => {
 
   return (
     <div className="my-6">
-      <p className="font-chosun-bold text-gray-600 text-center text-base mb-5">공유하기</p>
+      {/* <p className="font-chosun-bold text-gray-600 text-center text-base mb-5">공유하기</p> */}
       <div className="flex gap-3 justify-center items-center font-chosun my-6">
         <CircleButton className="bg-[#FFEB00] hover:bg-[#ffea75]">
           <RiKakaoTalkFill onClick={handleShareKakao} color="#3B1E1E" size={24} />

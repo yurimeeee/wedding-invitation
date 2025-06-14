@@ -1,6 +1,7 @@
 'use';
 
 import AccountInfo from '../custom/AccountInfo';
+import AttendeesInfo from '../custom/AttendeesInfo';
 import BackgroundMusicPlayer from '../custom/BackgroundMusicPlayer';
 import FamilyInfo from '../custom/FamilyInfo';
 import Gallery from '../custom/Gallery';
@@ -47,6 +48,7 @@ const TemplateType1 = ({ data }: any) => {
             <WeddingCalendar weddingDate={data?.main?.date} data={data} />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />
+            <AttendeesInfo data={data} />
             <GuestMessage data={data} />
             <ShareLinks data={data} />
           </div>

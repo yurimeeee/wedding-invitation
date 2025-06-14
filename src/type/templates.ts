@@ -96,6 +96,15 @@ export type TemplatesData = {
   guestbook_title: string
   guestbook_desc: string
   guestbook_password: string
+
+  attendance_display?: boolean
+  attendance_title?: string
+  attendance_desc?: string
+  attendees_eat_or_not?: boolean
+  attendees_number?: boolean
+
+
+
 };
 
 

@@ -1,6 +1,7 @@
 'use';
 
 import AccountInfo from '../custom/AccountInfo';
+import AttendeesInfo from '../custom/AttendeesInfo';
 import FamilyInfo from '../custom/FamilyInfo';
 import Gallery from '../custom/Gallery';
 import GreetingMessage from '../custom/GreetingMessage';
@@ -38,6 +39,7 @@ const TemplateType2Editor = ({ data }: TemplateTypeProps) => {
             <WeddingCalendar weddingDate={data?.main?.date} data={data} />
             <AccountInfo data={data} />
             <WeddingLocation data={data} />
+            <AttendeesInfo data={data} />
             <GuestMessage data={data} />
             <ShareLinks data={data} />
           </div>

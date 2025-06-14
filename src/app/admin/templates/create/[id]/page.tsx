@@ -795,14 +795,14 @@ export default function AdminTemplatesCreatePage() {
               </div>
             }
           />
-          <CustomAccordion
+          {/* <CustomAccordion
             title="폰트"
             children={
               <div>
                 <CustomInfoText text="청첩장의 폰트와 사이즈를 변경하실 수 있습니다." className="mb-5" />
               </div>
             }
-          />
+          /> */}
           <CustomAccordion
             title="카톡 · 링크 공유 설정"
             children={
@@ -1213,6 +1213,80 @@ export default function AdminTemplatesCreatePage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="참석의사"
+            children={
+              <div>
+                <CustomBox
+                  type="input"
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="참석의사 노출" />
+                      <CustomToggle
+                        checked={formData?.attendance_display}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            attendance_display: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
+                <Label text="제목" className="mb-2" />
+                <CustomInput
+                  type="text"
+                  placeholder="제목"
+                  value={formData?.attendance_title}
+                  onChange={(e) => handleChange('attendance_title', e.target.value)}
+                  className="mb-5"
+                />
+                <Label text="설명" className="mb-2" />
+                <Textarea placeholder="설명" value={formData?.attendance_desc} onChange={(e) => handleChange('attendance_desc', e.target.value)} className="mb-5" />
+                <div className="flex gap-2 mb-2">
+                  <Label text="질문 항목" />
+                  <CustomTooltip text="하객분들에게 참석 여부와 함께 추가적인 응답을 받고자 하는 질문 항목을 설정하실 수 있습니다" />
+                </div>
+                <CustomBox
+                  type="input"
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="식사 여부" />
+                      <CustomToggle
+                        checked={formData?.attendees_eat_or_not}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            attendees_eat_or_not: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
+                <CustomBox
+                  type="input"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="참석 인원" />
+                      <CustomToggle
+                        checked={formData?.attendees_number}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            attendees_number: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
               </div>
             }
           />

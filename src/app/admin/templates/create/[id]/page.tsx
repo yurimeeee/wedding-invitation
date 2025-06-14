@@ -6,10 +6,10 @@ import { CustomDialog, DialogTrigger } from '@components/ui/dialog';
 import { CustomRadioGroup, RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
 import { DocumentData, collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import { GRAY_500, GRAY_600 } from '@styles/colors';
+// import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { auth, db } from '@lib/firebase';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-// import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { useEffect, useRef, useState } from 'react';
 
 import BeatLoader from 'react-spinners/BeatLoader';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
@@ -103,9 +103,27 @@ export default function AdminTemplatesCreatePage() {
   // const invitationId = uuidv4();
   const [invitationId, setInvitationId] = useState<string>('');
   // const invitationId = uuidv4();
-  const [RenderedComponent, setRenderedComponent] = useState<any>(null);
+  // const [RenderedComponent, setRenderedComponent] = useState<any | null>(null);
+  const [RenderedComponent, setRenderedComponent] = useState<React.FC<any> | null>(null);
   const [shareSettingsModal, setShareSettingsModal] = useState<any>({ open: false, title: '', type: '' });
   const [sampleGreetingMessageModal, setSampleGreetingMessageModal] = useState<any>({ open: false, title: '', type: '' });
+  const [urlValidationMessage, setUrlValidationMessage] = useState<boolean | null>(null);
+
+  // url 중복 확인
+  const checkInvitationId = async (id: string) => {
+    try {
+      const docRef = doc(db, 'invitation', id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setUrlValidationMessage(false);
+      } else {
+        setUrlValidationMessage(true);
+      }
+    } catch (error) {
+      toast('확인 중 오류가 발생했습니다.');
+    }
+  };
 
   const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
@@ -121,20 +139,7 @@ export default function AdminTemplatesCreatePage() {
     setFormData(updated);
   };
 
-  // function handleParentValueChange(parentType: 'bride_parents' | 'groom_parents', role: 'dad' | 'mom', key: string, value: any) {
-  //   setFormData((prev: any) => ({
-  //     ...prev,
-  //     [parentType]: {
-  //       ...prev[parentType],
-  //       [role]: {
-  //         ...prev[parentType]?.[role],
-  //         [key]: value,
-  //       },
-  //     },
-  //   }));
-  // }
-
-  function handleParentValueChange(parentType: 'groom_parents' | 'bride_parents', role: 'dad' | 'mom', key: string, value: any) {
+  const handleParentValueChange = (parentType: 'groom_parents' | 'bride_parents', role: 'dad' | 'mom', key: string, value: any) => {
     setFormData((prev: any) => ({
       ...prev,
       [parentType]: {
@@ -145,7 +150,7 @@ export default function AdminTemplatesCreatePage() {
         },
       },
     }));
-  }
+  };
 
   const handleObjectValueChange = (key: string, index: number, value: string) => {
     const keyIndex = formData?.directions_desc?.findIndex((item: any) => item.type === key);
@@ -397,6 +402,9 @@ export default function AdminTemplatesCreatePage() {
   const handleEditorChange = (html: string) => {
     setHtmlContent(html);
   };
+  useEffect(() => {
+    setUrlValidationMessage(null);
+  }, [invitationId]);
 
   return (
     <div className="flex h-screen">
@@ -411,7 +419,27 @@ export default function AdminTemplatesCreatePage() {
         <div className="flex flex-col gap-2">
           <div>
             <Label text="URL 입력" required={true} className="mb-2" />
-            <CustomInput type="text" placeholder="URL을 입력해주세요" value={invitationId} onChange={(e) => setInvitationId(e.target.value)} />
+            <div className="flex gap-2">
+              <CustomInput type="text" placeholder="URL을 입력해주세요" value={invitationId} onChange={(e) => setInvitationId(e.target.value)} className="w-4/5" />
+              <CustomButton
+                text="확인"
+                onClick={async () => {
+                  await checkInvitationId(invitationId);
+                }}
+                disabled={invitationId?.trim() === '' || !/^[a-z0-9-]+$/.test(invitationId)}
+                active
+                className="w-1/5 max-w-[72px]"
+              />
+            </div>
+            {invitationId?.trim() === '' && <CustomInfoText text="url을 입력해주세요" color={'#EF665B'} className="my-2" />}
+            {!/^[a-z0-9-]+$/.test(invitationId) && <CustomInfoText text="영문 소문자, 숫자, 하이픈(-)만 사용 가능해요" color={'#EF665B'} className="my-2" />}
+
+            {urlValidationMessage === true && invitationId?.trim() !== '' && /^[a-z0-9-]+$/.test(invitationId) && (
+              <CustomInfoText text={'사용가능한 url입니다.'} color={'#17d287'} className="my-2" />
+            )}
+            {urlValidationMessage === false && invitationId?.trim() !== '' && /^[a-z0-9-]+$/.test(invitationId) && (
+              <CustomInfoText text={'이미 사용중인 url입니다.'} color={'#EF665B'} className="my-2" />
+            )}
           </div>
           <CustomAccordion
             title="예식 일시"
@@ -481,7 +509,7 @@ export default function AdminTemplatesCreatePage() {
                     className="!w-2/5"
                   />
                   <CustomInput type="text" placeholder="이름" value={formData?.groom_last_name || ''} onChange={(e) => handleChange('groom_last_name', e.target.value)} />
-                  <CustomCheckbox text="장남" value={formData?.isFirstSon} onChange={(val) => setFormData({ ...formData, isFirstSon: val })} />
+                  {/* <CustomCheckbox text="장남" value={formData?.isFirstSon} onChange={(val) => setFormData({ ...formData, isFirstSon: val })} /> */}
                 </div>
                 <Label text="신부님" required={true} className="mb-2" />
                 <div className="flex gap-2 mb-5">
@@ -493,7 +521,7 @@ export default function AdminTemplatesCreatePage() {
                     className="!w-2/5"
                   />
                   <CustomInput type="text" placeholder="이름" value={formData?.bride_last_name || ''} onChange={(e) => handleChange('bride_last_name', e.target.value)} />
-                  <CustomCheckbox text="장녀" value={formData?.isFirstDaughter} onChange={(val) => setFormData({ ...formData, isFirstDaughter: val })} />
+                  {/* <CustomCheckbox text="장녀" value={formData?.isFirstDaughter} onChange={(val) => setFormData({ ...formData, isFirstDaughter: val })} /> */}
                 </div>
                 <div className="flex gap-2 mb-2">
                   <Label text="표시순서" required={true} />

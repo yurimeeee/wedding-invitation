@@ -3,9 +3,10 @@ type CustomButtonProps = {
   active?: boolean;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
+  className?: string;
 };
 
-export function CustomButton({ text, active, onClick, disabled }: CustomButtonProps) {
+export function CustomButton({ text, active, onClick, disabled, className }: CustomButtonProps) {
   return (
     <button
       onClick={onClick}
@@ -14,6 +15,7 @@ export function CustomButton({ text, active, onClick, disabled }: CustomButtonPr
       !disabled ? 'cursor-pointer' : 'cursor-not-allowed'
     } transition-colors duration-200 shadow-default
     ${active ? 'bg-pink-200 text-text-default border border-pink-500' : 'bg-white text-muted-foreground'}
+    ${className}
   `}
       disabled={disabled}
     >

@@ -33,10 +33,12 @@ const TemplateType4 = ({ data }: TemplateTypeProps) => {
       <div className="max-w-[393px] mx-auto py-[42px]">
         <div className="flex flex-col items-center relative">
           <Image src="/assets/img/templates/type_4/the_wedding_of.svg" alt="the_wedding_of" width={300} height={40} className="mb-2 z-2" />
-          <Image src="/assets/img/templates/type_4/flower_1.png" alt="flower_1" width={300} height={40} className="absolute -right-10 bottom-10" />
+          {/* <Image src="/assets/img/templates/type_4/flower_1.png" alt="flower_1" width={300} height={40} className="absolute -right-10 bottom-10" />
           <Image src="/assets/img/templates/type_4/flower_2.png" alt="flower_2" width={300} height={40} className="absolute -left-10 top-20" />
-          <Image src="/assets/img/templates/type_4/flower_3.png" alt="flower_3" width={150} height={40} className="absolute left-10 bottom-70" />
-
+          <Image src="/assets/img/templates/type_4/flower_3.png" alt="flower_3" width={150} height={40} className="absolute left-10 bottom-70" /> */}
+          <Image src="/assets/img/templates/type_4/flower_1.png" alt="flower_1" width={300} height={40} className="absolute -right-10 bottom-10 " style={{ zIndex: 0 }} />
+          <Image src="/assets/img/templates/type_4/flower_2.png" alt="flower_2" width={300} height={40} className="absolute -left-10 top-20" style={{ zIndex: 0 }} />
+          <Image src="/assets/img/templates/type_4/flower_3.png" alt="flower_3" width={150} height={40} className="absolute left-10 bottom-70" style={{ zIndex: 0 }} />
           <MainImage>
             <Image src={data?.main?.main_img || '/assets/img/templates/type_4/main_img.png'} alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" />
             {/* <Image src="/assets/img/templates/type_4/main_img.png" alt="main_img" width={0} height={0} sizes="100vw" className="w-full h-auto" /> */}

@@ -115,3 +115,11 @@ export type GuestMessageData = {
   createdAt?: Timestamp
   id?: string
 };
+export type AttendeeInfoData = {
+  whose_guest: string
+  attendance: boolean
+  eat_or_not: boolean
+  name: string
+  number_of_accompany?: any
+  memo?: string
+};

@@ -54,6 +54,9 @@ const GuestMessage = ({ data }: GuestMessageProps) => {
     <div className="w-full font-chosun flex flex-col gap-2 px-8">
       <p className="font-chosun-bold text-gray-600 text-center text-base mb-5">MESSAGE</p>
 
+      {data?.guestbook_title && <p className="font-chosun-bold text-text-default text-center text-base">{data?.guestbook_title}</p>}
+      {data?.guestbook_desc && <p className="font-chosun-bold text-gray-500 text-center font-size">{data?.guestbook_desc}</p>}
+
       <div className="flex flex-col gap-4 mt-4">
         {messageList?.length < 1 && (
           <div>

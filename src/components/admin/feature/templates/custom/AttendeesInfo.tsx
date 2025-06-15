@@ -3,12 +3,13 @@
 import { ArrowRight, X } from 'lucide-react';
 import { GuestMessageData, TemplatesData } from '@type/templates';
 import { collection, getDocs } from 'firebase/firestore';
+import { formatTime, formattedDate } from '@utils/func';
 import { useEffect, useState } from 'react';
 
-import GuestMessageDeleteModal from './modal/GuestMessageDeleteModal';
-import GuestMessageModal from './modal/GuestMessageModal';
+import AttendeesInfoModal from './modal/AttendeesInfoModal';
+import { GoHeartFill } from 'react-icons/go';
+import { TEXT_DEFAULT } from '@styles/colors';
 import { db } from '@lib/firebase';
-import { formatUnixTimestamp } from '@utils/func';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 
@@ -30,49 +31,31 @@ type AttendeesInfoProps = {
 };
 
 const AttendeesInfo = ({ data }: AttendeesInfoProps) => {
-  const [guestMessageModal, setGuestMessageModal] = useState<any>({ open: false, title: '' });
-  const [guestMessageDeleteModal, setGuestMessageDeleteModal] = useState<any>({ open: false, title: '', id: '', password: '' });
-  const [messageList, setMessageList] = useState<GuestMessageData[]>([]);
+  const [attendeesInfoModal, setAttendeesInfoModal] = useState<any>({ open: false, title: '' });
 
-  const fetchInvitationsList = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, `invitation/${data?.id}/message`));
-      const msgData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setMessageList(msgData as GuestMessageData[]);
-    } catch (error) {
-      console.error('Error fetching templates:', error);
-    }
-  };
-  useEffect(() => {
-    fetchInvitationsList();
-  }, []);
   return !data?.attendance_display ? null : (
     <div className="w-full font-chosun flex flex-col gap-2 px-8">
       <p className="font-chosun-bold text-gray-600 text-center text-base mb-5">RSVP</p>
+      {data?.attendance_title && <p className="font-chosun-bold text-text-default text-center text-base">{data?.attendance_title}</p>}
+      {data?.attendance_desc && <p className="font-chosun-bold text-gray-500 text-center font-size">{data?.attendance_desc}</p>}
 
-      <div className="flex flex-col gap-4 mt-4"></div>
+      <div className="mt-4 bg-pink-100 rounded-md p-4 shadow-md text-center">
+        <p className="text-text-default font-semibold mb-4 flex gap-2 items-center justify-center">
+          신랑 {data?.groom_last_name || '철수'} <GoHeartFill color={TEXT_DEFAULT} /> 신부 {data?.bride_last_name || '영희'}
+        </p>
+        <p className="text-gray-700">{formattedDate(data?.main?.date) || '2025년 6월 24일 토요일'}</p>
+        <p className="text-gray-700 ml-1">{formatTime(data?.main?.time) || '오후 2시'}</p>
+      </div>
       <CallButton
-        className="mt-10"
+        className="mt-4"
         onClick={() => {
-          setGuestMessageModal({ ...guestMessageModal, open: true });
+          setAttendeesInfoModal({ ...attendeesInfoModal, open: true });
         }}
       >
         참석 의사 체크하기
         <ArrowRight size={16} />
       </CallButton>
-      <GuestMessageModal open={guestMessageModal.open} onOpenChange={setGuestMessageModal} data={data} fetchInvitationsList={fetchInvitationsList} />
-      <GuestMessageDeleteModal
-        open={guestMessageDeleteModal.open}
-        onOpenChange={setGuestMessageDeleteModal}
-        msgId={guestMessageDeleteModal.id}
-        invitationId={data?.id}
-        password={guestMessageDeleteModal.password}
-        fetchInvitationsList={fetchInvitationsList}
-      />
+      <AttendeesInfoModal open={attendeesInfoModal.open} onOpenChange={setAttendeesInfoModal} data={data} />
     </div>
   );
 };

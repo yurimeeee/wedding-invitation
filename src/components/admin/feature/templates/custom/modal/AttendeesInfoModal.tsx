@@ -24,7 +24,6 @@ type AttendeesInfoModalProps = {
 };
 
 export default function AttendeesInfoModal({ open, onOpenChange, data }: AttendeesInfoModalProps) {
-  // const [dataModel, setDataModel] = useState<{ name: string; password: string; contents: string }>({
   const [dataModel, setDataModel] = useState<any>({
     whose_guest: '',
     attendance: true,
@@ -46,22 +45,32 @@ export default function AttendeesInfoModal({ open, onOpenChange, data }: Attende
       toast('성함을 입력해주세요.');
       return;
     }
-    // try {
-    //   // @ts-ignore
-    //   await addDoc(collection(db, 'invitation', data?.id, 'message'), {
-    //     name: msgModel.name.trim(),
-    //     password: msgModel.password.trim(),
-    //     contents: msgModel.contents.trim(),
-    //     createdAt: serverTimestamp(),
-    //   });
+    try {
+      // @ts-ignore
+      await addDoc(collection(db, 'invitation', data?.id, 'message'), {
+        whose_guest: dataModel.whose_guest.trim(),
+        attendance: dataModel.attendance,
+        eat_or_not: dataModel.eat_or_not,
+        name: dataModel.name.trim(),
+        number_of_accompany: dataModel.number_of_accompany.trim(),
+        memo: dataModel.memo.trim(),
+        createdAt: serverTimestamp(),
+      });
 
-    //   toast.success('메시지가 저장되었습니다!');
-    //   setMsgModel({ name: '', password: '', contents: '' });
-    //   onOpenChange(false);
-    // } catch (error) {
-    //   console.error(error);
-    //   toast.error('메시지 저장 중 오류가 발생했습니다.');
-    // }
+      toast.success('참석의사가 전달되었습니다!');
+      setDataModel({
+        whose_guest: '',
+        attendance: true,
+        eat_or_not: true,
+        name: '',
+        number_of_accompany: '',
+        memo: '',
+      });
+      onOpenChange(false);
+    } catch (error) {
+      console.error(error);
+      toast.error('저장 중 오류가 발생했습니다.');
+    }
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

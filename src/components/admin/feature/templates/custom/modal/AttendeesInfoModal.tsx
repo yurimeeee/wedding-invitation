@@ -115,7 +115,7 @@ export default function AttendeesInfoModal({ open, onOpenChange, data }: Attende
               className="mb-5"
             />
 
-            <CustomButton text="작성 완료" onClick={save} active={true} />
+            <CustomButton text="참석 의사 전달하기" onClick={save} active={true} />
           </div>
         </div>
 

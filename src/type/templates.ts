@@ -103,7 +103,8 @@ export type TemplatesData = {
   attendees_eat_or_not?: boolean
   attendees_number?: boolean
 
-
+  uploadedAt: any,
+  isDraft?: boolean,
 
 };
 

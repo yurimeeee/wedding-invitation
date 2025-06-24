@@ -10,6 +10,7 @@ import { GRAY_500, GRAY_600 } from '@styles/colors';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { auth, db } from '@lib/firebase';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { useParams, useSearchParams } from 'next/navigation';
 
 import BeatLoader from 'react-spinners/BeatLoader';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
@@ -50,7 +51,6 @@ import styled from '@emotion/styled';
 import theme from '@styles/theme';
 import { title } from 'process';
 import { toast } from 'sonner';
-import { useParams } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
 // import { storage } from '@lib/firebase';
@@ -92,6 +92,9 @@ const PreviewImage = styled.div`
 export default function TemplatesCreatePage() {
   const params = useParams();
   const id = params.id;
+  const searchParams = useSearchParams();
+  const isEdit = searchParams.get('edit') === 'true';
+  console.log('isEdit', isEdit);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<any>(null);
@@ -209,9 +212,16 @@ export default function TemplatesCreatePage() {
   };
 
   // 파일 업로드 및 Firestore 저장 함수
-  async function handleSave(): Promise<void> {
+  async function handleSave(isDraft: boolean): Promise<void> {
+    const userId = auth.currentUser?.uid; // 로그인된 사용자 ID
+
+    if (!userId) {
+      toast.error('로그인이 필요합니다.');
+      return;
+    }
+
     setIsLoading(true);
-    toast('청첩장이 제작 중이니 잠시만 기다려주세요.');
+    toast(isDraft ? '임시 저장 중입니다...' : '청첩장을 제작 중입니다...');
     const storage = getStorage();
     const firestore = getFirestore();
 
@@ -232,102 +242,184 @@ export default function TemplatesCreatePage() {
       return null;
     };
 
-    const errorMessage = validateForm();
-    if (errorMessage) {
-      setIsLoading(false);
-      toast(errorMessage);
-
-      return;
+    // 임시 저장일 경우에는 검증 생략
+    if (!isDraft) {
+      const errorMessage = validateForm();
+      if (errorMessage) {
+        setIsLoading(false);
+        toast(errorMessage);
+        return;
+      }
     }
 
-    // 메인 이미지 경로 및 참조 생성
-    const mainStoragePath = `invitation/${invitationId}/main/main_img`;
-    const mainStorageRef = ref(storage, mainStoragePath);
-
-    // 카카오 이미지 경로 및 참조 생성
-    const kakaoStoragePath = `invitation/${invitationId}/share/share_kakao_img`;
-    const kakaoStorageRef = ref(storage, kakaoStoragePath);
-    // 링크 이미지 경로 및 참조 생성
-    const linkStoragePath = `invitation/${invitationId}/share/share_link_img`;
-    const linkStorageRef = ref(storage, linkStoragePath);
+    const docRef = doc(firestore, 'users', userId, 'invitations', invitationId);
+    const dataToSave: any = {
+      ...formData,
+      uploadedAt: new Date(),
+      isDraft,
+    };
     try {
-      // 1. 메인 이미지 업로드
-      const mainUploadResult = await uploadBytes(mainStorageRef, mainImage);
-      const mainImageURL = await getDownloadURL(mainStorageRef);
+      // 메인 이미지
+      if (mainImage) {
+        const mainRef = ref(storage, `invitation/${invitationId}/main/main_img`);
+        await uploadBytes(mainRef, mainImage);
+        dataToSave.main = {
+          ...dataToSave.main,
+          main_img: await getDownloadURL(mainRef),
+        };
+      }
 
-      // 2. 갤러리 이미지들 업로드
-      const galleryUploadPromises = gallery.map((file: any, index: number) => {
-        const galleryPath = `invitation/${invitationId}/gallery/gallery_${index}`;
-        const galleryRef = ref(storage, galleryPath);
-        return uploadBytes(galleryRef, file).then(() => getDownloadURL(galleryRef));
-      });
+      // 공유 이미지
+      if (shareKakaoImg) {
+        const kakaoRef = ref(storage, `invitation/${invitationId}/share/share_kakao_img`);
+        await uploadBytes(kakaoRef, shareKakaoImg);
+        dataToSave.share_kakao_img = await getDownloadURL(kakaoRef);
+      }
 
-      const galleryImageURLs = await Promise.all(galleryUploadPromises);
-      const kakaoShareResult = await uploadBytes(kakaoStorageRef, shareKakaoImg);
-      const linkShareResult = await uploadBytes(linkStorageRef, shareLinkImg);
-      const kakaoShareImageURL = await getDownloadURL(kakaoStorageRef);
-      const linkShareImageURL = await getDownloadURL(linkStorageRef);
-      // 3. Firestore에 저장할 데이터 구성
-      const dataToSave = {
-        ...formData,
-        main: {
-          ...formData.main,
-          main_img: mainImageURL,
-        },
-        gallery: galleryImageURLs,
-        uploadedAt: new Date(),
-        share_kakao_img: kakaoShareImageURL,
-        share_link_img: linkShareImageURL,
-      };
+      if (shareLinkImg) {
+        const linkRef = ref(storage, `invitation/${invitationId}/share/share_link_img`);
+        await uploadBytes(linkRef, shareLinkImg);
+        dataToSave.share_link_img = await getDownloadURL(linkRef);
+      }
 
-      // 4. Firestore에 데이터 저장
-      const docRef = doc(firestore, 'invitation', invitationId);
+      // 갤러리
+      if (gallery?.length) {
+        const galleryUrls = await Promise.all(
+          gallery.map((file: any, index: number) => {
+            const refPath = ref(storage, `invitation/${invitationId}/gallery/gallery_${index}`);
+            return uploadBytes(refPath, file).then(() => getDownloadURL(refPath));
+          })
+        );
+        dataToSave.gallery = galleryUrls;
+      }
+
       await setDoc(docRef, dataToSave, { merge: true });
-      toast('청접장이 등록되었습니다.');
+
+      toast.success(isDraft ? '임시 저장되었습니다.' : '청첩장이 등록되었습니다.');
     } catch (error) {
       console.error('Error during upload or Firestore saving:', error);
       throw error;
     }
   }
 
-  const getTemplateType1Document = async () => {
-    try {
-      const docRef = doc(db, 'template', String(id));
-      const docSnap = await getDoc(docRef);
+  // async function handleSave(): Promise<void> {
+  //   const userId = auth.currentUser?.uid; // 로그인된 사용자 ID
 
-      if (docSnap.exists()) {
-        setFormData(docSnap.data());
-        // setErrorMessage(null);
+  //   if (!userId) {
+  //     toast.error('로그인이 필요합니다.');
+  //     return;
+  //   }
 
-        // switch (String(id)) {
-        //   case 'type1':
-        //     setRenderedComponent(() => TemplateType1);
-        //     break;
-        //   case 'type2':
-        //     setRenderedComponent(() => TemplateType2);
-        //     break;
-        //   case 'type3':
-        //     setRenderedComponent(() => TemplateType3);
-        //     break;
-        //   case 'type4':
-        //     setRenderedComponent(() => TemplateType4);
-        //     break;
-        //   default:
-        //     setRenderedComponent(() => null);
-        //     break;
-        // }
-      } else {
-        // setErrorMessage('템플릿 문서를 찾을 수 없습니다.');
-      }
-    } catch (error) {
-      console.error('문서 가져오기 실패:', error);
-      // setErrorMessage('데이터를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   setIsLoading(true);
+  //   toast('청첩장이 제작 중이니 잠시만 기다려주세요.');
+  //   const storage = getStorage();
+  //   const firestore = getFirestore();
+
+  //   const validateForm = (): string | null => {
+  //     if (!formData.main.date?.trim()) return '예식 일자를 입력해주세요.';
+  //     if (!formData.main.time?.trim()) return '예식 시간을 입력해주세요.';
+  //     if (!formData.address?.trim()) return '식장 주소를 입력해주세요.';
+  //     if (!formData.address_name?.trim() || !formData.address_detail?.trim()) return '식장 상세정보를 입력해주세요.';
+  //     if (!formData.hall_phone?.trim()) return '식장 연락처를 입력해주세요.';
+  //     if (!formData.groom_first_name?.trim() || !formData.groom_last_name?.trim() || !formData.bride_first_name?.trim() || !formData.bride_last_name?.trim())
+  //       return '신랑 신부의 성함을 입력해주세요.';
+  //     if (!formData.groom_phone?.trim()) return '신랑의 연락처를 입력해주세요.';
+  //     if (!formData.bride_phone?.trim()) return '신부의 연락처를 입력해주세요.';
+  //     if (!mainImage) return '커버 메인 이미지를 업로드해주세요.';
+  //     if (!formData.main.intro_content?.trim()) return '모시는 글을 입력해주세요.';
+  //     if (!gallery || !gallery.length || gallery.some((img: any) => !img)) return '갤러리 이미지를 하나 이상 등록해주세요.';
+
+  //     return null;
+  //   };
+
+  //   const errorMessage = validateForm();
+  //   if (errorMessage) {
+  //     setIsLoading(false);
+  //     toast(errorMessage);
+
+  //     return;
+  //   }
+
+  //   // 메인 이미지 경로 및 참조 생성
+  //   const mainStoragePath = `invitation/${invitationId}/main/main_img`;
+  //   const mainStorageRef = ref(storage, mainStoragePath);
+
+  //   // 카카오 이미지 경로 및 참조 생성
+  //   const kakaoStoragePath = `invitation/${invitationId}/share/share_kakao_img`;
+  //   const kakaoStorageRef = ref(storage, kakaoStoragePath);
+  //   // 링크 이미지 경로 및 참조 생성
+  //   const linkStoragePath = `invitation/${invitationId}/share/share_link_img`;
+  //   const linkStorageRef = ref(storage, linkStoragePath);
+  //   try {
+  //     // 1. 메인 이미지 업로드
+  //     const mainUploadResult = await uploadBytes(mainStorageRef, mainImage);
+  //     const mainImageURL = await getDownloadURL(mainStorageRef);
+
+  //     // 2. 갤러리 이미지들 업로드
+  //     const galleryUploadPromises = gallery.map((file: any, index: number) => {
+  //       const galleryPath = `invitation/${invitationId}/gallery/gallery_${index}`;
+  //       const galleryRef = ref(storage, galleryPath);
+  //       return uploadBytes(galleryRef, file).then(() => getDownloadURL(galleryRef));
+  //     });
+
+  //     const galleryImageURLs = await Promise.all(galleryUploadPromises);
+  //     const kakaoShareResult = await uploadBytes(kakaoStorageRef, shareKakaoImg);
+  //     const linkShareResult = await uploadBytes(linkStorageRef, shareLinkImg);
+  //     const kakaoShareImageURL = await getDownloadURL(kakaoStorageRef);
+  //     const linkShareImageURL = await getDownloadURL(linkStorageRef);
+  //     // 3. Firestore에 저장할 데이터 구성
+  //     const dataToSave = {
+  //       ...formData,
+  //       main: {
+  //         ...formData.main,
+  //         main_img: mainImageURL,
+  //       },
+  //       gallery: galleryImageURLs,
+  //       uploadedAt: new Date(),
+  //       share_kakao_img: kakaoShareImageURL,
+  //       share_link_img: linkShareImageURL,
+  //     };
+
+  //     // 4. Firestore에 데이터 저장
+  //     // const docRef = doc(firestore, 'invitation', invitationId);
+  //     // await setDoc(docRef, dataToSave, { merge: true });
+  //     const docRef = doc(firestore, 'users', userId, 'invitations', invitationId);
+  //     await setDoc(docRef, dataToSave, { merge: true });
+
+  //     toast('청접장이 등록되었습니다.');
+  //   } catch (error) {
+  //     console.error('Error during upload or Firestore saving:', error);
+  //     throw error;
+  //   }
+  // }
+
   console.log('formD', formData);
   useEffect(() => {
+    const userId = auth.currentUser?.uid; // 로그인된 사용자 ID
+    const getTemplateType1Document = async () => {
+      try {
+        let docRef;
+
+        if (isEdit && userId && id) {
+          docRef = doc(db, 'users', String(userId), 'invitations', String(id));
+        } else {
+          docRef = doc(db, 'template', String(id));
+        }
+
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setFormData(docSnap.data());
+        } else {
+          // setErrorMessage('템플릿 문서를 찾을 수 없습니다.');
+        }
+      } catch (error) {
+        console.error('문서 가져오기 실패:', error);
+        // setErrorMessage('데이터를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      } finally {
+        setLoading(false);
+      }
+    };
     getTemplateType1Document();
   }, []);
 
@@ -1335,10 +1427,12 @@ export default function TemplatesCreatePage() {
           />
         </div>
 
-        <div className="mt-6 flex justify-end">
-          <Button onClick={handleSave} disabled={isLoading}>
+        <div className="mt-6 flex justify-end gap-3">
+          {/* <Button onClick={handleSave} disabled={isLoading}>
             저장하기
-          </Button>
+          </Button> */}
+          <CustomButton text="임시 저장" onClick={() => handleSave(true)} />
+          <CustomButton text="저장 완료" onClick={() => handleSave(false)} />
         </div>
       </Wrap>
       <Wrap className="scroll-container hidden sm:flex bg-text-default overflow-auto w-1/2 h-full">

@@ -33,7 +33,7 @@ const TemplateCard = ({ data, onClick }: TemplateCardProps) => {
         text={'선택'}
         variant="default"
         onClick={() => {
-          router.push(`/editor/templates/create/${data?.id}`);
+          router.push(`/editor/create/${data?.id}`);
         }}
       />
     </div>

@@ -13,7 +13,7 @@ import { db } from '@lib/firebase';
 import theme from '@styles/theme';
 import { useParams } from 'next/navigation';
 
-export default function InvitaionsDetailPage() {
+export default function TemplateDetailPage() {
   const params = useParams();
   const id = params.id;
   const [data, setData] = useState<DocumentData | null>(null);
@@ -21,23 +21,24 @@ export default function InvitaionsDetailPage() {
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
   const getTemplateType1Document = async () => {
     try {
-      const docRef = doc(db, 'invitation', String(id));
+      const docRef = doc(db, 'template', String(id));
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
         setData(docSnap.data());
         // setErrorMessage(null);
-        switch (docSnap.data()?.type) {
-          case 'type_1':
+
+        switch (String(id)) {
+          case 'type1':
             setRenderedComponent(() => TemplateType1);
             break;
-          case 'type_2':
+          case 'type2':
             setRenderedComponent(() => TemplateType2);
             break;
-          case 'type_3':
+          case 'type3':
             setRenderedComponent(() => TemplateType3);
             break;
-          case 'type_4':
+          case 'type4':
             setRenderedComponent(() => TemplateType4);
             break;
           default:
@@ -68,6 +69,7 @@ export default function InvitaionsDetailPage() {
       ) : (
         data && RenderedComponent && <RenderedComponent data={data} />
       )}
+      {/* {data && RenderedComponent && <RenderedComponent data={data} />} */}
     </div>
   );
 }

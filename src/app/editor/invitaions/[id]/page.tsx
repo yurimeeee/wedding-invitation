@@ -1,6 +1,5 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import { DocumentData, doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +9,7 @@ import TemplateType2 from '@components/editor/feature/templates/types/TemplateTy
 import TemplateType3 from '@components/editor/feature/templates/types/TemplateType3';
 import TemplateType4 from '@components/editor/feature/templates/types/TemplateType4';
 import { db } from '@lib/firebase';
+import { motion } from 'framer-motion';
 import theme from '@styles/theme';
 import { useParams } from 'next/navigation';
 
@@ -66,7 +66,7 @@ export default function InvitaionsDetailPage() {
           <BeatLoader color={theme.color.pink300} loading={!data} />
         </motion.div>
       ) : (
-        data && RenderedComponent && <RenderedComponent data={data} />
+        data && RenderedComponent && <RenderedComponent data={{ ...data, id: id }} />
       )}
     </div>
   );

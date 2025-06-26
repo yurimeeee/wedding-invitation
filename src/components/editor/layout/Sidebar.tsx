@@ -15,7 +15,7 @@ const Sidebar = () => {
             <Link href="/editor">홈</Link>
           </li>
           <li>
-            <Link href="/editor/templates">디자인</Link>
+            <Link href="/editor/templates"> 디자인</Link>
           </li>
           <li>
             <Link href="/editor/invitaions">제작 목록</Link>

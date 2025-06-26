@@ -1,3 +1,4 @@
+import { TemplatesData } from '@type/templates';
 import { User } from 'firebase/auth';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -20,3 +21,15 @@ export const useUserStore = create(
     }
   )
 );
+
+
+
+interface InvitationState {
+  invitations: TemplatesData[];
+  setInvitations: (data: TemplatesData[]) => void;
+}
+
+export const useInvitationStore = create<InvitationState>((set) => ({
+  invitations: [],
+  setInvitations: (data) => set({ invitations: data }),
+}));

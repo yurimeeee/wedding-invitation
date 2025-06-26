@@ -94,6 +94,7 @@ export default function TemplatesCreatePage() {
   const id = params.id;
   const searchParams = useSearchParams();
   const isEdit = searchParams.get('edit') === 'true';
+  const type = searchParams.get('type');
   console.log('isEdit', isEdit);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -104,7 +105,7 @@ export default function TemplatesCreatePage() {
   const [shareLinkImg, setShareLinkImg] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   // const invitationId = uuidv4();
-  const [invitationId, setInvitationId] = useState<string>('');
+  const [invitationId, setInvitationId] = useState<any>(isEdit ? id : '');
   // const invitationId = uuidv4();
   // const [RenderedComponent, setRenderedComponent] = useState<any | null>(null);
   const [RenderedComponent, setRenderedComponent] = useState<React.FC<any> | null>(null);
@@ -294,6 +295,8 @@ export default function TemplatesCreatePage() {
       }
 
       await setDoc(docRef, dataToSave, { merge: true });
+      const docRef2 = doc(firestore, 'invitations', invitationId);
+      await setDoc(docRef2, { id: invitationId, uid: userId });
 
       toast.success(isDraft ? '임시 저장되었습니다.' : '청첩장이 등록되었습니다.');
     } catch (error) {
@@ -487,6 +490,7 @@ export default function TemplatesCreatePage() {
         break;
     }
   }, [formData?.type]);
+
   console.log(formData);
 
   const [htmlContent, setHtmlContent] = useState('');

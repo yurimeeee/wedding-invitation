@@ -1,47 +1,72 @@
 'use client';
 
-import { auth, db } from '@lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { useInvitationStore, useUserStore } from '@stores/useUserStore';
 
-import { Button } from '@components/ui/button';
+import AddInvitationModal from '@components/editor/feature/templates/custom/modal/AddInvitationModal';
+import { BsFillPlusCircleFill } from 'react-icons/bs';
+import { GRAY_600 } from '@styles/colors';
 import InvitationItem from '@components/editor/feature/InvitationItem';
 import { TemplatesData } from '@type/templates';
+import { db } from '@lib/firebase';
+import styled from '@emotion/styled';
+import theme from '@styles/theme';
 
-// import { useUserStore } from '@stores/useUserStore';
+const AddCard = styled.div`
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  display: flex;
+  background-color: ${theme.color.pink100};
+  cursor: pointer;
+  color: white;
+`;
 
 export default function DashbordPage() {
-  const [invitations, setInvitations] = useState<TemplatesData[]>([]);
+  const user = useUserStore((state) => state.user);
+  const invitations = useInvitationStore((state) => state.invitations);
+  const setInvitations = useInvitationStore((state) => state.setInvitations);
+  const [addInvitationModal, setAddInvitationModal] = useState<boolean>(false);
+
+  const fetchInvitations = async (userId: string) => {
+    try {
+      const colRef = collection(db, 'users', userId, 'invitations');
+      const querySnapshot = await getDocs(colRef);
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setInvitations(data as TemplatesData[]);
+    } catch (error) {}
+  };
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (!user) return; // 로그인 정보가 없으면 종료
-
-    const fetchInvitations = async () => {
-      try {
-        const colRef = collection(db, 'users', user.uid, 'invitations');
-        const querySnapshot = await getDocs(colRef);
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setInvitations(data as TemplatesData[]);
-      } catch (error) {
-        console.error('Error fetching templates:', error);
-      }
-    };
-
-    fetchInvitations();
-  }, []);
+    if (user) {
+      fetchInvitations(user?.uid);
+    }
+  }, [user?.uid]);
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <p className="text-[18px] font-suite-bold text-text-default mb-6">Templates</p>
+      <p className="text-[18px] font-suite-bold text-text-default mb-6">나만의 청첩장 꾸미기</p>
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {invitations?.map((item: TemplatesData, index: number) => (
           <InvitationItem key={index} data={item} onClick={() => {}} />
         ))}
+        <AddCard className="rounded border border-solid border-pink-300 p-3">
+          <div className="flex flex-col gap-3 items-center justify-center w-full" onClick={() => setAddInvitationModal(true)}>
+            <BsFillPlusCircleFill color={theme.color.gray_600} size={20} />
+            <p className="text-gray-600 font-suite">청첩장 만들기</p>
+          </div>
+        </AddCard>
       </div>
+      <AddInvitationModal
+        open={addInvitationModal}
+        onOpenChange={setAddInvitationModal}
+        // setData={(newData: any) => setFormData({ ...formData, ...newData })}
+        // data={formData}
+      />
     </div>
   );
 }

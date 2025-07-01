@@ -3,49 +3,19 @@
 import 'aos/dist/aos.css';
 
 import { Dialog, DialogContent, DialogTitle } from '@components/ui/dialog';
-import { GRAY_700, GRAY_800, PINK_100, PINK_200 } from '@styles/colors';
-import { doc, getDoc } from 'firebase/firestore';
 
 import { CustomButton } from '../../../../../ui/CustomButton';
-import { CustomInfoText } from '@components/ui/CustomInfoText';
-import { CustomInput } from '@components/ui/CustomInput';
+import { GRAY_800 } from '@styles/colors';
 import { QRCodeCanvas } from 'qrcode.react';
-import { db } from '@lib/firebase';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 type QRcodeModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   url: string;
 };
-const HEART_LOGO_URL = '/assets/img/logo-heart.png';
+
 export default function QRcodeModal({ open, onOpenChange, url }: QRcodeModalProps) {
-  const router = useRouter();
-  const [domain, setDomain] = useState<string>('');
-  const [urlValidationMessage, setUrlValidationMessage] = useState<boolean | null>(null);
-
-  // domain 중복 확인
-  const checkInvitationId = async (id: string) => {
-    if (!id || id.length < 5) {
-      setUrlValidationMessage(null);
-      return;
-    }
-
-    try {
-      const docRef = doc(db, 'invitations', id);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        setUrlValidationMessage(false);
-      } else {
-        setUrlValidationMessage(true);
-      }
-    } catch (error) {
-      toast('확인 중 오류가 발생했습니다.');
-    }
-  };
+  const HEART_LOGO_URL = '/assets/img/logo-heart.png';
 
   const downloadQrcode = () => {
     const qrcode = document.getElementById('qrcode');

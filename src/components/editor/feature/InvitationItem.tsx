@@ -20,7 +20,6 @@ const InvitationItem = ({ data, onClick }: InvitationItemProps) => {
   const router = useRouter();
   const [qrCodeModal, setQrCodeModal] = useState<boolean>(false);
 
-  console.log('data', data);
   return (
     <div className="w-full flex flex-col gap-3 rounded border border-solid border-pink-300 p-3">
       {!data ? (
@@ -42,17 +41,19 @@ const InvitationItem = ({ data, onClick }: InvitationItemProps) => {
         </div>
       )}
       <div>
-        <p className="text-[13px] font-suite-medium text-gray-700 mb-2">{formatUnixTimestamp(data?.uploadedAt?.seconds, data?.uploadedAt?.nanoseconds)} 저장</p>
+        <p className="text-[13px] font-suite-medium text-gray-700 mb-2">
+          {formatUnixTimestamp(data?.uploadedAt?.seconds, data?.uploadedAt?.nanoseconds)} {data?.isDraft ? '임시저장' : '저장'}
+        </p>
         <Input value={data?.id} readOnly className="mt-4" />
       </div>
 
       <div className="flex gap-2">
-        <Button text={'QR코드'} variant="default" onClick={() => setQrCodeModal(true)} className="w-full" />
+        <Button text={'QR코드'} variant="pink" onClick={() => setQrCodeModal(true)} className="w-full" />
       </div>
       <div className="flex gap-2">
         <Button
-          text={'보기'}
-          variant="default"
+          text={'바로가기'}
+          variant="pink"
           onClick={() => {
             router.push(`/invitaions/${data?.id}`);
           }}
@@ -60,7 +61,7 @@ const InvitationItem = ({ data, onClick }: InvitationItemProps) => {
         />
         <Button
           text={'수정'}
-          variant="default"
+          variant="pink"
           onClick={() => {
             router.push(`/editor/create/${data?.id}/?edit=true`);
           }}

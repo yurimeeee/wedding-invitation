@@ -31,7 +31,7 @@ const TemplateType2Editor = ({ data }: TemplateTypeProps) => {
           <div className="mt-10">
             <MainCover type={data?.main?.main_text_type} data={data} />
           </div>
-          <div className="flex flex-col gap-8 w-full">
+          <div className="flex flex-col gap-16 w-full">
             <GreetingMessage data={data} />
             <FamilyInfo data={data} />
             <Gallery gallery={data?.gallery} />

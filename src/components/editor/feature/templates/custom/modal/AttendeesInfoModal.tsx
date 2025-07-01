@@ -44,7 +44,7 @@ export default function AttendeesInfoModal({ open, onOpenChange, data }: Attende
     }
     try {
       // @ts-ignore
-      await addDoc(collection(db, 'invitation', data?.id, 'attendees'), {
+      await addDoc(collection(db, 'invitations', data?.id, 'attendees'), {
         whose_guest: dataModel.whose_guest.trim(),
         attendance: dataModel.attendance,
         eat_or_not: dataModel.eat_or_not,

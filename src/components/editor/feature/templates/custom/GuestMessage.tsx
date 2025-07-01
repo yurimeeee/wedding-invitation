@@ -36,7 +36,7 @@ const GuestMessage = ({ data }: GuestMessageProps) => {
 
   const fetchInvitationsList = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, `invitation/${data?.id}/message`));
+      const querySnapshot = await getDocs(collection(db, `invitations/${data?.id}/message`));
       const msgData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),

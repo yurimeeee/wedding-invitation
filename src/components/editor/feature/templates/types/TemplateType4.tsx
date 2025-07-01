@@ -49,7 +49,7 @@ const TemplateType4 = ({ data }: TemplateTypeProps) => {
         </div>
 
         <div className="flex flex-col items-center relative">
-          <div className="flex flex-col gap-8 w-full">
+          <div className="flex flex-col gap-16 w-full">
             <GreetingMessage data={data} />
             <FamilyInfo data={data} />
             <Gallery gallery={data?.gallery} />

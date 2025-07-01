@@ -34,7 +34,7 @@ export default function GuestMessageDeleteModal({ open, onOpenChange, invitation
     }
     try {
       // @ts-ignore
-      const messageRef = doc(db, 'invitation', invitationId, 'message', msgId);
+      const messageRef = doc(db, 'invitations', invitationId, 'message', msgId);
       await deleteDoc(messageRef);
       toast.success('메시지가 삭제되었습니다!');
       onOpenChange(false);

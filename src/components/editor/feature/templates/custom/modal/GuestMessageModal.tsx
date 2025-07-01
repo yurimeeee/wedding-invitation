@@ -11,8 +11,6 @@ import { CustomInput } from '@components/ui/CustomInput';
 import { TemplatesData } from '@type/templates';
 import { Textarea } from '@components/ui/textarea';
 import { db } from '@lib/firebase';
-import styled from '@emotion/styled';
-import theme from '@styles/theme';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
@@ -44,7 +42,7 @@ export default function GuestMessageModal({ open, onOpenChange, data, fetchInvit
     }
     try {
       // @ts-ignore
-      await addDoc(collection(db, 'invitation', data?.id, 'message'), {
+      await addDoc(collection(db, 'invitations', data?.id, 'message'), {
         name: msgModel.name.trim(),
         password: msgModel.password.trim(),
         contents: msgModel.contents.trim(),

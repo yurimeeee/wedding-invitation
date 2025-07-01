@@ -21,7 +21,7 @@ export default function InvitaionsDetailPage() {
   const [RenderedComponent, setRenderedComponent] = useState<any>(null);
   const getTemplateType1Document = async () => {
     try {
-      const docRef = doc(db, 'invitation', String(id));
+      const docRef = doc(db, 'invitations', String(id));
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {

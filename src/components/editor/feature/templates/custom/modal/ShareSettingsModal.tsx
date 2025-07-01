@@ -35,6 +35,8 @@ const ShareBox = styled.div`
 const ImageBox = styled(Image)`
   width: 100%;
   height: 100%;
+  max-width: 240px;
+  max-height: 240px;
   object-fit: cover;
 `;
 

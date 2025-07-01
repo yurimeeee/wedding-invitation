@@ -211,7 +211,7 @@ export default function TemplatesCreatePage() {
     const updatedArr = formData[key].filter((_: any, idx: number) => idx !== index);
     setFormData({ ...formData, [key]: updatedArr });
   };
-
+  console.log('formData.gallery.length', formData?.gallery?.length);
   // 파일 업로드 및 Firestore 저장 함수
   async function handleSave(isDraft: boolean): Promise<void> {
     const userId = auth.currentUser?.uid; // 로그인된 사용자 ID
@@ -236,10 +236,15 @@ export default function TemplatesCreatePage() {
         return '신랑 신부의 성함을 입력해주세요.';
       if (!formData.groom_phone?.trim()) return '신랑의 연락처를 입력해주세요.';
       if (!formData.bride_phone?.trim()) return '신부의 연락처를 입력해주세요.';
-      if (!mainImage) return '커버 메인 이미지를 업로드해주세요.';
+      if (!mainImage && !formData.main.main_img) return '커버 메인 이미지를 업로드해주세요.';
       if (!formData.main.intro_content?.trim()) return '모시는 글을 입력해주세요.';
-      if (!gallery || !gallery.length || gallery.some((img: any) => !img)) return '갤러리 이미지를 하나 이상 등록해주세요.';
+      // if (!gallery || !gallery.length || (gallery.some((img: any) => !img) && formData.gallery.length < 1)) return '갤러리 이미지를 하나 이상 등록해주세요.';
 
+      const hasGallery = (Array.isArray(gallery) && gallery.some((img: any) => !!img)) || (Array.isArray(formData?.gallery) && formData.gallery.length > 0);
+
+      if (!hasGallery) {
+        return '갤러리 이미지를 등록해주세요.';
+      }
       return null;
     };
 
@@ -252,8 +257,8 @@ export default function TemplatesCreatePage() {
         return;
       }
     }
-
-    const docRef = doc(firestore, 'users', userId, 'invitations', invitationId);
+    const docRef = doc(firestore, 'invitations', invitationId);
+    // const docRef = doc(firestore, 'users', userId, 'invitations', invitationId);
     const dataToSave: any = {
       ...formData,
       uploadedAt: new Date(),
@@ -294,9 +299,18 @@ export default function TemplatesCreatePage() {
         dataToSave.gallery = galleryUrls;
       }
 
-      await setDoc(docRef, dataToSave, { merge: true });
-      const docRef2 = doc(firestore, 'invitations', invitationId);
-      await setDoc(docRef2, { id: invitationId, uid: userId });
+      // await setDoc(docRef, dataToSave, { merge: true });
+      // const docRef2 = doc(firestore, 'invitations', invitationId);
+      // await setDoc(docRef2, { id: invitationId, uid: userId });
+      await setDoc(
+        docRef,
+        {
+          ...dataToSave,
+          id: invitationId,
+          uid: userId,
+        },
+        { merge: true }
+      );
 
       toast.success(isDraft ? '임시 저장되었습니다.' : '청첩장이 등록되었습니다.');
     } catch (error) {
@@ -976,7 +990,7 @@ export default function TemplatesCreatePage() {
               </div>
             }
           />
-          <CustomAccordion
+          {/* <CustomAccordion
             title="예식일 하이라이트"
             children={
               <div>
@@ -985,7 +999,7 @@ export default function TemplatesCreatePage() {
                 <Label text="타입" required={true} className="mb-2" />
               </div>
             }
-          />
+          /> */}
           <CustomAccordion
             title="캘린더"
             children={
@@ -1085,8 +1099,8 @@ export default function TemplatesCreatePage() {
                       </PreviewImage>
                     ))}
                 </div>
-                <Label text="설정" className="mb-2" />
-                이미지 클릭 시 전체화면 팝업
+                {/* <Label text="설정" className="mb-2" />
+                이미지 클릭 시 전체화면 팝업 */}
               </div>
             }
           />

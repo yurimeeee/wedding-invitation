@@ -5,10 +5,12 @@ import 'aos/dist/aos.css';
 import { Dialog, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { doc, getDoc } from 'firebase/firestore';
 
+import BounceLoader from 'react-spinners/BounceLoader';
 import { CustomButton } from '../../../../../ui/CustomButton';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
 import { CustomInput } from '@components/ui/CustomInput';
 import { db } from '@lib/firebase';
+import theme from '@styles/theme';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -22,6 +24,7 @@ export default function AddInvitationModal({ open, onOpenChange }: AddInvitation
   const router = useRouter();
   const [domain, setDomain] = useState<string>('');
   const [urlValidationMessage, setUrlValidationMessage] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // domain 중복 확인
   const checkInvitationId = async (id: string) => {
@@ -29,7 +32,7 @@ export default function AddInvitationModal({ open, onOpenChange }: AddInvitation
       setUrlValidationMessage(null);
       return;
     }
-
+    setIsLoading(true);
     try {
       const docRef = doc(db, 'invitations', id);
       const docSnap = await getDoc(docRef);
@@ -41,11 +44,21 @@ export default function AddInvitationModal({ open, onOpenChange }: AddInvitation
       }
     } catch (error) {
       toast('확인 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        onOpenChange(false);
+        setDomain('');
+        setUrlValidationMessage(null);
+        setIsLoading(false);
+      }}
+    >
       <DialogContent className="scroll-container">
         <DialogTitle className="hidden"></DialogTitle>
         <div className="font-suite flex flex-col items-center">
@@ -79,6 +92,7 @@ export default function AddInvitationModal({ open, onOpenChange }: AddInvitation
               className="max-w-[60px]"
             />
           </div>
+
           {domain.trim() === '' ? null : domain.trim().length < 5 ? (
             <CustomInfoText text="5자 이상 입력해주세요" color="#EF665B" className="my-2 mx-auto text-center" />
           ) : urlValidationMessage === true ? (
@@ -87,8 +101,6 @@ export default function AddInvitationModal({ open, onOpenChange }: AddInvitation
             <CustomInfoText text="이미 사용 중인 주소입니다" color="#EF665B" className="my-2 mx-auto text-center" />
           ) : null}
         </div>
-
-        <div></div>
       </DialogContent>
     </Dialog>
   );

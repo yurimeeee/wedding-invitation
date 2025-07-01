@@ -57,8 +57,14 @@ export default function TemplatesPage() {
   // }
 
   return (
-    <div className="p-8 pb-20">
-      <p className="text-[18px] font-suite-bold text-text-default mb-6">Templates</p>
+    <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <div>
+        <p className="text-[18px] font-suite-bold text-text-default mb-6 text-center">청첩장 예시</p>
+        <p className="text-sm text-muted-foreground text-center mb-10" style={{ color: ` rgb(209, 146, 146)` }}>
+          다양한 디자인을 참고해서 쉽게 청첩장을 꾸밀 수 있어요.
+        </p>
+      </div>
+
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {templates?.map((item: TemplatesData, index: number) => (
           <TemplateCard key={index} data={item} onClick={() => {}} />

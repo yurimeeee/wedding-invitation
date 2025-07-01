@@ -61,11 +61,11 @@ export default function Menu({ onClose, isOpen = false }: MenuProps) {
                   디자인
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/editor/invitaions" onClick={onClose}>
                   제작 목록
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </nav>
 

@@ -9,17 +9,17 @@ const Sidebar = () => {
         <Image src="/assets/img/logo-sm.svg" alt="logo" width={100} height={50} />
       </Link>
 
-      <nav className="flex flex-col justify-center items-center gap-4 px-2 sm:py-5">
-        <ul>
+      <nav>
+        <ul className="flex flex-col justify-center items-center gap-5 px-2 sm:py-5 mt-5">
           <li>
             <Link href="/editor">홈</Link>
           </li>
           <li>
             <Link href="/editor/templates"> 디자인</Link>
           </li>
-          <li>
+          {/* <li>
             <Link href="/editor/invitaions">제작 목록</Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
       {/* <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">

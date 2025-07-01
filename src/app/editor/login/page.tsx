@@ -46,8 +46,8 @@ export default function LoginPage() {
     <div className="flex items-center justify-items-center h-full">
       <div className="flex flex-col items-center justify-center">
         <Image src="/assets/img/logo-my.svg" alt="logo" width={177} height={30} className="mb-5" />
-        <Input type="text" placeholder="관리자 이메일" value={email} onChange={(e) => setEmail(e.target.value)} className="p-2 border rounded mb-2" width="w-full" />
-        <Input type="password" placeholder="관리자 비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} className="p-2 border rounded mb-2" width="w-full" />
+        <Input type="text" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} className="p-2 border rounded mb-2" width="w-full" />
+        <Input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} className="p-2 border rounded mb-2" width="w-full" />
         <Button onClick={handleLogin} disabled={email.trim() === '' || password.trim() === ''} width="w-full">
           로그인
         </Button>

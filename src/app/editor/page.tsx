@@ -67,10 +67,10 @@ export default function DashbordPage() {
   }, [user?.uid]);
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <div>
         <p className="text-[18px] font-suite-bold text-text-default mb-6 text-center">나만의 청첩장 꾸미기</p>
-        <p className="text-sm text-muted-foreground text-center" style={{ color: ` rgb(209, 146, 146)` }}>
+        <p className="text-sm text-muted-foreground text-center mb-10" style={{ color: ` rgb(209, 146, 146)` }}>
           만들어진 청첩장은 언제든지 수정이 가능해요!
         </p>
       </div>
@@ -86,12 +86,7 @@ export default function DashbordPage() {
           </div>
         </AddCard>
       </div>
-      <AddInvitationModal
-        open={addInvitationModal}
-        onOpenChange={setAddInvitationModal}
-        // setData={(newData: any) => setFormData({ ...formData, ...newData })}
-        // data={formData}
-      />
+      <AddInvitationModal open={addInvitationModal} onOpenChange={setAddInvitationModal} />
     </div>
   );
 }

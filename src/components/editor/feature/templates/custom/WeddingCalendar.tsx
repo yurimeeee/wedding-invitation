@@ -89,7 +89,7 @@ const WeddingCalendar = ({ weddingDate, data }: WeddingCalendarProps) => {
     }
     return null;
   };
-  console.log(data);
+
   return (
     <div className="flex justify-center items-center flex-col gap-4">
       <p className="text-md mb-1 font-chosun">

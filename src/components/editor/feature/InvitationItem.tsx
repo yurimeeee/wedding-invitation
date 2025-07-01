@@ -49,6 +49,14 @@ const InvitationItem = ({ data, onClick }: InvitationItemProps) => {
 
       <div className="flex gap-2">
         <Button text={'QR코드'} variant="pink" onClick={() => setQrCodeModal(true)} className="w-full" />
+        <Button
+          text={'참석의사'}
+          variant="pink"
+          onClick={() => {
+            router.push(`/editor/analysis/${data?.id}`);
+          }}
+          className="w-full"
+        />
       </div>
       <div className="flex gap-2">
         <Button

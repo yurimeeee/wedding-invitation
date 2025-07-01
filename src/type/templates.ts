@@ -123,4 +123,5 @@ export type AttendeeInfoData = {
   name: string
   number_of_accompany?: any
   memo?: string
+  id?: string
 };

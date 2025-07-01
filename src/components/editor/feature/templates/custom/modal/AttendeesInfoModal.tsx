@@ -34,10 +34,10 @@ export default function AttendeesInfoModal({ open, onOpenChange, data }: Attende
       toast('어느 분의 하객이신가요?');
       return;
     }
-    if (dataModel?.attendance.trim() === '') {
-      toast('참석 여부를 선택해주세요.');
-      return;
-    }
+    // if (!dataModel?.attendance) {
+    //   toast('참석 여부를 선택해주세요.');
+    //   return;
+    // }
     if (dataModel?.name.trim() === '') {
       toast('성함을 입력해주세요.');
       return;

@@ -1,18 +1,18 @@
 'use client';
 
-import { auth, db } from '@lib/firebase';
-import { collection, getDocs, setDoc } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import AnalysisDetailModal from '@components/editor/feature/templates/custom/modal/AnalysisDetailModal';
 import { AttendeeInfoData } from '@type/templates';
 import BeatLoader from 'react-spinners/BeatLoader';
 import { Button } from '@components/ui/button';
 import { CSVLink } from 'react-csv';
+import { CircleCheckBig } from 'lucide-react';
 import { CustomButton } from '@components/ui/CustomButton';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
 import { CustomTooltip } from '@components/ui/tooltip';
-import SampleGreetingMessageModal from '@components/editor/feature/templates/custom/modal/SampleGreetingMessageModal';
-import dayjs from 'dayjs';
+import { db } from '@lib/firebase';
 import { formatUnixTimestamp } from '@utils/func';
 import { motion } from 'framer-motion';
 import styled from '@emotion/styled';
@@ -35,7 +35,6 @@ const Content = styled.div`
 
 const Wrap = styled.div`
   width: 100%;
-  /* max-width: 720px; */
 `;
 const TabItem = styled.div<{ active: boolean }>`
   width: 100%;
@@ -44,7 +43,7 @@ const TabItem = styled.div<{ active: boolean }>`
   justify-content: center;
   align-items: center;
   padding: 16px 12px;
-
+  cursor: pointer;
   transition: all.3s;
   color: ${(props) => {
     return props.active ? theme.color.textDefault : theme.color.gray_400;
@@ -55,7 +54,7 @@ const TabItem = styled.div<{ active: boolean }>`
 `;
 
 const InfoCard = ({ label, value }: { label: string; value?: number }) => (
-  <div className="shadow-default w-full px-6 py-4 bg-white font-suite text-left text-sm font-medium rounded-md">
+  <div className={`${label === '참석' ? 'bg-pink-400' : 'bg-gray-200'} shadow-default w-full px-6 py-4 font-suite text-left text-sm font-medium rounded-md`}>
     <p className="text-muted-foreground mb-6">{label}</p>
     <p className="text-text-default text-lg">{value} 명</p>
   </div>
@@ -64,12 +63,13 @@ const InfoCard = ({ label, value }: { label: string; value?: number }) => (
 export default function AnalysisPage() {
   const params = useParams();
   const id = params.id;
+  const csvLink = useRef<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [sampleGreetingMessageModal, setSampleGreetingMessageModal] = useState<any>({ open: false, title: '', type: '' });
   const [attendeesList, setAttendeesList] = useState<AttendeeInfoData[] | null>(null);
   const [excelData, setExcelData] = useState<any>([]);
-  const csvLink = useRef<any>(null);
   const [activeTab, setActiveTab] = useState<string>('groom');
+  const [analysisDetailModal, setAnalysisDetailModal] = useState<boolean>(false);
+
   const tabList: { text: string; value: string }[] = [
     { text: '신랑측', value: 'groom' },
     { text: '신부측', value: 'bride' },
@@ -91,11 +91,6 @@ export default function AnalysisPage() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    fetchAttendeesList();
-  }, []);
-
-  console.log('attendeesList', attendeesList);
 
   const attending = useMemo(() => attendeesList?.filter((item) => item.attendance === true), [attendeesList]);
   const declined = useMemo(() => attendeesList?.filter((item) => item.attendance === false), [attendeesList]);
@@ -106,7 +101,7 @@ export default function AnalysisPage() {
 
   const attendingByTab = guestsByTab?.filter((item) => item.attendance === true).length;
   const declinedByTab = guestsByTab?.filter((item) => item.attendance === false).length;
-
+  console.log('attendeesList', attendeesList);
   const headers = [
     { label: '구분', key: 'whose_guest' },
     { label: '참석여부', key: 'attendance' },
@@ -142,6 +137,10 @@ export default function AnalysisPage() {
   };
 
   useEffect(() => {
+    fetchAttendeesList();
+  }, []);
+
+  useEffect(() => {
     if (excelData?.length > 0) {
       csvLink?.current?.link.click();
       setExcelData([]);
@@ -158,8 +157,9 @@ export default function AnalysisPage() {
           <p className="text-[18px] font-suite-bold text-text-default mb-6">참석 의사 응답</p>
           <div className="flex flex-col gap-2 max-w-[640px]">
             <div>
-              <Title className="shadow-default w-full px-6 py-4 bg-white font-suite text-left text-sm font-medium">
-                <p className="text-muted-foreground">참석 의사 응답</p>
+              <Title className="shadow-default w-full px-6 py-4 bg-white font-suite text-left text-sm font-medium flex items-center gap-2">
+                <CircleCheckBig size={18} color={theme.color.pink600} />
+                <p className="text-gray-700">참석 의사 응답</p>
               </Title>
               <Content>
                 <p className="text-[18px] font-suite-bold text-gray-600 mb-6">전체 요약</p>
@@ -168,14 +168,16 @@ export default function AnalysisPage() {
                   <p className="text-text-default text-lg">{attendeesList?.length} 명</p>
                 </div>
                 <div className="flex gap-4 mt-4 mb-6">
-                  <div className="shadow-default w-full px-6 py-4 bg-white font-suite text-left text-sm font-medium rounded-md">
+                  <InfoCard label="참석" value={attending?.length} />
+                  <InfoCard label="불참" value={declined?.length} />
+                  {/* <div className="shadow-default w-full px-6 py-4 bg-white font-suite text-left text-sm font-medium rounded-md">
                     <p className="text-muted-foreground mb-6">참석</p>
                     <p className="text-text-default text-lg">{attending?.length} 명</p>
                   </div>
                   <div className="shadow-default w-full px-6 py-4 bg-white font-suite text-left text-sm font-medium rounded-md">
                     <p className="text-muted-foreground mb-6">불참</p>
                     <p className="text-text-default text-lg">{declined?.length} 명</p>
-                  </div>
+                  </div> */}
                 </div>
                 <Button text="엑셀 다운로드" variant="pink" onClick={handleDownloadCSV} className="mb-10" />
                 <CSVLink data={excelData} headers={headers} filename="참석여부.csv" className="hidden" ref={csvLink} target="_blank" />
@@ -189,15 +191,31 @@ export default function AnalysisPage() {
                   ))}
                 </div>
 
-                <div data-aos="fade-up" data-aos-duration="1000">
+                <div>
                   <div className="flex gap-4 mt-4 mb-6">
                     <InfoCard label="참석" value={attendingByTab} />
                     <InfoCard label="불참" value={declinedByTab} />
                   </div>
                 </div>
+                <Button
+                  text="상세 정보 확인하기"
+                  variant="pink"
+                  onClick={() => {
+                    setAnalysisDetailModal(true);
+                  }}
+                  className="mb-10"
+                />
               </Content>
             </div>
           </div>
+          <AnalysisDetailModal
+            open={analysisDetailModal}
+            onOpenChange={setAnalysisDetailModal}
+            attending={attending}
+            declined={declined}
+            type={activeTab}
+            attendeesList={attendeesList}
+          />
         </Wrap>
       )}
     </div>

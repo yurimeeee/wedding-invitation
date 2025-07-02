@@ -17,7 +17,7 @@ const TabItem = styled.div<{ active: boolean }>`
   justify-content: center;
   align-items: center;
   padding: 16px 12px;
-
+  cursor: pointer;
   transition: all.3s;
   color: ${(props) => {
     return props.active ? theme.color.textDefault : theme.color.gray_400;

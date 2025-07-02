@@ -15,7 +15,7 @@ export default function Auth({ children }: { children: React.ReactNode }) {
     // zustand 상태 초기화 이후 체크
     setIsLoading(false);
     if (!user && !isLoading) {
-      router.push('/editor/login');
+      router.push('/login');
     }
   }, [user, isLoading, router]);
 

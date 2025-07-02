@@ -77,7 +77,7 @@ const Header = ({ onMenuClick }: any) => {
       .then(() => {
         // 로그아웃 성공!
         console.log('사용자가 성공적으로 로그아웃되었습니다.');
-        router.push('/editor/login');
+        router.push('/login');
         useUserStore.getState().logout();
       })
       .catch((error) => {

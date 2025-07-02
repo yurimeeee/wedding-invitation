@@ -11,7 +11,7 @@ import { usePathname } from 'next/navigation';
 export default function EditorLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isLoginPage = pathname === '/editor/login';
+  const isLoginPage = pathname === '/login';
   const [mounted, setMounted] = useState(false);
   if (isLoginPage) {
     return <>{children}</>;

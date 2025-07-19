@@ -5,16 +5,15 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import AnalysisDetailModal from '@components/editor/feature/templates/custom/modal/AnalysisDetailModal';
 import { AttendeeInfoData } from '@type/templates';
-import BeatLoader from 'react-spinners/BeatLoader';
 import { Button } from '@components/ui/button';
 import { CSVLink } from 'react-csv';
 import { CircleCheckBig } from 'lucide-react';
 import { CustomButton } from '@components/ui/CustomButton';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
 import { CustomTooltip } from '@components/ui/tooltip';
+import { PageLoading } from '@components/ui/PageLoading';
 import { db } from '@lib/firebase';
 import { formatUnixTimestamp } from '@utils/func';
-import { motion } from 'framer-motion';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 import { toast } from 'sonner';
@@ -25,6 +24,7 @@ const Title = styled.div`
   border-top-right-radius: 8px;
   box-shadow: 0 3px 4px -2px rgb(0 0 0 / 0.2);
 `;
+
 const Content = styled.div`
   background: #fbfbfb;
   padding: 24px 36px;
@@ -36,6 +36,7 @@ const Content = styled.div`
 const Wrap = styled.div`
   width: 100%;
 `;
+
 const TabItem = styled.div<{ active: boolean }>`
   width: 100%;
   height: 36px;
@@ -94,14 +95,11 @@ export default function AnalysisPage() {
 
   const attending = useMemo(() => attendeesList?.filter((item) => item.attendance === true), [attendeesList]);
   const declined = useMemo(() => attendeesList?.filter((item) => item.attendance === false), [attendeesList]);
-
   const guestsByTab = useMemo(() => {
     return attendeesList?.filter((item) => item.whose_guest === activeTab);
   }, [attendeesList, activeTab]);
-
   const attendingByTab = guestsByTab?.filter((item) => item.attendance === true).length;
   const declinedByTab = guestsByTab?.filter((item) => item.attendance === false).length;
-  console.log('attendeesList', attendeesList);
   const headers = [
     { label: '구분', key: 'whose_guest' },
     { label: '참석여부', key: 'attendance' },
@@ -149,13 +147,10 @@ export default function AnalysisPage() {
   return (
     <div className="flex h-screen">
       {loading ? (
-        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="h-screen w-full flex justify-center items-center">
-          <BeatLoader color={theme.color.pink300} loading={loading} />
-        </motion.div>
+        <PageLoading loading={loading} />
       ) : (
-        <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto w-full h-full pb-20">
-          <p className="text-[18px] font-suite-bold text-text-default mb-6">참석 의사 응답</p>
-          <div className="flex flex-col gap-2 max-w-[640px]">
+        <Wrap className="scroll-container bg-[#F5F4F0] p-10 overflow-auto w-full h-full pb-20">
+          <div className="flex flex-col gap-2 max-w-[640px] mx-auto">
             <div>
               <Title className="shadow-default w-full px-6 py-4 bg-white font-suite text-left text-sm font-medium flex items-center gap-2">
                 <CircleCheckBig size={18} color={theme.color.pink600} />

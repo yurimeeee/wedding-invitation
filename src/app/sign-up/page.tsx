@@ -15,7 +15,7 @@ export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user as User;
@@ -83,7 +83,7 @@ export default function SignUpPage() {
         <Input type="text" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} className="p-2 border rounded mb-2" width="w-full" />
         <Input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} className="p-2 border rounded mb-2" width="w-full" />
         <Input type="password" placeholder="비밀번호 확인" value={password} onChange={(e) => setPassword(e.target.value)} className="p-2 border rounded mb-2" width="w-full" />
-        <Button onClick={handleLogin} disabled={email.trim() === '' || password.trim() === ''} width="w-full" className="mb-2">
+        <Button onClick={handleSignUp} disabled={email.trim() === '' || password.trim() === ''} width="w-full" className="mb-2">
           회원가입
         </Button>
         <Button onClick={googleLogin} width="w-full" rightIcon={<FaGoogle />}>

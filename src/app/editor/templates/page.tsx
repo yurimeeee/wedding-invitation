@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react';
 
 import TemplateCard from '@components/editor/feature/TemplateCard';
 import { TemplatesData } from '@type/templates';
-import { db } from '@lib/firebase';
-
 // import { storage } from '@lib/firebase';
+import { auth } from '../../../lib/firebase';
+import { db } from '@lib/firebase';
 
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<TemplatesData[]>([]);
@@ -28,7 +28,7 @@ export default function TemplatesPage() {
   useEffect(() => {
     fetchTemplates();
   }, []);
-
+  console.log(auth.currentUser);
   // async function uploadImageAndSaveToDoc(file: File, docId: string) {
   //   try {
   //     // 1. Storage 경로 설정

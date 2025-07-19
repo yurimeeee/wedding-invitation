@@ -3,16 +3,19 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@components/ui/dropdown-menu';
 import { GRAY_400, GRAY_50, GRAY_600 } from '@styles/colors';
 import React, { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { FaRegUser } from 'react-icons/fa';
 import { FiChevronLeft } from 'react-icons/fi';
 import { FiLogOut } from 'react-icons/fi';
 import { HiOutlineMenuAlt2 } from 'react-icons/hi';
+import Image from 'next/image';
+import Link from 'next/link';
+import Menu from './Menu';
 import { auth } from '@lib/firebase';
 import { signOut } from 'firebase/auth';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
-import { useRouter } from 'next/navigation';
 import { useUserStore } from '@stores/useUserStore';
 
 const HeaderComp = styled.header<{ isScrolled: boolean }>`
@@ -26,15 +29,15 @@ const HeaderComp = styled.header<{ isScrolled: boolean }>`
   padding: ${({ isScrolled }) => (isScrolled ? '8px 20px' : '12px 24px')};
   box-sizing: border-box;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 6px rgba(101, 101, 101, 0.1);
   transition: all.3s;
 
-  @media (min-width: 640px) {
+  /* @media (min-width: 640px) {
     left: 96px;
     width: calc(100vw - 96px);
-  }
+  } */
 `;
 // const IconButton = styled(DropdownMenuTrigger)<{ isScrolled: boolean }>`
 const IconButton = styled(DropdownMenuTrigger)`
@@ -52,11 +55,18 @@ const IconButton = styled(DropdownMenuTrigger)`
   }
 `;
 
-const Header = ({ onMenuClick }: any) => {
+const Header = () => {
   const { user } = useUserStore();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isLoginPage = pathname === '/login';
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100);
@@ -87,19 +97,34 @@ const Header = ({ onMenuClick }: any) => {
       });
   };
 
-  return (
+  return isLoginPage ? null : (
     <>
       <HeaderComp isScrolled={isScrolled}>
-        <div className="sm:hidden flex w-full">
-          <HiOutlineMenuAlt2 onClick={onMenuClick} color={theme.color.gray_500} size={28} className="sm:hidden text-2xl text-gray-600 focus:outline-none cursor-poiner" />
-          {/* <FiChevronLeft
-            onClick={() => {
-              router.back();
-            }}
+        <div className="hidden sm:flex gap-20">
+          <Link href="/">
+            <Image src="/assets/img/logo-sm.svg" alt="logo" width={100} height={50} />
+          </Link>
+          <nav>
+            <ul className="flex justify-center items-center gap-12 px-2 sm:py-5 font-suite text-text-default">
+              <li>
+                <Link href="/editor">홈</Link>
+              </li>
+              <li>
+                <Link href="/editor/templates"> 디자인</Link>
+              </li>
+              {/* <li>
+            <Link href="/editor/invitaions">제작 목록</Link>
+          </li> */}
+            </ul>
+          </nav>
+        </div>
+        <div className="sm:hidden flex">
+          <HiOutlineMenuAlt2
+            onClick={() => setIsMenuOpen(true)}
             color={theme.color.gray_500}
-            size={32}
-            className="cursor-poiner"
-          /> */}
+            size={28}
+            className="sm:hidden text-2xl text-gray-600 focus:outline-none cursor-poiner"
+          />
         </div>
 
         <DropdownMenu>
@@ -109,7 +134,7 @@ const Header = ({ onMenuClick }: any) => {
           <DropdownMenuContent>
             <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>마이페이지</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/mypage')}>마이페이지</DropdownMenuItem>
             {/* <DropdownMenuItem>Billing</DropdownMenuItem>
             <DropdownMenuItem>Team</DropdownMenuItem> */}
             <DropdownMenuItem onClick={logout}>
@@ -118,6 +143,12 @@ const Header = ({ onMenuClick }: any) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </HeaderComp>
+      {mounted && isMenuOpen && <div className="fixed inset-0 z-30 bg-black/30 sm:hidden" onClick={() => setIsMenuOpen(false)} />}
+      {mounted && (
+        <div className={`fixed inset-y-0 left-0 z-50 w-full shadow-lg transform transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} sm:hidden`}>
+          <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        </div>
+      )}
     </>
   );
 };

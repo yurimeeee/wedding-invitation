@@ -2,7 +2,9 @@ import './globals.css';
 
 import { Geist, Geist_Mono } from 'next/font/google';
 
+import EditorLayout from './editor/layout';
 import { EmotionRegistry } from '@lib/EmotionRegistry';
+import Header from '@components/editor/layout/Header';
 import type { Metadata } from 'next';
 import ThemeProviders from '@lib/ThemeProviders';
 import { Toaster } from '@components/ui/sonner';
@@ -36,7 +38,9 @@ export default function RootLayout({
         {/* <body className={`${geistSans.variable} ${geistMono.variable} ${suitFont.variable} antialiased`}> */}
         <EmotionRegistry>
           <ThemeProviders>
-            {children} <Toaster />
+            <Header />
+            {children}
+            <Toaster />
           </ThemeProviders>
         </EmotionRegistry>
       </body>

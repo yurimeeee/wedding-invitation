@@ -1,16 +1,14 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import { DocumentData, doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
-import BeatLoader from 'react-spinners/BeatLoader';
+import { PageLoading } from '@components/ui/PageLoading';
 import TemplateType1 from '@components/editor/feature/templates/types/TemplateType1';
 import TemplateType2 from '@components/editor/feature/templates/types/TemplateType2';
 import TemplateType3 from '@components/editor/feature/templates/types/TemplateType3';
 import TemplateType4 from '@components/editor/feature/templates/types/TemplateType4';
 import { db } from '@lib/firebase';
-import theme from '@styles/theme';
 import { useParams } from 'next/navigation';
 
 export default function TemplateDetailPage() {
@@ -62,13 +60,7 @@ export default function TemplateDetailPage() {
   return (
     <div className="">
       {loading}
-      {!data ? (
-        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="h-screen w-full flex justify-center items-center">
-          <BeatLoader color={theme.color.pink300} loading={!data} />
-        </motion.div>
-      ) : (
-        data && RenderedComponent && <RenderedComponent data={data} />
-      )}
+      {!data ? <PageLoading loading={!data} /> : data && RenderedComponent && <RenderedComponent data={data} />}
       {/* {data && RenderedComponent && <RenderedComponent data={data} />} */}
     </div>
   );

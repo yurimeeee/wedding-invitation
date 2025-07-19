@@ -29,19 +29,14 @@ export default function LoginPage() {
         body: JSON.stringify({ token }),
       });
 
-      alert('로그인 되었습니다.');
+      // alert('로그인 되었습니다.');
       router.push('/editor');
     } catch (error) {
       console.error(error);
-      alert('로그인 실패');
+      // alert('로그인 실패');
     }
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     router.push('/admin');
-  //   }
-  // }, [user]);
   return (
     <div className="flex items-center justify-items-center h-full">
       <div className="flex flex-col items-center justify-center">

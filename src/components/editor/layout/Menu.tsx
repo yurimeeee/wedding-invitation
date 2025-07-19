@@ -1,5 +1,6 @@
 import { GRAY_400, GRAY_600 } from '@styles/colors';
 
+import { FiLogOut } from 'react-icons/fi';
 import Image from 'next/image';
 import { IoClose } from 'react-icons/io5';
 import Link from 'next/link';
@@ -7,6 +8,7 @@ import React from 'react';
 import { TfiClose } from 'react-icons/tfi';
 import clsx from 'clsx';
 import styled from '@emotion/styled';
+import { userLogout } from '@hook/useLogout';
 
 interface MenuProps {
   onClose?: () => void;
@@ -28,14 +30,11 @@ const IconButton = styled.div`
   cursor: pointer;
 `;
 export default function Menu({ onClose, isOpen = false }: MenuProps) {
+  const logout = userLogout();
   if (!isOpen && typeof window !== 'undefined' && window.innerWidth < 640) return null;
 
   return (
     <>
-      {/* 오버레이 */}
-      {/* {onClose && <div className="fixed inset-0 z-30 bg-black/30 sm:hidden" onClick={onClose} />} */}
-
-      {/* 메뉴 패널 */}
       <aside
         className={clsx(
           'fixed top-0 left-0 z-40 h-full w-[90%] bg-white border-r p-4 transition-transform duration-300 sm:static sm:translate-x-0',
@@ -61,18 +60,15 @@ export default function Menu({ onClose, isOpen = false }: MenuProps) {
                   디자인
                 </Link>
               </li>
-              {/* <li>
-                <Link href="/editor/invitaions" onClick={onClose}>
-                  제작 목록
-                </Link>
-              </li> */}
             </ul>
           </nav>
 
-          {/* <IconButton className="mb-12"> */}
-          {/* <IoClose onClick={onClose} color={GRAY_600} size={30} className="mx-auto mb-12" /> */}
-          <TfiClose onClick={onClose} color={GRAY_600} size={30} className="mx-auto mb-12" />
-          {/* </IconButton> */}
+          <div className="flex flex-col justify-center gap-6">
+            {/* <p className="text-[16px] text-gray-500 text-center font-suite-bold flex items-center gap-2 justify-center" onClick={logout}>
+              로그아웃 <FiLogOut />
+            </p> */}
+            <TfiClose onClick={onClose} color={GRAY_600} size={30} className="mx-auto mb-12" />
+          </div>
         </div>
       </aside>
     </>

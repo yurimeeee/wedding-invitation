@@ -6,17 +6,15 @@ import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { FaRegUser } from 'react-icons/fa';
-import { FiChevronLeft } from 'react-icons/fi';
 import { FiLogOut } from 'react-icons/fi';
 import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import Image from 'next/image';
 import Link from 'next/link';
 import Menu from './Menu';
-import { auth } from '@lib/firebase';
-import { signOut } from 'firebase/auth';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 import { useUserStore } from '@stores/useUserStore';
+import { userLogout } from '@hook/useLogout';
 
 const HeaderComp = styled.header<{ isScrolled: boolean }>`
   position: sticky;
@@ -39,7 +37,6 @@ const HeaderComp = styled.header<{ isScrolled: boolean }>`
     width: calc(100vw - 96px);
   } */
 `;
-// const IconButton = styled(DropdownMenuTrigger)<{ isScrolled: boolean }>`
 const IconButton = styled(DropdownMenuTrigger)`
   min-width: 42px;
   min-height: 42px;
@@ -49,6 +46,7 @@ const IconButton = styled(DropdownMenuTrigger)`
   border: 1px solid ${GRAY_400};
   border-radius: 50%;
   transition: all.3s;
+  cursor: pointer;
 
   :hover {
     background: ${GRAY_50};
@@ -58,11 +56,12 @@ const IconButton = styled(DropdownMenuTrigger)`
 const Header = () => {
   const { user } = useUserStore();
   const router = useRouter();
-  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  const logout = userLogout();
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isLoginPage = pathname === '/login';
   const [mounted, setMounted] = useState(false);
+  const isLoginPage = pathname === '/login';
 
   useEffect(() => {
     setMounted(true);
@@ -81,22 +80,6 @@ const Header = () => {
     };
   }, []);
 
-  const logout = () => {
-    // signOut 함수를 호출하여 로그아웃합니다.
-    signOut(auth)
-      .then(() => {
-        // 로그아웃 성공!
-        console.log('사용자가 성공적으로 로그아웃되었습니다.');
-        router.push('/login');
-        useUserStore.getState().logout();
-      })
-      .catch((error) => {
-        // 로그아웃 중 오류가 발생했습니다.
-        console.error('로그아웃 중 오류 발생:', error);
-        // 오류 처리를 여기에 작성하세요.
-      });
-  };
-
   return isLoginPage ? null : (
     <>
       <HeaderComp isScrolled={isScrolled}>
@@ -112,13 +95,10 @@ const Header = () => {
               <li>
                 <Link href="/editor/templates"> 디자인</Link>
               </li>
-              {/* <li>
-            <Link href="/editor/invitaions">제작 목록</Link>
-          </li> */}
             </ul>
           </nav>
         </div>
-        <div className="sm:hidden flex">
+        <div className="sm:hidden flex cursor-pointer">
           <HiOutlineMenuAlt2
             onClick={() => setIsMenuOpen(true)}
             color={theme.color.gray_500}

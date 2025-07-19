@@ -25,16 +25,17 @@ type CustomInputProps = React.ComponentProps<'input'> & {
   placeholderClassName?: string;
 };
 
-function CustomInput({ className, width = '', size = 'md', placeholderClassName = '', type, value, defaultValue, ...props }: CustomInputProps) {
-  // value가 undefined일 경우 uncontrolled 유지
+function CustomInput({ className, width = '', size = 'md', placeholderClassName = '', type, value, defaultValue, disabled = false, ...props }: CustomInputProps) {
   const isControlled = value !== undefined;
 
   return (
     <input
       type={type}
+      disabled={disabled}
       data-slot="input"
-      // className={cn(inputVariants({ size }), width, placeholderClassName && `placeholder:${placeholderClassName}`, className)}
-      className={`flex bg-white w-full border !border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-0 focus-visible:ring-offset-0 h-12 shadow-md rounded-md border-none placeholder:text-tog-999 ${className}`}
+      className={`flex bg-white w-full border !border-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 focus-visible:ring-0 focus-visible:ring-offset-0 h-12 shadow-md rounded-md border-none placeholder:text-tog-999 ${className} ${
+        disabled ? '!bg-gray-100 !cursor-not-allowed' : ' '
+      }`}
       {...props}
       {...(isControlled ? { value } : { defaultValue })}
     />

@@ -1,4 +1,4 @@
-import { Button } from '@components/ui/button';
+import { CustomButton } from '@components/ui/CustomButton';
 import React from 'react';
 // import style from './DaumPost.module.css';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
@@ -23,14 +23,14 @@ const DaumPost = ({ setAddress }: any) => {
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
 
-    setAddress(fullAddress); // setAddress를 호출하여 부모 컴포넌트의 상태를 업데이트
+    setAddress(fullAddress);
   };
 
   const handleClick = () => {
     open({ onComplete: handleComplete });
   };
 
-  return <Button onClick={handleClick}>주소 검색</Button>;
+  return <CustomButton text="주소 검색" onClick={handleClick} active className="!bg-pink-500 max-w-[82px]" />;
 };
 
 export default DaumPost;

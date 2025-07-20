@@ -54,6 +54,7 @@ import { title } from 'process';
 import { toast } from 'sonner';
 import { useDomainCheck } from '@hook/useDomainCheck';
 import { useLoadingStore } from '@stores/useLoadingStore';
+import { useScrollDirection } from '@hook/useScrollDirection';
 import { v4 as uuidv4 } from 'uuid';
 
 // import { storage } from '@lib/firebase';
@@ -80,8 +81,9 @@ const EditorFooter = styled.div`
   left: 0;
   right: 0;
   background: #fff;
-  padding: 16px;
-  z-index: 10;
+  padding: 10px 16px;
+  z-index: 100;
+  opacity: 0.7;
 `;
 const NoImage = styled.div`
   width: 120px;
@@ -125,7 +127,7 @@ export default function TemplatesCreatePage() {
   const [sampleGreetingMessageModal, setSampleGreetingMessageModal] = useState<any>({ open: false, title: '', type: '' });
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
+  // const isScrolledDown = useScrollDirection();
   const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
     const updated = { ...formData };
@@ -437,12 +439,12 @@ export default function TemplatesCreatePage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
+  // console.log('isScrolledDown', isScrolledDown);
   return pageLoading ? (
     <PageLoading loading={pageLoading} />
   ) : (
     <div className="flex h-screen">
-      <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto w-1/2 h-full pb-20">
+      <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto sm:w-1/2 h-full pb-20">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
 
         <div className="flex flex-col gap-2">
@@ -1027,8 +1029,6 @@ export default function TemplatesCreatePage() {
                       </PreviewImage>
                     ))}
                 </div>
-                {/* <Label text="설정" className="mb-2" />
-                이미지 클릭 시 전체화면 팝업 */}
               </div>
             }
           />
@@ -1388,7 +1388,7 @@ export default function TemplatesCreatePage() {
               className="fixed bottom-0 left-0 w-full"
             >
               <EditorFooter className="flex sm:hidden">
-                <div className="w-full flex items-center gap-2 justify-center">
+                <div className="w-full flex items-center gap-2 justify-between px-5">
                   <div
                     className="flex flex-col items-center gap-1 cursor-pointer"
                     onClick={() => {
@@ -1413,6 +1413,7 @@ export default function TemplatesCreatePage() {
             </motion.div>
           )}
         </AnimatePresence>
+        {/* 모바일 미리보기  */}
         <AnimatePresence>
           {isPreviewOpen && (
             <motion.div
@@ -1424,18 +1425,17 @@ export default function TemplatesCreatePage() {
               className="fixed top-0 left-0 w-full h-screen bg-white z-[100] overflow-auto"
             >
               <div className="max-w-[400px] mx-auto py-8 relative">
-                {/* 닫기 버튼 */}
                 <button className="fixed bottom-4 left-[50%] translate-x-[-50%] z-10 rounded-4xl bg-gray-500 p-2 opacity-60 cursor-pointer" onClick={() => setIsPreviewOpen(false)}>
                   <X size={24} color={'#FFFFFF'} />
                 </button>
 
-                {/* 실제 렌더링 컴포넌트 */}
                 {RenderedComponent && <RenderedComponent data={formData} />}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </Wrap>
+      {/* 데스크탑 미리보기 */}
       <Wrap className="scroll-container hidden sm:flex bg-text-default overflow-auto w-1/2 h-full py-8">
         <div className="max-w-[400px] mx-auto">{RenderedComponent && <RenderedComponent data={formData} />}</div>
       </Wrap>

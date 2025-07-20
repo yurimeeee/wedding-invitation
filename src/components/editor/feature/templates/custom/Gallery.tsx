@@ -104,10 +104,11 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Image from 'next/image';
 import { IoClose } from 'react-icons/io5';
+import { TemplatesData } from '@type/templates';
 import styled from '@emotion/styled';
 
 const GalleryImage = styled(Image)`
@@ -133,10 +134,9 @@ const sampleImages = [
 
 const SWIPE_CONFIDENCE_THRESHOLD = 100; // 스와이프 거리 기준
 
-const Gallery = ({ gallery }: { gallery?: string[] }) => {
+const Gallery = React.memo(({ gallery }: { gallery?: TemplatesData['gallery'] }) => {
   const [images, setImages] = useState<string[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
   useEffect(() => {
     if (gallery && gallery.length > 0) {
       setImages(gallery);
@@ -216,6 +216,6 @@ const Gallery = ({ gallery }: { gallery?: string[] }) => {
       </AnimatePresence>
     </div>
   );
-};
+});
 
 export default Gallery;

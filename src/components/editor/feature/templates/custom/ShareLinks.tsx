@@ -1,13 +1,20 @@
 'use client';
 
+import React, { useEffect } from 'react';
+
 import { IoLink } from 'react-icons/io5';
 import { RiKakaoTalkFill } from 'react-icons/ri';
 import { TemplatesData } from '@type/templates';
 import { handleCopy } from '../../../../../utils/func';
 import styled from '@emotion/styled';
-import { useEffect } from 'react';
+
 type ShareLinksProps = {
-  data: TemplatesData;
+  share_kakao_title: TemplatesData['share_kakao_title'];
+  share_kakao_desc: TemplatesData['share_kakao_desc'];
+  share_kakao_img: TemplatesData['share_kakao_img'];
+  groom_last_name: TemplatesData['groom_last_name'];
+  bride_last_name: TemplatesData['bride_last_name'];
+  main: TemplatesData['main'];
 };
 interface Window {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +31,7 @@ const CircleButton = styled.div`
   cursor: pointer;
 `;
 
-const ShareLinks = ({ data }: ShareLinksProps) => {
+const ShareLinks = React.memo(({ share_kakao_title, share_kakao_desc, share_kakao_img, groom_last_name, bride_last_name, main }: ShareLinksProps) => {
   const apiKey = process.env.NEXT_PUBLIC_KAKAOMAP_KEY;
 
   useEffect(() => {
@@ -48,9 +55,9 @@ const ShareLinks = ({ data }: ShareLinksProps) => {
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: data?.share_kakao_title || data?.main?.main_title,
-        description: data?.share_kakao_desc || `${data?.groom_last_name} ${data?.bride_last_name}의 결혼식에 초대합니다`,
-        imageUrl: data?.share_kakao_img || data?.main?.main_img,
+        title: share_kakao_title || main?.main_title,
+        description: share_kakao_desc || `${groom_last_name} ${bride_last_name}의 결혼식에 초대합니다`,
+        imageUrl: share_kakao_img || main?.main_img,
         link: {
           mobileWebUrl: window.location.href,
           webUrl: window.location.href,
@@ -70,7 +77,6 @@ const ShareLinks = ({ data }: ShareLinksProps) => {
 
   return (
     <div className="my-6 px-8">
-      {/* <p className="font-chosun-bold text-gray-600 text-center text-base mb-5">공유하기</p> */}
       <div className="flex flex-col gap-3 justify-center items-center font-chosun my-6">
         <CircleButton className="bg-[#FFEB00] hover:bg-[#ffea75] flex gap-2">
           카카오톡으로 청첩장 전하기
@@ -83,6 +89,6 @@ const ShareLinks = ({ data }: ShareLinksProps) => {
       </div>
     </div>
   );
-};
+});
 
 export default ShareLinks;

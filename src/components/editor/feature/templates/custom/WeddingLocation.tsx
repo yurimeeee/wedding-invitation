@@ -3,29 +3,34 @@
 import { Bus, CircleParking, TramFront } from 'lucide-react';
 
 import KakaoMap from '../../KakaoMap';
+import React from 'react';
 import { TemplatesData } from '@type/templates';
 import theme from '@styles/theme';
 
 type WeddingLocationProps = {
-  data: TemplatesData;
+  address: TemplatesData['address'];
+  address_name: TemplatesData['address_name'];
+  address_detail: TemplatesData['address_detail'];
+  hall_phone: TemplatesData['hall_phone'];
+  directions_desc: TemplatesData['directions_desc'];
 };
 
-const WeddingLocation = ({ data }: WeddingLocationProps) => {
+const WeddingLocation = React.memo(({ address, address_name, address_detail, hall_phone, directions_desc }: WeddingLocationProps) => {
   return (
     <div className="w-full font-suite flex flex-col gap-2">
       <p className="font-chosun-bold text-gray-600 text-center text-base mb-5">오시는 길</p>
       <div className="font-chosun text-center text-base mb-5">
-        <p>{data?.address || '서울 강남구 영동대로 707'}</p>
+        <p>{address || '서울 강남구 영동대로 707'}</p>
         <p>
-          {data?.address_name || '드레스가든'} {data?.address_detail || 'Banquet Hall'}
+          {address_name || '드레스가든'} {address_detail || 'Banquet Hall'}
         </p>
         <p>
-          TEL. <a href={`tel:${data?.hall_phone}`}>{data?.hall_phone || '0507-1339-1021'}</a>
+          TEL. <a href={`tel:${hall_phone}`}>{hall_phone || '0507-1339-1021'}</a>
         </p>
       </div>
-      <KakaoMap address={data?.address || '서울특별시 강남구 영동대로 707'} />
+      <KakaoMap address={address || '서울특별시 강남구 영동대로 707'} />
       <div className="font-suite text-left text-base mt-4 flex flex-col gap-2 px-6 ">
-        {data?.directions_desc
+        {directions_desc
           ?.filter((item: any) => item?.desc?.some((desc: string) => desc.trim() !== ''))
           ?.map((item: any, index: number) => {
             return (
@@ -54,6 +59,6 @@ const WeddingLocation = ({ data }: WeddingLocationProps) => {
       </div>
     </div>
   );
-};
+});
 
 export default WeddingLocation;

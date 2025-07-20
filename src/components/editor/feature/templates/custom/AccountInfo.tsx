@@ -1,5 +1,7 @@
 'use client';
 
+import React, { useState } from 'react';
+
 import CustomAccordion from './Accordion';
 import { MdOutlineContentCopy } from 'react-icons/md';
 import { PINK_200 } from '@styles/colors';
@@ -7,7 +9,6 @@ import { TemplatesData } from '../../../../../type/templates';
 import { handleCopy } from '@utils/func';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
-import { useState } from 'react';
 
 const TabItem = styled.div<{ active: boolean }>`
   width: 100%;
@@ -27,10 +28,14 @@ const TabItem = styled.div<{ active: boolean }>`
 `;
 
 type AccountInfoProps = {
-  data: TemplatesData;
+  account_layout: TemplatesData['account_layout'];
+  account_design: TemplatesData['account_design'];
+  groom_account: TemplatesData['groom_account'];
+  bride_account: TemplatesData['bride_account'];
+  is_kakao_account: TemplatesData['is_kakao_account'];
 };
 
-const AccountInfo = ({ data }: AccountInfoProps) => {
+const AccountInfo = React.memo(({ account_layout, account_design, groom_account, bride_account, is_kakao_account }: AccountInfoProps) => {
   const tabList: { text: string; value: string }[] = [
     { text: '신랑에게', value: 'groom' },
     { text: '신부에게', value: 'bride' },
@@ -38,7 +43,7 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
   const [activeTab, setActiveTab] = useState<string>('groom');
 
   const renderComponentByDesign = (accountData: any) => {
-    switch (data?.account_design) {
+    switch (account_design) {
       case 'row':
         return accountData?.map((item: any, idx: number) => (
           <div key={idx} className="bg-white text-[#666666] text-center text-sm border rounded-md p-4 shadow-md whitespace-pre-wrap w-full">
@@ -57,7 +62,7 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
                 계좌복사
                 <MdOutlineContentCopy color={theme.color.gray_500} />
               </button>
-              {data?.is_kakao_account && item?.kakao && (
+              {is_kakao_account && item?.kakao && (
                 <a
                   href={item?.kakao}
                   target="_blank"
@@ -107,7 +112,7 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
                 </span>
                 <MdOutlineContentCopy color={theme.color.gray_500} />
               </button>
-              {data?.is_kakao_account && item?.kakao && (
+              {is_kakao_account && item?.kakao && (
                 <button
                   onClick={() => handleCopy(item?.kakao)}
                   className="px-3 w-full rounded-lg cursor-pointer flex items-center justify-between text-[12px] text-text-default bg-[#FFEB00]"
@@ -143,7 +148,7 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
   };
   return (
     <div className="font-chosun px-8">
-      {data?.account_layout === 'tab' && (
+      {account_layout === 'tab' && (
         <div>
           <div className="flex">
             {tabList?.map((item, idx) => (
@@ -153,31 +158,31 @@ const AccountInfo = ({ data }: AccountInfoProps) => {
             ))}
           </div>
           {activeTab === 'groom' ? (
-            <div className="flex flex-col gap-4 mt-4">{renderComponentByDesign(data?.groom_account)}</div>
+            <div className="flex flex-col gap-4 mt-4">{renderComponentByDesign(groom_account)}</div>
           ) : (
-            <div className="flex flex-col gap-4 mt-4">{renderComponentByDesign(data?.bride_account)} </div>
+            <div className="flex flex-col gap-4 mt-4">{renderComponentByDesign(bride_account)} </div>
           )}
           <div></div>
         </div>
       )}
-      {data?.account_layout === 'align' && (
+      {account_layout === 'align' && (
         <div className="flex flex-col gap-3">
           <CustomAccordion
             title="신랑측에게"
             contentsPadding="12px"
             contentsColor={PINK_200}
-            children={<div className="flex flex-col gap-4 mt-4">{renderComponentByDesign(data?.groom_account)}</div>}
+            children={<div className="flex flex-col gap-4 mt-4">{renderComponentByDesign(groom_account)}</div>}
           />
           <CustomAccordion
             title="신부측에게"
             contentsPadding="12px"
             contentsColor={PINK_200}
-            children={<div className="flex flex-col gap-4 mt-4">{renderComponentByDesign(data?.bride_account)} </div>}
+            children={<div className="flex flex-col gap-4 mt-4">{renderComponentByDesign(bride_account)} </div>}
           />
         </div>
       )}
     </div>
   );
-};
+});
 
 export default AccountInfo;

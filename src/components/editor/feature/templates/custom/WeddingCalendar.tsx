@@ -14,7 +14,11 @@ import theme from '@styles/theme';
 
 type WeddingCalendarProps = {
   weddingDate: string; // 'YYYY-MM-DD'
-  data: TemplatesData; // 'YYYY-MM-DD'
+  date: TemplatesData['main']['date'];
+  time: TemplatesData['main']['time'];
+  calendar_display: TemplatesData['calendar_display'];
+  countdown_display: TemplatesData['countdown_display'];
+  d_day_display: TemplatesData['d_day_display'];
 };
 
 const StyledCalendar = styled(Calendar)`
@@ -80,9 +84,8 @@ const isValidDate = (date: string) => {
   return !isNaN(d.getTime());
 };
 
-const WeddingCalendar = ({ weddingDate, data }: WeddingCalendarProps) => {
+const WeddingCalendar = React.memo(({ weddingDate, date, time, calendar_display, countdown_display, d_day_display }: WeddingCalendarProps) => {
   const wedding = isValidDate(weddingDate) ? new Date(weddingDate) : new Date();
-
   const tileClassName = ({ date }: { date: Date }) => {
     if (date.getFullYear() === wedding.getFullYear() && date.getMonth() === wedding.getMonth() && date.getDate() === wedding.getDate()) {
       return 'highlight';
@@ -93,15 +96,15 @@ const WeddingCalendar = ({ weddingDate, data }: WeddingCalendarProps) => {
   return (
     <div className="flex justify-center items-center flex-col gap-4">
       <p className="text-md mb-1 font-chosun">
-        <span>{formattedDate(data?.main?.date) || '2025년 6월 24일 토요일'}</span>
+        <span>{formattedDate(date) || '2025년 6월 24일 토요일'}</span>
         <span className="px-2">|</span>
-        <span>{formatTime(data?.main?.time) || '오후 2시'}</span>
+        <span>{formatTime(time) || '오후 2시'}</span>
       </p>
-      {data?.calendar_display && <StyledCalendar tileClassName={tileClassName} value={wedding} formatDay={(_, date) => date.getDate().toString()} />}
-      {data?.countdown_display && <Countdown targetDate={wedding} />}
-      {data?.d_day_display && <WeddingDday targetDate={wedding} />}
+      {calendar_display && <StyledCalendar tileClassName={tileClassName} value={wedding} formatDay={(_, date) => date.getDate().toString()} />}
+      {countdown_display && <Countdown targetDate={wedding} />}
+      {d_day_display && <WeddingDday targetDate={wedding} />}
     </div>
   );
-};
+});
 
 export default WeddingCalendar;

@@ -119,34 +119,12 @@ export default function TemplatesCreatePage() {
   const [shareKakaoImg, setShareKakaoImg] = useState<any>(null);
   const [shareLinkImg, setShareLinkImg] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  // const domain = uuidv4();
-  // const [domain, setDomain] = useState<any>(isEdit ? paramsDomain || '' : '');
-
   const { domain, setDomain, urlValidationMessage, formatErrorMessage, handleDomainChange, handleBlur, handleReset, isConfirmed, setIsConfirmed } = useDomainCheck();
-
-  // const domain = uuidv4();
-  // const [RenderedComponent, setRenderedComponent] = useState<any | null>(null);
   const [RenderedComponent, setRenderedComponent] = useState<React.FC<any> | null>(null);
   const [shareSettingsModal, setShareSettingsModal] = useState<any>({ open: false, title: '', type: '' });
   const [sampleGreetingMessageModal, setSampleGreetingMessageModal] = useState<any>({ open: false, title: '', type: '' });
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  // const [urlValidationMessage, setUrlValidationMessage] = useState<boolean | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  // url 중복 확인
-  // const checkInvitationId = async (id: string) => {
-  //   try {
-  //     const docRef = doc(db, 'invitation', id);
-  //     const docSnap = await getDoc(docRef);
-
-  //     if (docSnap.exists()) {
-  //       setUrlValidationMessage(false);
-  //     } else {
-  //       setUrlValidationMessage(true);
-  //     }
-  //   } catch (error) {
-  //     toast('확인 중 오류가 발생했습니다.');
-  //   }
-  // };
 
   const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
@@ -230,7 +208,6 @@ export default function TemplatesCreatePage() {
     const updatedArr = formData[key].filter((_: any, idx: number) => idx !== index);
     setFormData({ ...formData, [key]: updatedArr });
   };
-  console.log('formData.gallery.length', formData?.gallery?.length);
   // 파일 업로드 및 Firestore 저장 함수
   async function handleSave(isDraft: boolean): Promise<void> {
     const userId = auth.currentUser?.uid; // 로그인된 사용자 ID
@@ -338,13 +315,11 @@ export default function TemplatesCreatePage() {
     }
   }
 
-  console.log('formD', formData);
   useEffect(() => {
     const userId = auth.currentUser?.uid; // 로그인된 사용자 ID
     const getTemplateType1Document = async () => {
       try {
         let docRef;
-        console.log('dfkdlfkdls;fkopdsfkopdk');
         if (isEdit && userId && id) {
           // docRef = doc(db, 'users', String(userId), 'invitations', String(id));
           docRef = doc(db, 'invitations', String(id));
@@ -356,7 +331,6 @@ export default function TemplatesCreatePage() {
 
         if (docSnap.exists()) {
           setFormData(docSnap.data());
-          console.log('docSnap;docSnapdocSnapdocSnap');
         } else {
           // setErrorMessage('템플릿 문서를 찾을 수 없습니다.');
         }
@@ -436,41 +410,19 @@ export default function TemplatesCreatePage() {
     }
   }, [formData?.type]);
 
-  console.log(formData);
-
   const [htmlContent, setHtmlContent] = useState('');
 
   const handleEditorChange = (html: string) => {
     setHtmlContent(html);
   };
-  // useEffect(() => {
-  //   setUrlValidationMessage(null);
-  // }, [domain]);
-  console.log(paramsDomain, isEdit, id);
+
   useEffect(() => {
-    // isEdit ? paramsDomain || '' : '';
     if (paramsDomain) {
       setDomain(paramsDomain);
     } else if (isEdit && id) {
       setDomain(String(id));
     }
   }, [paramsDomain, isEdit, id]);
-
-  const checkInvitationId = () => {
-    // 도메인 검증 상태를 확인하여 라우팅 결정
-    if (urlValidationMessage === true && !isLoading && formatErrorMessage === null) {
-    } else {
-      let errorMessage = '도메인 주소를 다시 확인해주세요.';
-      if (formatErrorMessage) {
-        errorMessage = formatErrorMessage;
-      } else if (urlValidationMessage === false) {
-        errorMessage = '이미 사용 중이거나 유효하지 않은 도메인입니다.';
-      } else if (isLoading) {
-        errorMessage = '도메인 중복 확인 중입니다. 잠시 기다려주세요.';
-      }
-      toast.error(errorMessage);
-    }
-  };
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -1422,8 +1374,8 @@ export default function TemplatesCreatePage() {
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
-          <CustomButton text="임시 저장" onClick={() => handleSave(true)} />
-          <CustomButton text="저장 완료" onClick={() => handleSave(false)} className="!bg-pink-500" />
+          <CustomButton text="임시 저장" onClick={() => handleSave(true)} className="!text-text-default" />
+          <CustomButton text="저장 완료" onClick={() => handleSave(false)} className="!bg-pink-500 !text-text-default" />
         </div>
         <AnimatePresence>
           {isScrolled && (

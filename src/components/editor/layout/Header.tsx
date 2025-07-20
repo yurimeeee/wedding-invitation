@@ -11,6 +11,7 @@ import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import Image from 'next/image';
 import Link from 'next/link';
 import Menu from './Menu';
+import dynamic from 'next/dynamic';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 import { useUserStore } from '@stores/useUserStore';
@@ -53,6 +54,11 @@ const IconButton = styled(DropdownMenuTrigger)`
   }
 `;
 
+const DynamicMenu = dynamic(() => import('./Menu'), {
+  ssr: false,
+  loading: () => null,
+});
+
 const Header = () => {
   const { user } = useUserStore();
   const router = useRouter();
@@ -66,26 +72,26 @@ const Header = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
-    };
-    window.addEventListener('scroll', handleScroll);
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setIsScrolled(window.scrollY > 100);
+  //   };
+  //   window.addEventListener('scroll', handleScroll);
 
-    // 초기 상태 세팅
-    handleScroll();
+  //   // 초기 상태 세팅
+  //   handleScroll();
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, []);
 
   return isLoginPage ? null : (
     <>
       <HeaderComp isScrolled={isScrolled}>
         <div className="hidden sm:flex gap-20">
           <Link href="/">
-            <Image src="/assets/img/logo-sm.svg" alt="logo" width={100} height={50} />
+            <Image src="/assets/img/logo-sm.svg" alt="logo" width={100} height={50} priority={true} />
           </Link>
           <nav>
             <ul className="flex justify-center items-center gap-12 px-2 sm:py-5 font-suite text-text-default">
@@ -108,7 +114,7 @@ const Header = () => {
         </div>
 
         <DropdownMenu>
-          <IconButton>
+          <IconButton aria-label="사용자 메뉴">
             <FaRegUser color={GRAY_600} size={isScrolled ? 14 : 18} />
           </IconButton>
           <DropdownMenuContent>
@@ -126,7 +132,8 @@ const Header = () => {
       {mounted && isMenuOpen && <div className="fixed inset-0 z-30 bg-black/30 sm:hidden" onClick={() => setIsMenuOpen(false)} />}
       {mounted && (
         <div className={`fixed inset-y-0 left-0 z-50 w-full shadow-lg transform transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} sm:hidden`}>
-          <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+          {/* <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} /> */}
+          <DynamicMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         </div>
       )}
     </>

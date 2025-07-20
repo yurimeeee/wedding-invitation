@@ -8,7 +8,6 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { CustomButton } from '../../../../../ui/CustomButton';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
 import { CustomInput } from '@components/ui/CustomInput';
-import { TemplatesData } from '@type/templates';
 import { Textarea } from '@components/ui/textarea';
 import { db } from '@lib/firebase';
 import { toast } from 'sonner';
@@ -17,11 +16,11 @@ import { useState } from 'react';
 type GuestMessageModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  data: TemplatesData;
+  id?: string;
   fetchInvitationsList: any;
 };
 
-export default function GuestMessageModal({ open, onOpenChange, data, fetchInvitationsList }: GuestMessageModalProps) {
+export default function GuestMessageModal({ open, onOpenChange, id, fetchInvitationsList }: GuestMessageModalProps) {
   const [msgModel, setMsgModel] = useState<{ name: string; password: string; contents: string }>({
     name: '',
     password: '',
@@ -42,7 +41,7 @@ export default function GuestMessageModal({ open, onOpenChange, data, fetchInvit
     }
     try {
       // @ts-ignore
-      await addDoc(collection(db, 'invitations', data?.id, 'message'), {
+      await addDoc(collection(db, 'invitations', id, 'message'), {
         name: msgModel.name.trim(),
         password: msgModel.password.trim(),
         contents: msgModel.contents.trim(),

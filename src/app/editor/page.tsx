@@ -16,6 +16,7 @@ import theme from '@styles/theme';
 const AddCard = styled.div`
   width: 100%;
   height: 100%;
+  min-height: 200px;
   border-radius: 4px;
   display: flex;
   background-color: ${theme.color.pink100};

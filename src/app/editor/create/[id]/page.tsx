@@ -95,7 +95,9 @@ export default function TemplatesCreatePage() {
   const searchParams = useSearchParams();
   const isEdit = searchParams.get('edit') === 'true';
   const type = searchParams.get('type');
+  const paramsDomain = searchParams.get('domain');
   console.log('isEdit', isEdit);
+  console.log('paramsDomain', paramsDomain);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<any>(null);
@@ -105,7 +107,7 @@ export default function TemplatesCreatePage() {
   const [shareLinkImg, setShareLinkImg] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   // const invitationId = uuidv4();
-  const [invitationId, setInvitationId] = useState<any>(isEdit ? id : '');
+  const [invitationId, setInvitationId] = useState<any>(isEdit ? paramsDomain || '' : '');
   // const invitationId = uuidv4();
   // const [RenderedComponent, setRenderedComponent] = useState<any | null>(null);
   const [RenderedComponent, setRenderedComponent] = useState<React.FC<any> | null>(null);
@@ -319,97 +321,6 @@ export default function TemplatesCreatePage() {
     }
   }
 
-  // async function handleSave(): Promise<void> {
-  //   const userId = auth.currentUser?.uid; // 로그인된 사용자 ID
-
-  //   if (!userId) {
-  //     toast.error('로그인이 필요합니다.');
-  //     return;
-  //   }
-
-  //   setIsLoading(true);
-  //   toast('청첩장이 제작 중이니 잠시만 기다려주세요.');
-  //   const storage = getStorage();
-  //   const firestore = getFirestore();
-
-  //   const validateForm = (): string | null => {
-  //     if (!formData.main.date?.trim()) return '예식 일자를 입력해주세요.';
-  //     if (!formData.main.time?.trim()) return '예식 시간을 입력해주세요.';
-  //     if (!formData.address?.trim()) return '식장 주소를 입력해주세요.';
-  //     if (!formData.address_name?.trim() || !formData.address_detail?.trim()) return '식장 상세정보를 입력해주세요.';
-  //     if (!formData.hall_phone?.trim()) return '식장 연락처를 입력해주세요.';
-  //     if (!formData.groom_first_name?.trim() || !formData.groom_last_name?.trim() || !formData.bride_first_name?.trim() || !formData.bride_last_name?.trim())
-  //       return '신랑 신부의 성함을 입력해주세요.';
-  //     if (!formData.groom_phone?.trim()) return '신랑의 연락처를 입력해주세요.';
-  //     if (!formData.bride_phone?.trim()) return '신부의 연락처를 입력해주세요.';
-  //     if (!mainImage) return '커버 메인 이미지를 업로드해주세요.';
-  //     if (!formData.main.intro_content?.trim()) return '모시는 글을 입력해주세요.';
-  //     if (!gallery || !gallery.length || gallery.some((img: any) => !img)) return '갤러리 이미지를 하나 이상 등록해주세요.';
-
-  //     return null;
-  //   };
-
-  //   const errorMessage = validateForm();
-  //   if (errorMessage) {
-  //     setIsLoading(false);
-  //     toast(errorMessage);
-
-  //     return;
-  //   }
-
-  //   // 메인 이미지 경로 및 참조 생성
-  //   const mainStoragePath = `invitation/${invitationId}/main/main_img`;
-  //   const mainStorageRef = ref(storage, mainStoragePath);
-
-  //   // 카카오 이미지 경로 및 참조 생성
-  //   const kakaoStoragePath = `invitation/${invitationId}/share/share_kakao_img`;
-  //   const kakaoStorageRef = ref(storage, kakaoStoragePath);
-  //   // 링크 이미지 경로 및 참조 생성
-  //   const linkStoragePath = `invitation/${invitationId}/share/share_link_img`;
-  //   const linkStorageRef = ref(storage, linkStoragePath);
-  //   try {
-  //     // 1. 메인 이미지 업로드
-  //     const mainUploadResult = await uploadBytes(mainStorageRef, mainImage);
-  //     const mainImageURL = await getDownloadURL(mainStorageRef);
-
-  //     // 2. 갤러리 이미지들 업로드
-  //     const galleryUploadPromises = gallery.map((file: any, index: number) => {
-  //       const galleryPath = `invitation/${invitationId}/gallery/gallery_${index}`;
-  //       const galleryRef = ref(storage, galleryPath);
-  //       return uploadBytes(galleryRef, file).then(() => getDownloadURL(galleryRef));
-  //     });
-
-  //     const galleryImageURLs = await Promise.all(galleryUploadPromises);
-  //     const kakaoShareResult = await uploadBytes(kakaoStorageRef, shareKakaoImg);
-  //     const linkShareResult = await uploadBytes(linkStorageRef, shareLinkImg);
-  //     const kakaoShareImageURL = await getDownloadURL(kakaoStorageRef);
-  //     const linkShareImageURL = await getDownloadURL(linkStorageRef);
-  //     // 3. Firestore에 저장할 데이터 구성
-  //     const dataToSave = {
-  //       ...formData,
-  //       main: {
-  //         ...formData.main,
-  //         main_img: mainImageURL,
-  //       },
-  //       gallery: galleryImageURLs,
-  //       uploadedAt: new Date(),
-  //       share_kakao_img: kakaoShareImageURL,
-  //       share_link_img: linkShareImageURL,
-  //     };
-
-  //     // 4. Firestore에 데이터 저장
-  //     // const docRef = doc(firestore, 'invitation', invitationId);
-  //     // await setDoc(docRef, dataToSave, { merge: true });
-  //     const docRef = doc(firestore, 'users', userId, 'invitations', invitationId);
-  //     await setDoc(docRef, dataToSave, { merge: true });
-
-  //     toast('청접장이 등록되었습니다.');
-  //   } catch (error) {
-  //     console.error('Error during upload or Firestore saving:', error);
-  //     throw error;
-  //   }
-  // }
-
   console.log('formD', formData);
   useEffect(() => {
     const userId = auth.currentUser?.uid; // 로그인된 사용자 ID
@@ -515,6 +426,11 @@ export default function TemplatesCreatePage() {
   useEffect(() => {
     setUrlValidationMessage(null);
   }, [invitationId]);
+  useEffect(() => {
+    if (paramsDomain) {
+      setInvitationId(paramsDomain);
+    }
+  }, []);
 
   return (
     <div className="flex h-screen">

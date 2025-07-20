@@ -77,6 +77,7 @@ export const useDomainCheck = () => {
         debouncedCheckInvitationId(value.trim()); // 디바운스된 중복 확인 호출
       } else {
         setUrlValidationMessage(null); // 5자 미만이면 검증 메시지 초기화
+        setFormatErrorMessage('5자 이상 입력해주세요');
         debouncedCheckInvitationId.cancel(); // 진행 중인 디바운스 취소
       }
     }
@@ -98,7 +99,12 @@ export const useDomainCheck = () => {
       debouncedCheckInvitationId(val); // trim된 값으로 다시 호출 (확실하게 트리거)
     }
   };
-
+  const handleReset = () => {
+    setDomain('');
+    setUrlValidationMessage(null);
+    setFormatErrorMessage(null);
+    setIsLoading(false);
+  };
   // const handleCreateClick = () => {
   //   if (urlValidationMessage === true && !isLoading && formatErrorMessage === null) {
   //     router.push(`/editor/create/type1?domain=${domain}`);
@@ -116,5 +122,6 @@ export const useDomainCheck = () => {
     handleDomainChange, // onChange 핸들러
     handleBlur, // onBlur 핸들러
     isValidDomainFormat, // 외부에서 도메인 형식 검사를 위해 필요하다면
+    handleReset, // 초기화 핸들러
   };
 }

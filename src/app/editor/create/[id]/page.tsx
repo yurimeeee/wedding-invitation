@@ -34,6 +34,7 @@ import { Input } from '@components/ui/input';
 import { IoClose } from 'react-icons/io5';
 import KakaoMap from '@components/editor/feature/KakaoMap';
 import { Label } from '@components/ui/label';
+import { PageLoading } from '@components/ui/PageLoading';
 import { PiFlowerFill } from 'react-icons/pi';
 import SampleGreetingMessageModal from '@components/editor/feature/templates/custom/modal/SampleGreetingMessageModal';
 import ShareSettingsModal from '@components/editor/feature/templates/custom/modal/ShareSettingsModal';
@@ -51,6 +52,7 @@ import styled from '@emotion/styled';
 import theme from '@styles/theme';
 import { title } from 'process';
 import { toast } from 'sonner';
+import { useLoadingStore } from '@stores/useLoadingStore';
 import { v4 as uuidv4 } from 'uuid';
 
 // import { storage } from '@lib/firebase';
@@ -96,8 +98,7 @@ export default function TemplatesCreatePage() {
   const isEdit = searchParams.get('edit') === 'true';
   const type = searchParams.get('type');
   const paramsDomain = searchParams.get('domain');
-  console.log('isEdit', isEdit);
-  console.log('paramsDomain', paramsDomain);
+  const { pageLoading, setPageLoading } = useLoadingStore();
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<any>(null);
@@ -346,6 +347,7 @@ export default function TemplatesCreatePage() {
         // setErrorMessage('데이터를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       } finally {
         setLoading(false);
+        setPageLoading(false);
       }
     };
     getTemplateType1Document();
@@ -431,14 +433,10 @@ export default function TemplatesCreatePage() {
       setInvitationId(paramsDomain);
     }
   }, []);
-
-  return (
+  return pageLoading ? (
+    <PageLoading loading={pageLoading} />
+  ) : (
     <div className="flex h-screen">
-      {/* {isLoading && (
-        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="h-screen w-full flex justify-center items-center">
-          <BeatLoader color={theme.color.pink300} loading={isLoading} />
-        </motion.div>
-      )} */}
       <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto w-1/2 h-full pb-20">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
 

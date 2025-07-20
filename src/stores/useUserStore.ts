@@ -22,8 +22,6 @@ export const useUserStore = create(
   )
 );
 
-
-
 interface InvitationState {
   invitations: TemplatesData[];
   setInvitations: (data: TemplatesData[]) => void;

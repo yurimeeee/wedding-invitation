@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@components/ui/button';
 import { CiSquarePlus } from 'react-icons/ci';
 import { CustomBox } from '@components/ui/CustomBox';
+import { CustomButton } from '@components/ui/CustomButton';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
 import { CustomInput } from '@components/ui/CustomInput';
 import { GRAY_400 } from '@styles/colors';
@@ -179,7 +180,7 @@ export default function ShareSettingsModal({ open, onOpenChange, title, type, da
             </div>
           </CustomBox>
         )}
-        <Button text="저장하기" onClick={handleSave} className="mt-4" />
+        <CustomButton text="저장하기" onClick={handleSave} active className="mt-4" />
         <DialogDescription />
       </DialogContent>
     </Dialog>

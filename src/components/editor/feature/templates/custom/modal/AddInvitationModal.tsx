@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { CustomButton } from '../../../../../ui/CustomButton';
 import { CustomInfoText } from '@components/ui/CustomInfoText';
 import { CustomInput } from '@components/ui/CustomInput';
-import { PageLoading } from '../../../../../ui/PageLoading';
 import { toast } from 'sonner';
 import { useDomainCheck } from '@hook/useDomainCheck';
 import { useLoadingStore } from '@stores/useLoadingStore';
@@ -20,9 +19,9 @@ type AddInvitationModalProps = {
 
 export default function AddInvitationModal({ open, onOpenChange }: AddInvitationModalProps) {
   const router = useRouter();
-  const { pageLoading, setPageLoading } = useLoadingStore();
+  const { setPageLoading } = useLoadingStore();
   const { domain, urlValidationMessage, formatErrorMessage, isLoading, handleDomainChange, handleBlur, handleReset } = useDomainCheck();
-  console.log('pageLoading', pageLoading);
+
   const handleCreateButtonClick = () => {
     // 도메인 검증 상태를 확인하여 라우팅 결정
     if (urlValidationMessage === true && !isLoading && formatErrorMessage === null) {
@@ -57,15 +56,7 @@ export default function AddInvitationModal({ open, onOpenChange }: AddInvitation
             알파벳 / 숫자 / 하이픈(-)만 사용 가능해요
           </p>
           <div className="flex gap-3 max-w-[360px] mx-auto mb-2">
-            <CustomInput
-              type="text"
-              placeholder="ex) couplename"
-              value={domain}
-              onChange={handleDomainChange}
-              onBlur={handleBlur}
-              disabled={isLoading}
-              className="mx-auto w-full flex"
-            />
+            <CustomInput type="text" placeholder="ex) couplename" value={domain} onChange={handleDomainChange} onBlur={handleBlur} className="mx-auto w-full flex" />
             <CustomButton text="선택" onClick={handleCreateButtonClick} disabled={!urlValidationMessage} active={true} className="max-w-[60px]" />
           </div>
 

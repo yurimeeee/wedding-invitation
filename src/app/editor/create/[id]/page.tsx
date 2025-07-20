@@ -1,16 +1,18 @@
 'use client';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@components/ui/accordion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CiSquarePlus, CiSquareRemove } from 'react-icons/ci';
 import { CustomDialog, DialogTrigger } from '@components/ui/dialog';
 import { CustomRadioGroup, RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
+import { Divide, Eye, RotateCcw, X } from 'lucide-react';
 import { DocumentData, collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
 import { GRAY_500, GRAY_600 } from '@styles/colors';
 // import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { auth, db } from '@lib/firebase';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 import BeatLoader from 'react-spinners/BeatLoader';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
@@ -27,7 +29,6 @@ import { CustomTimePicker } from '@components/ui/CustomTimePicker';
 import { CustomToggle } from '@components/ui/toggle';
 import { CustomTooltip } from '@components/ui/tooltip';
 import DaumPost from '@components/editor/feature/DaumPost';
-import { Divide } from 'lucide-react';
 import { FaRegImage } from 'react-icons/fa6';
 import Image from 'next/image';
 import { Input } from '@components/ui/input';
@@ -47,11 +48,11 @@ import { TemplatesData } from '@type/templates';
 import { Textarea } from '@components/ui/textarea';
 import TiptapEditor from '@components/editor/feature/TiptapEditor';
 import dayjs from 'dayjs';
-import { motion } from 'framer-motion';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 import { title } from 'process';
 import { toast } from 'sonner';
+import { useDomainCheck } from '@hook/useDomainCheck';
 import { useLoadingStore } from '@stores/useLoadingStore';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -71,6 +72,16 @@ const InfoTitle = styled.div`
 const Wrap = styled.div`
   width: 100%;
   /* max-width: 720px; */
+`;
+const EditorFooter = styled.div`
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 16px;
+  z-index: 10;
 `;
 const NoImage = styled.div`
   width: 120px;
@@ -95,6 +106,7 @@ export default function TemplatesCreatePage() {
   const params = useParams();
   const id = params.id;
   const searchParams = useSearchParams();
+  const router = useRouter();
   const isEdit = searchParams.get('edit') === 'true';
   const type = searchParams.get('type');
   const paramsDomain = searchParams.get('domain');
@@ -107,30 +119,34 @@ export default function TemplatesCreatePage() {
   const [shareKakaoImg, setShareKakaoImg] = useState<any>(null);
   const [shareLinkImg, setShareLinkImg] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  // const invitationId = uuidv4();
-  const [invitationId, setInvitationId] = useState<any>(isEdit ? paramsDomain || '' : '');
-  // const invitationId = uuidv4();
+  // const domain = uuidv4();
+  // const [domain, setDomain] = useState<any>(isEdit ? paramsDomain || '' : '');
+
+  const { domain, setDomain, urlValidationMessage, formatErrorMessage, handleDomainChange, handleBlur, handleReset, isConfirmed, setIsConfirmed } = useDomainCheck();
+
+  // const domain = uuidv4();
   // const [RenderedComponent, setRenderedComponent] = useState<any | null>(null);
   const [RenderedComponent, setRenderedComponent] = useState<React.FC<any> | null>(null);
   const [shareSettingsModal, setShareSettingsModal] = useState<any>({ open: false, title: '', type: '' });
   const [sampleGreetingMessageModal, setSampleGreetingMessageModal] = useState<any>({ open: false, title: '', type: '' });
-  const [urlValidationMessage, setUrlValidationMessage] = useState<boolean | null>(null);
-
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  // const [urlValidationMessage, setUrlValidationMessage] = useState<boolean | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   // url 중복 확인
-  const checkInvitationId = async (id: string) => {
-    try {
-      const docRef = doc(db, 'invitation', id);
-      const docSnap = await getDoc(docRef);
+  // const checkInvitationId = async (id: string) => {
+  //   try {
+  //     const docRef = doc(db, 'invitation', id);
+  //     const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        setUrlValidationMessage(false);
-      } else {
-        setUrlValidationMessage(true);
-      }
-    } catch (error) {
-      toast('확인 중 오류가 발생했습니다.');
-    }
-  };
+  //     if (docSnap.exists()) {
+  //       setUrlValidationMessage(false);
+  //     } else {
+  //       setUrlValidationMessage(true);
+  //     }
+  //   } catch (error) {
+  //     toast('확인 중 오류가 발생했습니다.');
+  //   }
+  // };
 
   const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
@@ -260,8 +276,8 @@ export default function TemplatesCreatePage() {
         return;
       }
     }
-    const docRef = doc(firestore, 'invitations', invitationId);
-    // const docRef = doc(firestore, 'users', userId, 'invitations', invitationId);
+    const docRef = doc(firestore, 'invitations', domain);
+    // const docRef = doc(firestore, 'users', userId, 'invitations', domain);
     const dataToSave: any = {
       ...formData,
       uploadedAt: new Date(),
@@ -270,7 +286,7 @@ export default function TemplatesCreatePage() {
     try {
       // 메인 이미지
       if (mainImage) {
-        const mainRef = ref(storage, `invitation/${invitationId}/main/main_img`);
+        const mainRef = ref(storage, `invitation/${domain}/main/main_img`);
         await uploadBytes(mainRef, mainImage);
         dataToSave.main = {
           ...dataToSave.main,
@@ -280,13 +296,13 @@ export default function TemplatesCreatePage() {
 
       // 공유 이미지
       if (shareKakaoImg) {
-        const kakaoRef = ref(storage, `invitation/${invitationId}/share/share_kakao_img`);
+        const kakaoRef = ref(storage, `invitation/${domain}/share/share_kakao_img`);
         await uploadBytes(kakaoRef, shareKakaoImg);
         dataToSave.share_kakao_img = await getDownloadURL(kakaoRef);
       }
 
       if (shareLinkImg) {
-        const linkRef = ref(storage, `invitation/${invitationId}/share/share_link_img`);
+        const linkRef = ref(storage, `invitation/${domain}/share/share_link_img`);
         await uploadBytes(linkRef, shareLinkImg);
         dataToSave.share_link_img = await getDownloadURL(linkRef);
       }
@@ -295,7 +311,7 @@ export default function TemplatesCreatePage() {
       if (gallery?.length) {
         const galleryUrls = await Promise.all(
           gallery.map((file: any, index: number) => {
-            const refPath = ref(storage, `invitation/${invitationId}/gallery/gallery_${index}`);
+            const refPath = ref(storage, `invitation/${domain}/gallery/gallery_${index}`);
             return uploadBytes(refPath, file).then(() => getDownloadURL(refPath));
           })
         );
@@ -303,13 +319,13 @@ export default function TemplatesCreatePage() {
       }
 
       // await setDoc(docRef, dataToSave, { merge: true });
-      // const docRef2 = doc(firestore, 'invitations', invitationId);
-      // await setDoc(docRef2, { id: invitationId, uid: userId });
+      // const docRef2 = doc(firestore, 'invitations', domain);
+      // await setDoc(docRef2, { id: domain, uid: userId });
       await setDoc(
         docRef,
         {
           ...dataToSave,
-          id: invitationId,
+          id: domain,
           uid: userId,
         },
         { merge: true }
@@ -328,9 +344,10 @@ export default function TemplatesCreatePage() {
     const getTemplateType1Document = async () => {
       try {
         let docRef;
-
+        console.log('dfkdlfkdls;fkopdsfkopdk');
         if (isEdit && userId && id) {
-          docRef = doc(db, 'users', String(userId), 'invitations', String(id));
+          // docRef = doc(db, 'users', String(userId), 'invitations', String(id));
+          docRef = doc(db, 'invitations', String(id));
         } else {
           docRef = doc(db, 'template', String(id));
         }
@@ -339,6 +356,7 @@ export default function TemplatesCreatePage() {
 
         if (docSnap.exists()) {
           setFormData(docSnap.data());
+          console.log('docSnap;docSnapdocSnapdocSnap');
         } else {
           // setErrorMessage('템플릿 문서를 찾을 수 없습니다.');
         }
@@ -351,7 +369,7 @@ export default function TemplatesCreatePage() {
       }
     };
     getTemplateType1Document();
-  }, []);
+  }, [id, isEdit]);
 
   const handleMainImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -425,14 +443,49 @@ export default function TemplatesCreatePage() {
   const handleEditorChange = (html: string) => {
     setHtmlContent(html);
   };
+  // useEffect(() => {
+  //   setUrlValidationMessage(null);
+  // }, [domain]);
+  console.log(paramsDomain, isEdit, id);
   useEffect(() => {
-    setUrlValidationMessage(null);
-  }, [invitationId]);
-  useEffect(() => {
+    // isEdit ? paramsDomain || '' : '';
     if (paramsDomain) {
-      setInvitationId(paramsDomain);
+      setDomain(paramsDomain);
+    } else if (isEdit && id) {
+      setDomain(String(id));
     }
+  }, [paramsDomain, isEdit, id]);
+
+  const checkInvitationId = () => {
+    // 도메인 검증 상태를 확인하여 라우팅 결정
+    if (urlValidationMessage === true && !isLoading && formatErrorMessage === null) {
+    } else {
+      let errorMessage = '도메인 주소를 다시 확인해주세요.';
+      if (formatErrorMessage) {
+        errorMessage = formatErrorMessage;
+      } else if (urlValidationMessage === false) {
+        errorMessage = '이미 사용 중이거나 유효하지 않은 도메인입니다.';
+      } else if (isLoading) {
+        errorMessage = '도메인 중복 확인 중입니다. 잠시 기다려주세요.';
+      }
+      toast.error(errorMessage);
+    }
+  };
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const isScrollingDown = currentScrollY > lastScrollY;
+
+      setIsScrolled(isScrollingDown);
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
   return pageLoading ? (
     <PageLoading loading={pageLoading} />
   ) : (
@@ -444,26 +497,35 @@ export default function TemplatesCreatePage() {
           <div>
             <Label text="URL 입력" required={true} className="mb-2" />
             <div className="flex gap-2">
-              <CustomInput type="text" placeholder="URL을 입력해주세요" value={invitationId} onChange={(e) => setInvitationId(e.target.value)} className="w-4/5" />
+              <CustomInput type="text" placeholder="URL을 입력해주세요" value={domain} onChange={handleDomainChange} onBlur={handleBlur} className="w-4/5" disabled={isConfirmed} />
               <CustomButton
-                text="확인"
-                onClick={async () => {
-                  await checkInvitationId(invitationId);
-                }}
-                disabled={invitationId?.trim() === '' || !/^[a-z0-9-]+$/.test(invitationId)}
+                // text="확인"
+                text={!isConfirmed ? '확인' : '수정'}
+                onClick={() => setIsConfirmed(!isConfirmed)}
+                // disabled={domain?.trim() === '' || !/^[a-z0-9-]+$/.test(domain) || !urlValidationMessage}
+                disabled={domain?.trim() === '' || !urlValidationMessage}
                 active
                 className="w-1/5 max-w-[72px]"
               />
             </div>
-            {invitationId?.trim() === '' && <CustomInfoText text="url을 입력해주세요" color={'#EF665B'} className="my-2" />}
-            {!/^[a-z0-9-]+$/.test(invitationId) && <CustomInfoText text="영문 소문자, 숫자, 하이픈(-)만 사용 가능해요" color={'#EF665B'} className="my-2" />}
+            {/* {domain?.trim() === '' && <CustomInfoText text="url을 입력해주세요" color={'#EF665B'} className="my-2" />}
+            {!/^[a-z0-9-]+$/.test(domain) && <CustomInfoText text="영문 소문자, 숫자, 하이픈(-)만 사용 가능해요" color={'#EF665B'} className="my-2" />}
 
-            {urlValidationMessage === true && invitationId?.trim() !== '' && /^[a-z0-9-]+$/.test(invitationId) && (
+            {urlValidationMessage === true && domain?.trim() !== '' && /^[a-z0-9-]+$/.test(domain) && (
               <CustomInfoText text={'사용가능한 url입니다.'} color={'#17d287'} className="my-2" />
             )}
-            {urlValidationMessage === false && invitationId?.trim() !== '' && /^[a-z0-9-]+$/.test(invitationId) && (
+            {urlValidationMessage === false && domain?.trim() !== '' && /^[a-z0-9-]+$/.test(domain) && (
               <CustomInfoText text={'이미 사용중인 url입니다.'} color={'#EF665B'} className="my-2" />
-            )}
+            )} */}
+            {/* 유효성 메시지 표시 */}
+            <div className="min-h-[36px]">
+              {domain?.trim() === '' && <CustomInfoText text="url을 입력해주세요" color={'#EF665B'} className="my-2" />}
+              {urlValidationMessage === true && !isLoading && <CustomInfoText text="사용 가능한 주소입니다." color="#17d287" className="my-2" />}
+              {urlValidationMessage === false && !isLoading && formatErrorMessage === null && (
+                <CustomInfoText text="이미 사용 중인 주소입니다." color="#EF665B" className="my-2 mx-auto text-center" />
+              )}
+              {formatErrorMessage && <CustomInfoText text={formatErrorMessage} color="#EF665B" className="my-2" />}
+            </div>
           </div>
           <CustomAccordion
             title="예식 일시"
@@ -878,17 +940,17 @@ export default function TemplatesCreatePage() {
                   <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
                 </div> */}
                 <Textarea placeholder="입력해주세요" value={formData?.main.intro_content} onChange={(e) => handleChange('main.intro_content', e.target.value)} className="mb-5" />
+                <CustomButton
+                  text="샘플문구 활용하기"
+                  onClick={() => setSampleGreetingMessageModal({ ...sampleGreetingMessageModal, open: true, data: formData })}
+                  active
+                  className="mb-5 !bg-pink-500 max-w-[180px] !h-10"
+                />
                 <Label text="내용 정렬" className="mb-2" />
                 <div className="flex gap-2 mb-5">
                   <CustomButton text="왼쪽 정렬" onClick={() => handleChange('main.intro_content_align', 'left')} active={formData?.main.intro_content_align === 'left'} />
                   <CustomButton text="가운데 정렬" onClick={() => handleChange('main.intro_content_align', 'center')} active={formData?.main.intro_content_align === 'center'} />
                 </div>
-
-                <Button
-                  text="샘플문구 활용하기"
-                  onClick={() => setSampleGreetingMessageModal({ ...sampleGreetingMessageModal, open: true, data: formData })}
-                  className="mt-5 mb-5"
-                />
 
                 <Label text="설정" className="mb-2" />
                 <CustomBox
@@ -1360,14 +1422,69 @@ export default function TemplatesCreatePage() {
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
-          {/* <Button onClick={handleSave} disabled={isLoading}>
-            저장하기
-          </Button> */}
           <CustomButton text="임시 저장" onClick={() => handleSave(true)} />
-          <CustomButton text="저장 완료" onClick={() => handleSave(false)} />
+          <CustomButton text="저장 완료" onClick={() => handleSave(false)} className="!bg-pink-500" />
         </div>
+        <AnimatePresence>
+          {isScrolled && (
+            <motion.div
+              key="preview"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 30 }}
+              transition={{ duration: 0.3 }}
+              className="fixed bottom-0 left-0 w-full"
+            >
+              <EditorFooter className="flex sm:hidden">
+                <div className="w-full flex items-center gap-2 justify-center">
+                  <div
+                    className="flex flex-col items-center gap-1 cursor-pointer"
+                    onClick={() => {
+                      if (confirm('초기화 하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                        if (isEdit) {
+                          router.push('/editor/create/type1');
+                        } else {
+                          window.location.reload();
+                        }
+                      }
+                    }}
+                  >
+                    <RotateCcw size={20} color={theme.color.gray_500} />
+                    <p className="text-sm font-suite-medium text-gray-600">초기화</p>
+                  </div>
+                  <div className="flex flex-col items-center gap-1 cursor-pointer" onClick={() => setIsPreviewOpen(true)}>
+                    <Eye size={20} color={theme.color.gray_500} />
+                    <p className="text-sm font-suite-medium text-gray-600">미리보기</p>
+                  </div>
+                </div>
+              </EditorFooter>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {isPreviewOpen && (
+            <motion.div
+              key="preview"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 30 }}
+              transition={{ duration: 0.3 }}
+              className="fixed top-0 left-0 w-full h-screen bg-white z-[100] overflow-auto"
+            >
+              <div className="max-w-[400px] mx-auto py-8 relative">
+                {/* 닫기 버튼 */}
+                <button className="fixed bottom-4 left-[50%] translate-x-[-50%] z-10 rounded-4xl bg-gray-500 p-2 opacity-60 cursor-pointer" onClick={() => setIsPreviewOpen(false)}>
+                  <X size={24} color={'#FFFFFF'} />
+                </button>
+
+                {/* 실제 렌더링 컴포넌트 */}
+                {RenderedComponent && <RenderedComponent data={formData} />}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Wrap>
-      <Wrap className="scroll-container hidden sm:flex bg-text-default overflow-auto w-1/2 h-full">
+      <Wrap className="scroll-container hidden sm:flex bg-text-default overflow-auto w-1/2 h-full py-8">
         <div className="max-w-[400px] mx-auto">{RenderedComponent && <RenderedComponent data={formData} />}</div>
       </Wrap>
       <ShareSettingsModal

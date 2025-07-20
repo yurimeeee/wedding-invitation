@@ -17,6 +17,7 @@ export const useDomainCheck = () => {
   const [urlValidationMessage, setUrlValidationMessage] = useState<boolean | null>(null); // true: 사용 가능, false: 중복/형식 오류, null: 초기/미확인
   const [formatErrorMessage, setFormatErrorMessage] = useState<string | null>(null); // 형식 오류 메시지
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태
+  const [isConfirmed, setIsConfirmed] = useState<boolean>(false); // 로딩 상태
 
   // 도메인 형식 유효성 검사 함수
   const isValidDomainFormat = (input: string) => /^[a-zA-Z0-9-]+$/.test(input);
@@ -66,6 +67,7 @@ export const useDomainCheck = () => {
   const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setDomain(value); // domain 상태 업데이트
+    setIsConfirmed(false)
 
     if (value.length > 0 && !isValidDomainFormat(value)) {
       setFormatErrorMessage('알파벳, 숫자, 하이픈(-)만 사용 가능해요.');
@@ -123,5 +125,7 @@ export const useDomainCheck = () => {
     handleBlur, // onBlur 핸들러
     isValidDomainFormat, // 외부에서 도메인 형식 검사를 위해 필요하다면
     handleReset, // 초기화 핸들러
+    isConfirmed, // 중복 확인 여부,
+    setIsConfirmed, // 중복 확인 여부 설정
   };
 }

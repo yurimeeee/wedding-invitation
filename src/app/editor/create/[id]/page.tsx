@@ -14,6 +14,7 @@ import { auth, db } from '@lib/firebase';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
+import BackgroundMusicSetting from '@components/editor/feature/templates/custom/BackgroundMusicSetting';
 import BeatLoader from 'react-spinners/BeatLoader';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
 import { Button } from '@components/ui/button';
@@ -832,6 +833,38 @@ export default function TemplatesCreatePage() {
                     className="w-[240px] flex items-center gap-3 flex-wrap sm:flex-nowrap"
                   />
                 </div>
+              </div>
+            }
+          />
+          <CustomAccordion
+            title="배경 음악"
+            children={
+              <div>
+                <CustomInfoText text="청첩장의 폰트와 사이즈를 변경하실 수 있습니다." className="mb-5" />
+                <CustomBox
+                  type="input"
+                  className="mb-5"
+                  children={
+                    <div className="flex justify-between w-full">
+                      <Label text="배경 음악 설정" />
+                      <CustomToggle
+                        checked={formData?.bgm_display}
+                        onChange={(val) =>
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            bgm_display: val,
+                          }))
+                        }
+                      />
+                    </div>
+                  }
+                />
+                <BackgroundMusicSetting
+                  setBgm={(path) => {
+                    setFormData({ ...formData, bgm_url: path });
+                  }}
+                  bgm={formData?.bgm_url}
+                />
               </div>
             }
           />

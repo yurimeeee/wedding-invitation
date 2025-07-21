@@ -68,6 +68,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const isLoginPage = pathname === '/login';
+  const isInvitationPage = pathname.includes('/invitaions/');
 
   useEffect(() => {
     setMounted(true);
@@ -86,7 +87,7 @@ const Header = () => {
   //   };
   // }, []);
 
-  return isLoginPage ? null : (
+  return isLoginPage || isInvitationPage ? null : (
     <>
       <HeaderComp isScrolled={isScrolled}>
         <div className="hidden sm:flex gap-20">

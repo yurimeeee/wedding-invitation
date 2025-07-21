@@ -103,6 +103,10 @@ export type TemplatesData = {
   attendees_eat_or_not?: boolean
   attendees_number?: boolean
 
+  bgm_display?: boolean
+  bgm_url?: string
+  bgm_auto_play?: boolean
+
   uploadedAt: any,
   isDraft?: boolean,
 

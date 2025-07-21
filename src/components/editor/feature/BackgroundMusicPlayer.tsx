@@ -23,5 +23,13 @@ export default function BackgroundMusicPlayer() {
     };
   }, []);
 
-  return <audio ref={audioRef} src="/assets/bgm/romantic-wedding-inspiring-piano-376014.mp3" loop preload="auto" volume={0.5} />;
+  return (
+    <audio
+      ref={audioRef}
+      src="/assets/bgm/romantic-wedding-inspiring-piano-376014.mp3"
+      loop
+      preload="auto"
+      // volume={0.5}
+    />
+  );
 }

@@ -2,6 +2,7 @@
 
 import AccountInfo from '../custom/AccountInfo';
 import AttendeesInfo from '../custom/AttendeesInfo';
+import BackgroundMusicPlayer from '../custom/BackgroundMusicPlayer';
 import FamilyInfo from '../custom/FamilyInfo';
 import Gallery from '../custom/Gallery';
 import GreetingMessage from '../custom/GreetingMessage';
@@ -19,10 +20,12 @@ type TemplateTypeProps = {
 };
 
 const TemplateType2 = ({ data }: TemplateTypeProps) => {
+  console.log(data);
   return (
     <div className="w-full min-h-screen bg-white">
       <div className="max-w-[393px] mx-auto pt-[20px] pb-[42px]">
         <div className="flex flex-col items-center relative">
+          {data?.bgm_url && <BackgroundMusicPlayer bgm={data?.bgm_url} display={data?.bgm_display} />}
           <Image src="/assets/img/templates/type_2/wedding_day.svg" alt="wedding_day" width={230} height={40} className="absolute mb-10" />
 
           <div className="w-full h-auto">

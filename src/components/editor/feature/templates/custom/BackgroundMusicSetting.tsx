@@ -20,7 +20,7 @@ const BackgroundMusicSetting = ({ setBgm, bgm }: { setBgm: (bgm: string) => void
   //   console.log(url);
   //   setMusicUrl(url);
   // };
-  // console.log('musicUrl', musicUrl);
+  console.log('bgm', bgm);
   useEffect(() => {
     const loadAndPlayMusic = async () => {
       if (!currentMusicPath) {
@@ -206,7 +206,7 @@ const BackgroundMusicSetting = ({ setBgm, bgm }: { setBgm: (bgm: string) => void
               setBgm(item.path);
             }
           }}
-          checked={bgm === item.path}
+          checked={bgm == item.path}
         />
       ))}
       {/* <MusicButton

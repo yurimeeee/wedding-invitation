@@ -23,7 +23,7 @@ const MusicButton = ({
   const isDisabled = loadingMusic && !isActive;
   return (
     <div className="flex items-center justify-between">
-      <CustomCheckbox text={name} value={checked === path} onChange={setChecked} />
+      <CustomCheckbox text={name} value={checked} onChange={setChecked} />
       {/* <span className="text-sm font-suite text-text-default">{name}</span> */}
       <button
         onClick={() => onClick(path)}

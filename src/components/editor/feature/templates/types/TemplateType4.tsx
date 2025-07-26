@@ -2,6 +2,7 @@
 
 import AccountInfo from '../custom/AccountInfo';
 import AttendeesInfo from '../custom/AttendeesInfo';
+import BackgroundMusicPlayer from '../custom/BackgroundMusicPlayer';
 import FamilyInfo from '../custom/FamilyInfo';
 import Gallery from '../custom/Gallery';
 import GreetingMessage from '../custom/GreetingMessage';
@@ -33,6 +34,7 @@ const TemplateType4 = ({ data }: TemplateTypeProps) => {
     <div className="w-full min-h-screen bg-light-beige-300 overflow-hidden">
       <div className="max-w-[393px] mx-auto py-[42px]">
         <div className="relative">
+          {data?.bgm_url && <BackgroundMusicPlayer bgm={data?.bgm_url} display={data?.bgm_display} />}
           <Image src="/assets/img/templates/type_4/the_wedding_of.svg" alt="the_wedding_of" width={300} height={40} className="mb-2 z-5 mx-auto" />
 
           <Image src="/assets/img/templates/type_4/flower_1.png" alt="flower_1" width={300} height={40} className="absolute -right-10 bottom-10" style={{ zIndex: 1 }} />

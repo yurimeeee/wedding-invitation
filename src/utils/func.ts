@@ -65,5 +65,6 @@ export function formatUnixTimestamp(seconds?: number, nanoSeconds?: number): str
   return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
 }
 
-
-
+export const isValidEmail = (email: string) => {
+  return /\S+@\S+\.\S+/.test(email);
+};

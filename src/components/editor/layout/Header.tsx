@@ -97,7 +97,7 @@ const Header = () => {
           <nav>
             <ul className="flex justify-center items-center gap-12 px-2 sm:py-5 font-suite text-text-default">
               <li>
-                <Link href="/editor">홈</Link>
+                <Link href="/editor">제작</Link>
               </li>
               <li>
                 <Link href="/editor/templates"> 디자인</Link>

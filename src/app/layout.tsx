@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 
 import EditorLayout from './editor/layout';
 import { EmotionRegistry } from '@lib/EmotionRegistry';
+import Footer from '@components/editor/layout/Footer';
 import Header from '@components/editor/layout/Header';
 import type { Metadata } from 'next';
 import ThemeProviders from '@lib/ThemeProviders';
@@ -41,6 +42,7 @@ export default function RootLayout({
             <Header />
             {children}
             <Toaster />
+            <Footer />
           </ThemeProviders>
         </EmotionRegistry>
       </body>

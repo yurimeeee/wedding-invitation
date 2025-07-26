@@ -52,7 +52,7 @@ export default function Menu({ onClose, isOpen = false }: MenuProps) {
             <ul className="text-[24px] text-gray-500 text-center font-suite-bold flex flex-col items-center gap-8">
               <li>
                 <Link href="/editor" onClick={onClose}>
-                  홈
+                  제작
                 </Link>
               </li>
               <li>

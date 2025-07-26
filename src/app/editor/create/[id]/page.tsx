@@ -801,7 +801,7 @@ export default function TemplatesCreatePage() {
                 <div className="mb-4">
                   <div className="flex gap-2 mb-2">
                     <Label text="커버 이미지" required={true} />
-                    <CustomTooltip text="에디터와 미리보기에서는 화질이 저하되어 보일 수 있으나, 실제 공유 시 모바일에 최적화 된 화질로 표시됩니다" />
+                    <CustomTooltip text="제작와 미리보기에서는 화질이 저하되어 보일 수 있으나, 실제 공유 시 모바일에 최적화 된 화질로 표시됩니다" />
                   </div>
                   {formData?.main?.main_img_tip && <p className="text-[12px] font-suite-medium text-gray-500 mb-2">권장 사이즈 : {formData?.main?.main_img_tip}</p>}
 

@@ -12,7 +12,7 @@ const Sidebar = () => {
       <nav>
         <ul className="flex flex-col justify-center items-center gap-5 px-2 sm:py-5 mt-5">
           <li>
-            <Link href="/editor">홈</Link>
+            <Link href="/editor">제작</Link>
           </li>
           <li>
             <Link href="/editor/templates"> 디자인</Link>

@@ -23,11 +23,11 @@ export const useUserStore = create(
 );
 
 interface InvitationState {
-  invitations: TemplatesData[];
+  invitations: TemplatesData[] | null;
   setInvitations: (data: TemplatesData[]) => void;
 }
 
 export const useInvitationStore = create<InvitationState>((set) => ({
-  invitations: [],
+  invitations: null,
   setInvitations: (data) => set({ invitations: data }),
 }));

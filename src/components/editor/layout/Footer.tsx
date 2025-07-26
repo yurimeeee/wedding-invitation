@@ -7,8 +7,9 @@ import { usePathname } from 'next/navigation';
 const Footer = () => {
   const pathname = usePathname();
   const isInvitationPage = pathname.includes('/invitaions/');
+  const isEditorPage = pathname.includes('/editor/create/');
 
-  return isInvitationPage ? null : (
+  return isInvitationPage || isEditorPage ? null : (
     <Wrap>
       <CopyWrite>© 2025 Kim Yurim All rights reserved</CopyWrite>
     </Wrap>

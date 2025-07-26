@@ -6,8 +6,8 @@ import { useInvitationStore, useUserStore } from '@stores/useUserStore';
 
 import AddInvitationModal from '@components/editor/feature/templates/custom/modal/AddInvitationModal';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
-import { GRAY_600 } from '@styles/colors';
 import InvitationItem from '@components/editor/feature/InvitationItem';
+import Skeleton from '@components/editor/layout/Skeleton';
 import { TemplatesData } from '@type/templates';
 import { db } from '@lib/firebase';
 import styled from '@emotion/styled';
@@ -30,17 +30,6 @@ export default function DashbordPage() {
   const setInvitations = useInvitationStore((state) => state.setInvitations);
   const [addInvitationModal, setAddInvitationModal] = useState<boolean>(false);
 
-  // const fetchInvitations = async (userId: string) => {
-  //   try {
-  //     const colRef = collection(db, 'users', userId, 'invitations');
-  //     const querySnapshot = await getDocs(colRef);
-  //     const data = querySnapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     setInvitations(data as TemplatesData[]);
-  //   } catch (error) {}
-  // };
   const fetchInvitations = async (userId: string) => {
     try {
       const invitationsRef = collection(db, 'invitations');
@@ -76,17 +65,26 @@ export default function DashbordPage() {
         </p>
       </div>
 
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {invitations?.map((item: TemplatesData, index: number) => (
-          <InvitationItem key={index} data={item} onClick={() => {}} />
-        ))}
-        <AddCard className="rounded border border-solid border-pink-300 p-3">
-          <div className="flex flex-col gap-3 items-center justify-center w-full" onClick={() => setAddInvitationModal(true)}>
-            <BsFillPlusCircleFill color={theme.color.gray_600} size={20} />
-            <p className="text-gray-600 font-suite">청첩장 만들기</p>
-          </div>
-        </AddCard>
-      </div>
+      {!invitations ? (
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} width="100%" height="418px" />
+          ))}
+        </div>
+      ) : (
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {invitations?.map((item: TemplatesData, index: number) => (
+            <InvitationItem key={index} data={item} onClick={() => {}} />
+          ))}
+          <AddCard className="rounded border border-solid border-pink-300 p-3">
+            <div className="flex flex-col gap-3 items-center justify-center w-full" onClick={() => setAddInvitationModal(true)}>
+              <BsFillPlusCircleFill color={theme.color.gray_600} size={20} />
+              <p className="text-gray-600 font-suite">청첩장 만들기</p>
+            </div>
+          </AddCard>
+        </div>
+      )}
+
       <AddInvitationModal open={addInvitationModal} onOpenChange={setAddInvitationModal} />
     </div>
   );

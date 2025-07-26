@@ -32,15 +32,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body
-        // className={suitFont.variable}
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {/* <body className={`${geistSans.variable} ${geistMono.variable} ${suitFont.variable} antialiased`}> */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
         <EmotionRegistry>
           <ThemeProviders>
             <Header />
-            {children}
+            <main className="flex-grow">{children}</main>
             <Toaster />
             <Footer />
           </ThemeProviders>

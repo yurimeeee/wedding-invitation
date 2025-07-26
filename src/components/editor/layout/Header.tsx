@@ -10,7 +10,6 @@ import { FiLogOut } from 'react-icons/fi';
 import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import Image from 'next/image';
 import Link from 'next/link';
-import Menu from './Menu';
 import dynamic from 'next/dynamic';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
@@ -32,11 +31,6 @@ const HeaderComp = styled.header<{ isScrolled: boolean }>`
   align-items: center;
   box-shadow: 0 2px 6px rgba(101, 101, 101, 0.1);
   transition: all.3s;
-
-  /* @media (min-width: 640px) {
-    left: 96px;
-    width: calc(100vw - 96px);
-  } */
 `;
 const IconButton = styled(DropdownMenuTrigger)`
   min-width: 42px;
@@ -74,19 +68,6 @@ const Header = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     setIsScrolled(window.scrollY > 100);
-  //   };
-  //   window.addEventListener('scroll', handleScroll);
-
-  //   // 초기 상태 세팅
-  //   handleScroll();
-
-  //   return () => {
-  //     window.removeEventListener('scroll', handleScroll);
-  //   };
-  // }, []);
 
   return isLoginPage || isSignUpPage || isInvitationPage ? null : (
     <>
@@ -97,6 +78,9 @@ const Header = () => {
           </Link>
           <nav>
             <ul className="flex justify-center items-center gap-12 px-2 sm:py-5 font-suite text-text-default">
+              <li>
+                <Link href="/">홈</Link>
+              </li>
               <li>
                 <Link href="/editor">제작</Link>
               </li>
@@ -131,10 +115,8 @@ const Header = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </HeaderComp>
-      {mounted && isMenuOpen && <div className="fixed inset-0 z-30 bg-black/30 sm:hidden" onClick={() => setIsMenuOpen(false)} />}
       {mounted && (
         <div className={`fixed inset-y-0 left-0 z-50 w-full shadow-lg transform transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} sm:hidden`}>
-          {/* <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} /> */}
           <DynamicMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         </div>
       )}

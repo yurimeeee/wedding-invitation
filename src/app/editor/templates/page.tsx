@@ -1,17 +1,15 @@
 'use client';
 
-import { collection, getDocs, getFirestore } from 'firebase/firestore';
-// import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
+import Skeleton from '@components/editor/layout/Skeleton';
 import TemplateCard from '@components/editor/feature/TemplateCard';
 import { TemplatesData } from '@type/templates';
-// import { storage } from '@lib/firebase';
-import { auth } from '../../../lib/firebase';
 import { db } from '@lib/firebase';
 
 export default function TemplatesPage() {
-  const [templates, setTemplates] = useState<TemplatesData[]>([]);
+  const [templates, setTemplates] = useState<TemplatesData[] | null>(null);
   const fetchTemplates = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'template'));
@@ -28,7 +26,6 @@ export default function TemplatesPage() {
   useEffect(() => {
     fetchTemplates();
   }, []);
-  console.log(auth.currentUser);
   // async function uploadImageAndSaveToDoc(file: File, docId: string) {
   //   try {
   //     // 1. Storage 경로 설정
@@ -64,12 +61,19 @@ export default function TemplatesPage() {
           다양한 디자인을 참고해서 쉽게 청첩장을 꾸밀 수 있어요.
         </p>
       </div>
-
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {templates?.map((item: TemplatesData, index: number) => (
-          <TemplateCard key={index} data={item} onClick={() => {}} />
-        ))}
-      </div>
+      {!templates ? (
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} width="100%" height="252px" />
+          ))}
+        </div>
+      ) : (
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {templates?.map((item: TemplatesData, index: number) => (
+            <TemplateCard key={index} data={item} onClick={() => {}} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

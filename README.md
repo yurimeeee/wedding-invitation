@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💌 Wedding Invitation Project
 
-## Getting Started
+모바일 청첩장을 손쉽게 제작하고 공유하며, 하객들의 참석 여부를 효율적으로 관리할 수 있는 웹 기반 청첩장 서비스입니다. 소중한 날을 더욱 특별하게 만들어 보세요!
 
-First, run the development server:
+---
+
+### ✨ 주요 기능
+
+* **간편한 회원가입 및 로그인**: Firebase를 통한 안전하고 빠른 인증 시스템을 제공해요.
+* **모바일 청첩장 제작**: 사용자 친화적인 인터페이스로 아름다운 모바일 청첩장을 직접 만들 수 있어요.
+* **카카오톡 공유**: 제작된 청첩장을 카카오톡으로 손쉽게 공유하여 지인들에게 알릴 수 있어요.
+* **방명록 및 참석 여부 전달**: 청첩장 내에서 하객들이 축하 메시지를 남기고, 참석 여부를 편리하게 전달할 수 있어요.
+* **통계 및 참석 현황 관리**:
+    * **참석 여부 CSV 다운로드**: 하객들의 참석 여부 데이터를 CSV 파일로 다운로드하여 오프라인에서도 관리할 수 있어요.
+    * **실시간 현황 파악**: 통계 화면에서 청첩장 조회수, 방명록 수, 참석/불참 현황 등을 한눈에 파악할 수 있어요.
+
+---
+
+### 🛠️ 기술 스택
+
+이 프로젝트는 다음과 같은 기술 스택을 활용하여 개발되었어요.
+
+**프론트엔드 (Frontend)**
+
+* **Next.js**: React 기반의 프레임워크로, 서버 사이드 렌더링(SSR) 및 정적 사이트 생성(SSG)을 통해 뛰어난 성능과 SEO 최적화를 제공해요.
+* **TypeScript**: JavaScript에 타입을 추가하여 코드의 안정성과 가독성을 높였어요.
+* **Zustand**: 가볍고 빠르며 유연한 상태 관리 라이브러리로, 전역 상태 관리에 사용되었어요.
+* **Emotion**: CSS-in-JS 라이브러리로, 컴포넌트 기반 스타일링을 통해 유연하고 재사용 가능한 UI를 구축했어요.
+* **Tailwind CSS**: 유틸리티 우선 CSS 프레임워크로, 빠르고 일관된 디자인 시스템을 구축하는 데 활용되었어요.
+* **Shadcn/ui**: 재사용 가능한 UI 컴포넌트 라이브러리로, 개발 생산성을 높였어요.
+
+**백엔드 및 데이터베이스 (Backend & Database)**
+
+* **Firebase**: Google이 제공하는 포괄적인 모바일 및 웹 개발 플랫폼으로, 사용자 인증, 실시간 데이터베이스, 호스팅 등 모든 백엔드 기능을 담당해요.
+
+---
+
+### 🚀 시작하기
+
+(여기에 프로젝트를 로컬에서 실행하기 위한 간단한 설치 및 실행 방법을 추가할 수 있어요. 예시를 참고하여 실제 프로젝트에 맞게 수정해주세요.)
 
 ```bash
+# 1. 저장소 클론
+git clone https://github.com/yurimeeee/wedding-invitation.git
+
+# 2. 프로젝트 디렉토리로 이동
+cd wedding-invitation
+
+# 3. 의존성 설치
+npm install
+# 또는 yarn install
+
+# 4. 개발 서버 실행
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# 또는 yarn dev

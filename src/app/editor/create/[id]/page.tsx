@@ -58,19 +58,6 @@ import { useLoadingStore } from '@stores/useLoadingStore';
 import { useScrollDirection } from '@hook/useScrollDirection';
 import { v4 as uuidv4 } from 'uuid';
 
-// import { storage } from '@lib/firebase';
-const InfoTitle = styled.div`
-  font-family: 'SUITE Variable';
-  font-weight: 500;
-  color: ${theme.color.textDefault};
-  margin-bottom: 12px;
-`;
-// const Label = styled.p`
-//   font-family: 'SUITE Variable';
-//   font-weight: 500;
-//   color: ${theme.color.textDefault};
-//   margin-bottom: 12px;
-// `;
 const Wrap = styled.div`
   width: 100%;
   /* max-width: 720px; */
@@ -237,7 +224,6 @@ export default function TemplatesCreatePage() {
       if (!formData.bride_phone?.trim()) return '신부의 연락처를 입력해주세요.';
       if (!mainImage && !formData.main.main_img) return '커버 메인 이미지를 업로드해주세요.';
       if (!formData.main.intro_content?.trim()) return '모시는 글을 입력해주세요.';
-      // if (!gallery || !gallery.length || (gallery.some((img: any) => !img) && formData.gallery.length < 1)) return '갤러리 이미지를 하나 이상 등록해주세요.';
 
       const hasGallery = (Array.isArray(gallery) && gallery.some((img: any) => !!img)) || (Array.isArray(formData?.gallery) && formData.gallery.length > 0);
 
@@ -257,7 +243,6 @@ export default function TemplatesCreatePage() {
       }
     }
     const docRef = doc(firestore, 'invitations', domain);
-    // const docRef = doc(firestore, 'users', userId, 'invitations', domain);
     const dataToSave: any = {
       ...formData,
       uploadedAt: new Date(),
@@ -298,9 +283,6 @@ export default function TemplatesCreatePage() {
         dataToSave.gallery = galleryUrls;
       }
 
-      // await setDoc(docRef, dataToSave, { merge: true });
-      // const docRef2 = doc(firestore, 'invitations', domain);
-      // await setDoc(docRef2, { id: domain, uid: userId });
       await setDoc(
         docRef,
         {
@@ -324,7 +306,6 @@ export default function TemplatesCreatePage() {
       try {
         let docRef;
         if (isEdit && userId && id) {
-          // docRef = doc(db, 'users', String(userId), 'invitations', String(id));
           docRef = doc(db, 'invitations', String(id));
         } else {
           docRef = doc(db, 'template', String(id));
@@ -338,7 +319,6 @@ export default function TemplatesCreatePage() {
           // setErrorMessage('템플릿 문서를 찾을 수 없습니다.');
         }
       } catch (error) {
-        console.error('문서 가져오기 실패:', error);
         // setErrorMessage('데이터를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       } finally {
         setLoading(false);
@@ -412,11 +392,11 @@ export default function TemplatesCreatePage() {
     }
   }, [formData?.type]);
 
-  const [htmlContent, setHtmlContent] = useState('');
+  // const [htmlContent, setHtmlContent] = useState('');
 
-  const handleEditorChange = (html: string) => {
-    setHtmlContent(html);
-  };
+  // const handleEditorChange = (html: string) => {
+  //   setHtmlContent(html);
+  // };
 
   useEffect(() => {
     if (paramsDomain) {
@@ -455,21 +435,12 @@ export default function TemplatesCreatePage() {
                 // text="확인"
                 text={!isConfirmed ? '확인' : '수정'}
                 onClick={() => setIsConfirmed(!isConfirmed)}
-                // disabled={domain?.trim() === '' || !/^[a-z0-9-]+$/.test(domain) || !urlValidationMessage}
                 disabled={domain?.trim() === '' || !urlValidationMessage}
                 active
                 className="w-1/5 max-w-[72px]"
               />
             </div>
-            {/* {domain?.trim() === '' && <CustomInfoText text="url을 입력해주세요" color={'#EF665B'} className="my-2" />}
-            {!/^[a-z0-9-]+$/.test(domain) && <CustomInfoText text="영문 소문자, 숫자, 하이픈(-)만 사용 가능해요" color={'#EF665B'} className="my-2" />}
 
-            {urlValidationMessage === true && domain?.trim() !== '' && /^[a-z0-9-]+$/.test(domain) && (
-              <CustomInfoText text={'사용가능한 url입니다.'} color={'#17d287'} className="my-2" />
-            )}
-            {urlValidationMessage === false && domain?.trim() !== '' && /^[a-z0-9-]+$/.test(domain) && (
-              <CustomInfoText text={'이미 사용중인 url입니다.'} color={'#EF665B'} className="my-2" />
-            )} */}
             {/* 유효성 메시지 표시 */}
             <div className="min-h-[36px]">
               {domain?.trim() === '' && <CustomInfoText text="url을 입력해주세요" color={'#EF665B'} className="my-2" />}

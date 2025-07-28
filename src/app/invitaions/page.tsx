@@ -1,17 +1,11 @@
 'use client';
 
-import { User, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '@lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
-import { Button } from '@components/ui/button';
-import Image from 'next/image';
-import { Input } from '@components/ui/input';
 import InvitationItem from '@components/editor/feature/InvitationItem';
 import { TemplatesData } from '@type/templates';
-import { useRouter } from 'next/navigation';
-import { useUserStore } from '@stores/useUserStore';
+import { db } from '@lib/firebase';
 
 export default function InvitationListPage() {
   const [invitations, setInvitations] = useState<TemplatesData[]>([]);

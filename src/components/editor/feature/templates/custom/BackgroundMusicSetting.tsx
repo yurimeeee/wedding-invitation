@@ -1,6 +1,6 @@
 'use client';
 
-import { getDownloadURL, getStorage, ref } from 'firebase/storage';
+import { getDownloadURL, ref } from 'firebase/storage';
 import { useEffect, useRef, useState } from 'react';
 
 import MusicButton from './MusicButton';
@@ -13,14 +13,6 @@ const BackgroundMusicSetting = ({ setBgm, bgm }: { setBgm: (bgm: string) => void
   const [loadingMusic, setLoadingMusic] = useState(false); // 음악 로딩 중 상태
   const [nowPlayingInButton, setNowPlayingInButton] = useState<string | null>(null); // 버튼에 표시되는 현재 재생 중인 음악 경로
 
-  // const fetchMusicPlay = async (path: string) => {
-  //   setNowPlaying(path);
-  //   const fileRef = ref(storage, path);
-  //   const url = await getDownloadURL(fileRef);
-  //   console.log(url);
-  //   setMusicUrl(url);
-  // };
-  console.log('bgm', bgm);
   useEffect(() => {
     const loadAndPlayMusic = async () => {
       if (!currentMusicPath) {
@@ -84,9 +76,6 @@ const BackgroundMusicSetting = ({ setBgm, bgm }: { setBgm: (bgm: string) => void
       } finally {
         setLoadingMusic(false); // 음악 로딩 완료
       }
-      // const fileRef = ref(storage, musicFilePath);
-      // const url = await getDownloadURL(fileRef);
-      // console.log(url);
     };
     loadAndPlayMusic();
     return () => {
@@ -97,22 +86,6 @@ const BackgroundMusicSetting = ({ setBgm, bgm }: { setBgm: (bgm: string) => void
       }
     };
   }, [currentMusicPath]);
-
-  // useEffect(() => {
-  //   if (!musicUrl) return;
-  //   // const audio = new Audio('/assets/bgm/romantic-wedding-inspiring-piano-376014.mp3');
-  //   const audio = new Audio(
-  //     // 'https://firebasestorage.googleapis.com/v0/b/my-wedding-76cc0.firebasestorage.app/o/bgm%2Fcalm-at-sea.mp3?alt=media&token=3ee490a0-f3d0-4ebd-aece-3a94a40cb56f'
-  //     musicUrl
-  //   );
-  //   audio.loop = true;
-  //   audio.volume = 0.5;
-  //   audioRef.current = audio;
-
-  //   return () => {
-  //     audio.pause();
-  //   };
-  // }, [musicUrl]);
 
   const toggleMusic = () => {
     if (!audioRef.current) return;
@@ -132,16 +105,16 @@ const BackgroundMusicSetting = ({ setBgm, bgm }: { setBgm: (bgm: string) => void
   };
   // 버튼 클릭 핸들러
   const handleMusicButtonClick = (path: string) => {
-    // 1. 만약 이미 이 음악이 선택되어 있다면, 재생/일시정지만 토글
+    // 만약 이미 이 음악이 선택되어 있다면, 재생/일시정지만 토글
     if (currentMusicPath === path) {
       toggleMusic();
     } else {
-      // 2. 다른 음악이 선택되었다면, 새로운 음악으로 변경하고 재생 시작
+      // 다른 음악이 선택되었다면, 새로운 음악으로 변경하고 재생 시작
       if (audioRef.current) {
         setNowPlayingInButton(path);
         audioRef.current.pause(); // 기존 음악 중지
       }
-      setCurrentMusicPath(path); // 새 음악 경로 설정 (useEffect 트리거)
+      setCurrentMusicPath(path); // 새 음악 경로 설정
       setIsPlaying(true); // 새 음악으로 변경되면 일단 재생 시작 상태로
     }
   };
@@ -209,61 +182,6 @@ const BackgroundMusicSetting = ({ setBgm, bgm }: { setBgm: (bgm: string) => void
           checked={bgm == item.path}
         />
       ))}
-      {/* <MusicButton
-        name="calm-at-sea"
-        path="bgm/calm-at-sea.mp3"
-        onClick={handleMusicButtonClick}
-        loadingMusic={loadingMusic}
-        currentMusicPath={currentMusicPath}
-        isPlaying={isPlaying}
-        setChecked={() => {
-          if (bgm === 'bgm/calm-at-sea.mp3') {
-            setBgm('');
-          } else {
-            setBgm('bgm/calm-at-sea.mp3');
-          }
-        }}
-        checked={bgm === 'bgm/calm-at-sea.mp3'}
-      />
-      <MusicButton
-        name="classical"
-        path="bgm/classical.mp3"
-        onClick={handleMusicButtonClick}
-        loadingMusic={loadingMusic}
-        currentMusicPath={currentMusicPath}
-        isPlaying={isPlaying}
-        setChecked={() => {
-          if (bgm === 'bgm/classical.mp3') {
-            setBgm('');
-          } else {
-            setBgm('bgm/classical.mp3');
-          }
-        }}
-        checked={bgm === 'bgm/calm-at-sea.mp3'}
-      /> */}
-      {/* <div>
-        <span className="mr-2">calm-at-sea</span>
-        <button
-          onClick={() => handleMusicButtonClick('bgm/calm-at-sea.mp3')}
-          className="h-10 w-10 flex items-center justify-center rounded-md p-1 text-sm font-suite transition-colors duration-200 shadow-default bg-pink-200 text-text-default border border-pink-500 max-w-[72px]"
-          disabled={loadingMusic && currentMusicPath !== 'bgm/calm-at-sea.mp3'} // 현재 선택된 음악이 아니면서 로딩중일때 비활성화
-          aria-label={currentMusicPath === 'bgm/calm-at-sea.mp3' && isPlaying ? 'calm-at-sea 음악 일시정지' : 'calm-at-sea 음악 재생'}
-        >
-          {currentMusicPath === 'bgm/calm-at-sea.mp3' && isPlaying ? '⏸' : '▶ '}
-        </button>
-      </div>
-
-      <div>
-        <span className="mr-2">classical</span>
-        <button
-          onClick={() => handleMusicButtonClick('bgm/classical.mp3')}
-          className="h-10 w-10 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          disabled={loadingMusic && currentMusicPath !== 'bgm/classical.mp3'} // 현재 선택된 음악이 아니면서 로딩중일때 비활성화
-          aria-label={currentMusicPath === 'bgm/classical.mp3' && isPlaying ? 'classical 음악 일시정지' : 'classical 음악 재생'}
-        >
-          {currentMusicPath === 'bgm/classical.mp3' && isPlaying ? '⏸' : '▶ '}
-        </button>
-      </div> */}
     </div>
   );
 };

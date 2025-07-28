@@ -30,10 +30,6 @@ export default function SignUpPage() {
       return;
     }
     try {
-      // const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      // const user = userCredential.user as User;
-      // const token = await user.getIdToken();
-
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user as User;
       const token = await user.getIdToken();

@@ -8,7 +8,6 @@ import AttendeesInfoModal from './modal/AttendeesInfoModal';
 import { GoHeartFill } from 'react-icons/go';
 import { TEXT_DEFAULT } from '@styles/colors';
 import { TemplatesData } from '@type/templates';
-import { db } from '@lib/firebase';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
 

@@ -26,32 +26,6 @@ export default function TemplatesPage() {
   useEffect(() => {
     fetchTemplates();
   }, []);
-  // async function uploadImageAndSaveToDoc(file: File, docId: string) {
-  //   try {
-  //     // 1. Storage 경로 설정
-  //     const storageRef = ref(storage, `images/${docId}/${file.name}`);
-
-  //     // 2. 이미지 업로드
-  //     await uploadBytes(storageRef, file);
-
-  //     // 3. 다운로드 URL 가져오기
-  //     const downloadURL = await getDownloadURL(storageRef);
-
-  //     // 4. Firestore 문서에 저장
-  //     const docRef = doc(db, 'yourCollection', docId);
-  //     await setDoc(
-  //       docRef,
-  //       {
-  //         imageUrl: downloadURL, // 기존 필드와 함께 사용할 경우 { merge: true } 옵션 사용
-  //       },
-  //       { merge: true }
-  //     );
-
-  //     console.log('Document updated with image URL!');
-  //   } catch (err) {
-  //     console.error('Error uploading image and saving to document:', err);
-  //   }
-  // }
 
   return (
     <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">

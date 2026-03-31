@@ -19,6 +19,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSavedEmail, setIsSavedEmail] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const savedEmailFromLS = localStorage.getItem('email');
@@ -40,6 +41,7 @@ export default function LoginPage() {
       return;
     }
 
+    setIsLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user as User;
@@ -48,17 +50,20 @@ export default function LoginPage() {
       // Zustand에 유저 정보 저장
       useUserStore.getState().login(user);
       // 토큰을 쿠키에 저장하기 위해 API 호출
-      await fetch('/api/admin/login/sessionLogin', {
+      const res = await fetch('/api/admin/login/sessionLogin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
       });
+      if (!res.ok) {
+        toast.error('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+        return;
+      }
       if (isSavedEmail) {
         saveEmail(email);
       } else {
         localStorage.removeItem('email');
       }
-      // alert('로그인 되었습니다.');
       router.push('/editor');
     } catch (error: any) {
       switch (error.code) {
@@ -78,11 +83,13 @@ export default function LoginPage() {
         default:
           toast.error('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-items-center h-full min-h-[100vh]">
+    <div className="flex items-center justify-center h-full min-h-[100vh]">
       <div className="flex flex-col items-center justify-center min-w-[256px]">
         <Image src="/assets/img/logo-my.svg" alt="logo" width={177} height={30} className="mb-5" />
         <Input type="email" placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} className="p-2 border rounded mb-2 w-full" width="w-full" />
@@ -96,7 +103,7 @@ export default function LoginPage() {
             }}
           />
         </div>
-        <Button onClick={handleLogin} disabled={email.trim() === '' || password.trim() === ''} width="w-full">
+        <Button onClick={handleLogin} disabled={isLoading || email.trim() === '' || password.trim() === ''} width="w-full">
           로그인
         </Button>
         <div className="flex items-center justify-center mt-4">

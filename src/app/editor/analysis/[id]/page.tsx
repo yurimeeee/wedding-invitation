@@ -63,7 +63,7 @@ const InfoCard = ({ label, value }: { label: string; value?: number }) => (
 
 export default function AnalysisPage() {
   const params = useParams();
-  const id = params.id;
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const csvLink = useRef<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [attendeesList, setAttendeesList] = useState<AttendeeInfoData[] | null>(null);
@@ -88,6 +88,7 @@ export default function AnalysisPage() {
       setAttendeesList(data as AttendeeInfoData[]);
     } catch (error) {
       console.error('Error fetching templates:', error);
+      toast.error('데이터를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     } finally {
       setLoading(false);
     }
@@ -126,7 +127,7 @@ export default function AnalysisPage() {
       }) ?? [];
 
     // createdAt 기준 오름차순 정렬
-    const sorted = tmp.sort((a, b) => a.createdAtSort - b.createdAtSort);
+    const sorted = [...tmp].sort((a, b) => a.createdAtSort - b.createdAtSort);
 
     // 정렬용 필드 삭제
     const finalData = sorted.map(({ createdAtSort, ...rest }) => rest);
@@ -136,7 +137,7 @@ export default function AnalysisPage() {
 
   useEffect(() => {
     fetchAttendeesList();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (excelData?.length > 0) {
@@ -165,22 +166,14 @@ export default function AnalysisPage() {
                 <div className="flex gap-4 mt-4 mb-6">
                   <InfoCard label="참석" value={attending?.length} />
                   <InfoCard label="불참" value={declined?.length} />
-                  {/* <div className="shadow-default w-full px-6 py-4 bg-white font-suite text-left text-sm font-medium rounded-md">
-                    <p className="text-muted-foreground mb-6">참석</p>
-                    <p className="text-text-default text-lg">{attending?.length} 명</p>
-                  </div>
-                  <div className="shadow-default w-full px-6 py-4 bg-white font-suite text-left text-sm font-medium rounded-md">
-                    <p className="text-muted-foreground mb-6">불참</p>
-                    <p className="text-text-default text-lg">{declined?.length} 명</p>
-                  </div> */}
                 </div>
                 <Button text="엑셀 다운로드" variant="pink" onClick={handleDownloadCSV} className="mb-10" />
                 <CSVLink data={excelData} headers={headers} filename="참석여부.csv" className="hidden" ref={csvLink} target="_blank" />
                 <p className="text-[18px] font-suite-bold text-gray-600 mb-6">상세 정보</p>
 
                 <div className="flex">
-                  {tabList?.map((item, idx) => (
-                    <TabItem key={idx} active={item.value === activeTab} onClick={() => setActiveTab(item.value)}>
+                  {tabList?.map((item) => (
+                    <TabItem key={item.value} active={item.value === activeTab} onClick={() => setActiveTab(item.value)}>
                       {item.text}
                     </TabItem>
                   ))}

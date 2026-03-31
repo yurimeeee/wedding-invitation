@@ -1,23 +1,16 @@
 'use client';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@components/ui/accordion';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CiSquarePlus, CiSquareRemove } from 'react-icons/ci';
-import { CustomDialog, DialogTrigger } from '@components/ui/dialog';
-import { CustomRadioGroup, RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
-import { Divide, Eye, RotateCcw, X } from 'lucide-react';
-import { DocumentData, collection, doc, getDoc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
-import { GRAY_500, GRAY_600 } from '@styles/colors';
-// import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { CustomRadioGroup } from '@components/ui/radio-group';
+import { Eye, RotateCcw, X } from 'lucide-react';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useEffect, useRef, useState } from 'react';
 import { auth, db } from '@lib/firebase';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 import BackgroundMusicSetting from '@components/editor/feature/templates/custom/BackgroundMusicSetting';
-import BeatLoader from 'react-spinners/BeatLoader';
-import { BsFillInfoCircleFill } from 'react-icons/bs';
-import { Button } from '@components/ui/button';
 import CustomAccordion from '@components/editor/feature/templates/custom/Accordion';
 import { CustomBox } from '@components/ui/CustomBox';
 import { CustomButton } from '@components/ui/CustomButton';
@@ -32,7 +25,6 @@ import { CustomTooltip } from '@components/ui/tooltip';
 import DaumPost from '@components/editor/feature/DaumPost';
 import { FaRegImage } from 'react-icons/fa6';
 import Image from 'next/image';
-import { Input } from '@components/ui/input';
 import { IoClose } from 'react-icons/io5';
 import KakaoMap from '@components/editor/feature/KakaoMap';
 import { Label } from '@components/ui/label';
@@ -40,23 +32,17 @@ import { PageLoading } from '@components/ui/PageLoading';
 import { PiFlowerFill } from 'react-icons/pi';
 import SampleGreetingMessageModal from '@components/editor/feature/templates/custom/modal/SampleGreetingMessageModal';
 import ShareSettingsModal from '@components/editor/feature/templates/custom/modal/ShareSettingsModal';
-import TemplateCard from '@components/editor/feature/TemplateCard';
 import TemplateType1 from '@components/editor/feature/templates/types/TemplateType1';
 import TemplateType2 from '@components/editor/feature/templates/types/TemplateType2';
 import TemplateType3 from '@components/editor/feature/templates/types/TemplateType3';
 import TemplateType4 from '@components/editor/feature/templates/types/TemplateType4';
-import { TemplatesData } from '@type/templates';
 import { Textarea } from '@components/ui/textarea';
-import TiptapEditor from '@components/editor/feature/TiptapEditor';
 import dayjs from 'dayjs';
 import styled from '@emotion/styled';
 import theme from '@styles/theme';
-import { title } from 'process';
 import { toast } from 'sonner';
 import { useDomainCheck } from '@hook/useDomainCheck';
 import { useLoadingStore } from '@stores/useLoadingStore';
-import { useScrollDirection } from '@hook/useScrollDirection';
-import { v4 as uuidv4 } from 'uuid';
 
 const Wrap = styled.div`
   width: 100%;
@@ -118,16 +104,16 @@ export default function TemplatesCreatePage() {
   // const isScrolledDown = useScrollDirection();
   const handleChange = (path: string, value: string | any) => {
     const keys = path.split('.');
-    const updated = { ...formData };
-    let temp: any = updated;
 
-    while (keys.length > 1) {
-      const key = keys.shift()!;
-      temp = temp[key];
-    }
-    temp[keys[0]] = value;
+    const setDeep = (obj: any, keyList: string[], val: any): any => {
+      const [head, ...rest] = keyList;
+      if (rest.length === 0) {
+        return { ...obj, [head]: val };
+      }
+      return { ...obj, [head]: setDeep(obj[head] ?? {}, rest, val) };
+    };
 
-    setFormData(updated);
+    setFormData((prev: any) => setDeep(prev, keys, value));
   };
 
   const handleParentValueChange = (parentType: 'groom_parents' | 'bride_parents', role: 'dad' | 'mom', key: string, value: any) => {
@@ -210,7 +196,6 @@ export default function TemplatesCreatePage() {
     setIsLoading(true);
     toast(isDraft ? '임시 저장 중입니다...' : '청첩장을 제작 중입니다...');
     const storage = getStorage();
-    const firestore = getFirestore();
 
     const validateForm = (): string | null => {
       if (!formData.main.date?.trim()) return '예식 일자를 입력해주세요.';
@@ -242,7 +227,7 @@ export default function TemplatesCreatePage() {
         return;
       }
     }
-    const docRef = doc(firestore, 'invitations', domain);
+    const docRef = doc(db, 'invitations', domain);
     const dataToSave: any = {
       ...formData,
       uploadedAt: new Date(),
@@ -296,7 +281,9 @@ export default function TemplatesCreatePage() {
       toast.success(isDraft ? '임시 저장되었습니다.' : '청첩장이 등록되었습니다.');
     } catch (error) {
       console.error('Error during upload or Firestore saving:', error);
-      throw error;
+      toast.error('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -347,7 +334,6 @@ export default function TemplatesCreatePage() {
   // 갤러리 이미지 다중 업로드 핸들러
   const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    const urls = files.map((file) => URL.createObjectURL(file));
     setGallery(files);
     const readers: Promise<string>[] = files.map((file) => {
       return new Promise((resolve) => {
@@ -419,9 +405,11 @@ export default function TemplatesCreatePage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  return pageLoading ? (
-    <PageLoading loading={pageLoading} />
-  ) : (
+  if (pageLoading || loading) {
+    return <PageLoading loading={true} />;
+  }
+
+  return (
     <div className="flex h-screen">
       <Wrap className="scroll-container bg-[#F5F4F0] p-6 overflow-auto sm:w-1/2 h-full pb-20">
         <p className="text-[18px] font-suite-bold text-text-default mb-6">청첩장 제작</p>
@@ -1042,60 +1030,27 @@ export default function TemplatesCreatePage() {
                 <CustomInfoText text="핀 위치 정정하기 : 아래 지도에서 클릭하는 위치로 옮길 수 있습니다." className="mb-5" />
                 <KakaoMap address={formData?.address} />
                 <Label text="교통수단 안내" required={true} className="mb-2 mt-5" />
-                <div className="flex flex-col gap-2 mb-3">
-                  <p className="text-[14px] font-suite-medium text-text-default">지하철</p>
-                  {formData?.directions_desc
-                    ?.filter((direction: any) => direction.type == '지하철')[0]
-                    .desc?.map((item: any, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <CustomInput type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('지하철', idx, e.target.value)} />
-                        <div>
-                          <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('지하철')} />
-                        </div>
-                        {formData?.directions_desc?.filter((direction: any) => direction.type == '지하철')[0].desc?.length > 1 && (
-                          <button onClick={() => removeDirections('지하철', idx)}>
-                            <CiSquareRemove size={20} className="text-red-500" />
-                          </button>
-                        )}
+                {(['지하철', '버스', '주차'] as const).map((transportType) => {
+                    const directionItem = formData?.directions_desc?.find((d: any) => d.type === transportType);
+                    return (
+                      <div key={transportType} className="flex flex-col gap-2 mb-3">
+                        <p className="text-[14px] font-suite-medium text-text-default">{transportType}</p>
+                        {directionItem?.desc?.map((item: any, idx: number) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <CustomInput type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange(transportType, idx, e.target.value)} />
+                            <div>
+                              <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections(transportType)} />
+                            </div>
+                            {directionItem.desc.length > 1 && (
+                              <button onClick={() => removeDirections(transportType, idx)}>
+                                <CiSquareRemove size={20} className="text-red-500" />
+                              </button>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                </div>
-                <div className="flex flex-col gap-2 mb-3">
-                  <p className="text-[14px] font-suite-medium text-text-default">버스</p>
-                  {formData?.directions_desc
-                    ?.filter((direction: any) => direction.type == '버스')[0]
-                    .desc?.map((item: any, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <CustomInput type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('버스', idx, e.target.value)} />
-                        <div>
-                          <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('버스')} />
-                        </div>
-                        {formData?.directions_desc?.filter((direction: any) => direction.type == '버스')[0].desc?.length > 1 && (
-                          <button onClick={() => removeDirections('버스', idx)}>
-                            <CiSquareRemove size={20} className="text-red-500" />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                </div>
-                <div className="flex flex-col gap-2 mb-3">
-                  <p className="text-[14px] font-suite-medium text-text-default">주차</p>
-                  {formData?.directions_desc
-                    ?.filter((direction: any) => direction.type == '주차')[0]
-                    .desc?.map((item: any, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2">
-                        <CustomInput type="text" placeholder="입력" value={item} onChange={(e) => handleObjectValueChange('주차', idx, e.target.value)} />
-                        <div>
-                          <CiSquarePlus size={20} color={theme.color.gray_600} onClick={() => addDirections('주차')} />
-                        </div>
-                        {formData?.directions_desc?.filter((direction: any) => direction.type == '주차')[0].desc?.length > 1 && (
-                          <button onClick={() => removeDirections('주차', idx)}>
-                            <CiSquareRemove size={20} className="text-red-500" />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                </div>
+                    );
+                  })}
               </div>
             }
           />

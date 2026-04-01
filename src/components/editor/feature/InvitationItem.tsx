@@ -13,10 +13,9 @@ import { useRouter } from 'next/navigation';
 
 type InvitationItemProps = {
   data: any;
-  onClick: () => void;
 };
 
-const InvitationItem = ({ data, onClick }: InvitationItemProps) => {
+const InvitationItem = ({ data }: InvitationItemProps) => {
   const router = useRouter();
   const [qrCodeModal, setQrCodeModal] = useState<boolean>(false);
 
